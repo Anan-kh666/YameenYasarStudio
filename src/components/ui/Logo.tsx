@@ -1,16 +1,33 @@
 import { useTranslations } from "next-intl";
 
 /**
- * Logo placeholder — renders studio name as styled text.
- * TODO(anan): replace with <img> of public/brand/yy-logo-horizontal.svg
- * (and -reversed variant for dark mode) once the final SVGs are ready.
+ * Horizontal logo — swaps to the reversed variant in dark mode via CSS only
+ * (two <img>, toggled with display), so there's no flash on load.
+ * Wrapped in dir="ltr" so it never flips in RTL layouts.
+ * Minimum height: 32px (per brand guidelines).
  */
 export default function Logo() {
   const t = useTranslations("header");
+  const alt = t("logoAlt");
 
   return (
-    <span className="flex items-center gap-1.5 text-h2 font-semibold leading-none" aria-label={t("logoAlt")}>
-      <span className="text-yameen">YY</span>
+    <span dir="ltr" className="inline-block">
+      {/* Light mode */}
+      <img
+        src="/brand/yy-logo-horizontal.svg"
+        alt={alt}
+        width={138}
+        height={32}
+        className="block h-8 w-auto dark:hidden"
+      />
+      {/* Dark mode */}
+      <img
+        src="/brand/yy-logo-horizontal-reversed.svg"
+        alt={alt}
+        width={138}
+        height={32}
+        className="hidden h-8 w-auto dark:block"
+      />
     </span>
   );
 }

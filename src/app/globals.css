@@ -105,3 +105,33 @@ body {
   inset-inline-start: 0.5rem;
   top: 0.5rem;
 }
+
+/* ── Hero entrance — two headlines meeting from opposite sides ── */
+/* Direction-aware slide distances */
+[dir="ltr"] { --hero-from-start: -1.5rem; --hero-from-end: 1.5rem; }
+[dir="rtl"] { --hero-from-start: 1.5rem; --hero-from-end: -1.5rem; }
+
+@keyframes heroSlideStart {
+  from { opacity: 0; transform: translateX(var(--hero-from-start)); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes heroSlideEnd {
+  from { opacity: 0; transform: translateX(var(--hero-from-end)); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.hero-slide-start {
+  animation: heroSlideStart 0.7s ease-out both;
+}
+
+.hero-slide-end {
+  animation: heroSlideEnd 0.7s ease-out 0.12s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-start,
+  .hero-slide-end {
+    animation: none;
+  }
+}

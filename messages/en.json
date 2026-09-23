@@ -18,12 +18,128 @@
   "languageSwitch": {
     "label": "عربي"
   },
-  "hero": {
-    "headline": "Bilingual websites, built right.",
-    "subline": "We design and build Arabic and English websites and web apps with real right-to-left layouts and proper Arabic typography. No machine translation, no broken mirrors."
-  },
   "whatsapp": {
     "prefilled": "Hi, I'd like to know more about a bilingual website."
+  },
+  "hero": {
+    "headline": "Bilingual websites, built right.",
+    "subline": "We design and build Arabic and English websites and web apps with real right-to-left layouts and proper Arabic typography. No machine translation, no broken mirrors.",
+    "ctaWhatsapp": "Chat on WhatsApp",
+    "ctaPackages": "See packages",
+    "otherHeadline": "مواقع بلغتين، معمولة صح."
+  },
+  "problem": {
+    "headline": "Most Arabic websites are English sites, flipped.",
+    "card1Title": "Broken mirroring",
+    "card1Body": "Arrows pointing the wrong way, menus opening from the wrong side, numbers out of order.",
+    "card2Title": "Unreadable type",
+    "card2Body": "Tiny or distorted Arabic, because the site was designed around a Latin font.",
+    "card3Title": "Machine translation",
+    "card3Body": "Sentences no Arabic speaker checked before they went live.",
+    "closing": "Arabic-speaking customers notice in seconds, and they leave."
+  },
+  "packages": {
+    "headline": "Clear prices, no surprises.",
+    "launchOffer": "Our first 3 clients get 40% off in exchange for a written review and permission to feature the project.",
+    "launch": {
+      "name": "Launch",
+      "price": "300 USD",
+      "duration": "7 days",
+      "features": "One bilingual page, contact form, WhatsApp button, map, mobile-ready, basic SEO in both languages, 2 revision rounds."
+    },
+    "business": {
+      "name": "Business",
+      "price": "750 USD",
+      "duration": "14 days",
+      "badge": "Most popular",
+      "features": "Up to 5 bilingual pages, everything in Launch, Google Business setup, domain and email connected, 3 revision rounds."
+    },
+    "custom": {
+      "name": "Custom",
+      "price": "from 1,500 USD",
+      "duration": "by scope",
+      "features": "Booking systems, dashboards, web apps, AI assistants."
+    },
+    "addons": {
+      "title": "Add-ons",
+      "monthlyCare": {
+        "name": "Monthly care",
+        "price": "40 USD per month",
+        "description": "Updates, backups and small edits."
+      },
+      "copywriting": {
+        "name": "Arabic copywriting",
+        "price": "30 USD per page",
+        "description": "Written in Arabic from scratch, not translated."
+      }
+    }
+  },
+  "work": {
+    "headline": "Work that speaks for itself.",
+    "viewSite": "View site",
+    "comingSoon": "Coming soon",
+    "zaitZaatar": {
+      "name": "Zait & Za'atar",
+      "description": "A bilingual Levantine restaurant site with a full right-to-left menu."
+    },
+    "clinic": {
+      "name": "Clinic",
+      "tag": "concept project",
+      "description": "A dental clinic site with appointment booking and WhatsApp."
+    },
+    "saas": {
+      "name": "SaaS product",
+      "tag": "concept project",
+      "description": "An English product page with a complete Arabic version."
+    }
+  },
+  "process": {
+    "headline": "From first message to live site, in 4 steps.",
+    "step1Title": "Talk",
+    "step1Body": "A short free call to understand your business, your customers and what the site needs to do.",
+    "step2Title": "Design",
+    "step2Body": "You see both the Arabic and English designs before any code is written.",
+    "step3Title": "Build",
+    "step3Body": "We build it, you test it on a private link and ask for changes.",
+    "step4Title": "Launch",
+    "step4Body": "We connect your domain, go live, and stay on if you want ongoing care.",
+    "payment": "Payment: 50% to start, 50% before launch."
+  },
+  "about": {
+    "headline": "Behind every site, someone who speaks your language.",
+    "bio": "I'm Anan Kherbek, founder of Yameen Yasar Studio. I'm Syrian, based in Malaysia, and studying Computer Science with a focus on AI. I live in Arabic and English every day, and I know how much it shows when a website respects both.",
+    "closing": "When you work with us, you talk to the person building your site, not a sales team."
+  },
+  "faq": {
+    "q1": "How do I pay?",
+    "a1": "Bank transfer, PayPal or Wise. 50% to start, 50% before launch.",
+    "q2": "What if I don't like the design?",
+    "a2": "Every package includes revision rounds, and we refine until it's right within the package scope.",
+    "q3": "Who writes the content?",
+    "a3": "You give us the information and we shape it. If you want Arabic copy written from scratch, add the copywriting add-on.",
+    "q4": "Do I need a domain and hosting?",
+    "a4": "No. We help you buy the domain in your name, and hosting is free for simple sites.",
+    "q5": "Will I own the website?",
+    "a5": "Yes. The domain, the code and the content are all yours.",
+    "q6": "Do you work with clients outside the Gulf?",
+    "a6": "Yes, we work online with clients anywhere."
+  },
+  "contact": {
+    "headline": "Let's talk about your website.",
+    "subline": "Send us a message and we'll reply within 24 hours.",
+    "fieldName": "Name",
+    "fieldEmail": "Email",
+    "fieldBusiness": "What's your business?",
+    "fieldPackage": "Which package?",
+    "packageLaunch": "Launch",
+    "packageBusiness": "Business",
+    "packageCustom": "Custom",
+    "packageNotSure": "Not sure",
+    "fieldMessage": "Your message",
+    "send": "Send",
+    "whatsapp": "WhatsApp",
+    "success": "Message sent. We'll reply within 24 hours.",
+    "error": "Your message didn't send. Try again, or reach us on WhatsApp."
   },
   "footer": {
     "tagline": "Yameen Yasar Studio — Bilingual websites, built right.",

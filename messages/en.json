@@ -3,8 +3,31 @@
     "title": "Yameen Yasar Studio — Bilingual Arabic & English Websites",
     "description": "Arabic and English websites with real right-to-left layouts and proper Arabic type. Packages from $300."
   },
+  "nav": {
+    "packages": "Packages",
+    "work": "Work",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "header": {
+    "skipToContent": "Skip to content",
+    "menu": "Menu",
+    "whatsapp": "WhatsApp",
+    "logoAlt": "Yameen Yasar Studio"
+  },
+  "languageSwitch": {
+    "label": "عربي"
+  },
   "hero": {
     "headline": "Bilingual websites, built right.",
     "subline": "We design and build Arabic and English websites and web apps with real right-to-left layouts and proper Arabic typography. No machine translation, no broken mirrors."
+  },
+  "whatsapp": {
+    "prefilled": "Hi, I'd like to know more about a bilingual website."
+  },
+  "footer": {
+    "tagline": "Yameen Yasar Studio — Bilingual websites, built right.",
+    "copyright": "© 2026",
+    "logoAlt": "Yameen Yasar Studio"
   }
 }

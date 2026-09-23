@@ -1,5 +1,107 @@
 @import "tailwindcss";
 
+/* ── Brand tokens ── light by default, dark via prefers-color-scheme ── */
+:root {
+  --paper: #F6F2EA;
+  --surface: #FFFFFF;
+  --line: #E2DBCD;
+  --ink: #15201D;
+  --ink-muted: #5B6560;
+  --yameen: #0E6B5C;
+  --yameen-soft: #DCEEE8;
+  --on-yameen: #FFFFFF;
+  --yasar: #E39B2D;
+  --yasar-ink: #8A5310;
+  --yasar-soft: #FBEBD2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121A18;
+    --surface: #1B2522;
+    --line: #2C3834;
+    --ink: #F3EFE6;
+    --ink-muted: #A9B3AE;
+    --yameen: #5FD0B6;
+    --yameen-soft: #123A33;
+    --on-yameen: #0B1614;
+    --yasar: #E9A845;
+    --yasar-ink: #F0B45A;
+    --yasar-soft: #3A2A12;
+  }
+}
+
+/* ── Map tokens into Tailwind v4 theme ── */
 @theme inline {
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-readex-pro);
+
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-yameen: var(--yameen);
+  --color-yameen-soft: var(--yameen-soft);
+  --color-on-yameen: var(--on-yameen);
+  --color-yasar: var(--yasar);
+  --color-yasar-ink: var(--yasar-ink);
+  --color-yasar-soft: var(--yasar-soft);
+
+  /* Type scale */
+  --text-display: 3.5rem;
+  --text-display--line-height: 3.75rem;
+  --text-h1: 2.25rem;
+  --text-h1--line-height: 2.75rem;
+  --text-h2: 1.5rem;
+  --text-h2--line-height: 2rem;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.75rem;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.375rem;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.125rem;
+}
+
+/* ── Base ── */
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-size: 1.0625rem;
+  line-height: 1.75rem;
+}
+
+/* Focus ring — 2px yameen, offset */
+:focus-visible {
+  outline: 2px solid var(--yameen);
+  outline-offset: 2px;
+}
+
+/* Arabic: never letter-spaced, generous line-height for dots/marks */
+[dir="rtl"] {
+  letter-spacing: 0;
+  line-height: 1.75;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3 {
+  line-height: 1.35;
+}
+
+/* Skip-to-content — uses logical properties for RTL */
+.skip-to-content {
+  position: absolute;
+  inset-inline-start: -9999px;
+  z-index: 999;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--yameen);
+  color: var(--on-yameen);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.skip-to-content:focus {
+  inset-inline-start: 0.5rem;
+  top: 0.5rem;
 }

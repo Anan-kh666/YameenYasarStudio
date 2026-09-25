@@ -33,9 +33,9 @@ export default function Packages() {
                     : "border-line bg-surface"
                 }`}
               >
-                {/* "Most popular" badge — only on Business */}
+                {/* "Most popular" badge — yasar fill + ink text per brand spec */}
                 {isBusiness && (
-                  <span className="absolute -top-3 inset-inline-start-5 rounded-full bg-yameen px-3 py-0.5 text-label font-medium text-on-yameen">
+                  <span className="absolute -top-3 inset-inline-start-5 rounded-full bg-yasar px-3 py-0.5 text-label font-medium text-ink">
                     {t("business.badge")}
                   </span>
                 )}
@@ -51,21 +51,16 @@ export default function Packages() {
                   {t(`${tier}.duration`)}
                 </p>
 
-                {/* Features rendered as a list from the comma-separated string */}
+                {/* Features — stored as arrays in messages/*.json */}
                 <ul className="mt-4 space-y-2">
-                  {t(`${tier}.features`)
-                    .split("،") // Arabic comma
-                    .flatMap((s) => s.split(",")) // also split on Latin comma
-                    .map((f) => f.trim())
-                    .filter(Boolean)
-                    .map((feature, i) => (
-                      <li
-                        key={i}
-                        className="text-small text-ink-muted before:me-2 before:text-yameen before:content-['✓']"
-                      >
-                        {feature}
-                      </li>
-                    ))}
+                  {(t.raw(`${tier}.features`) as string[]).map((feature, i) => (
+                    <li
+                      key={i}
+                      className="text-small text-ink-muted before:me-2 before:text-yameen before:content-['✓']"
+                    >
+                      {feature}
+                    </li>
+                  ))}
                 </ul>
               </div>
             );

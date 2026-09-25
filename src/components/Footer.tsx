@@ -26,7 +26,7 @@ export default function Footer() {
             >
               {site.email}
             </a>
-            {site.instagram !== "#" && (
+            {site.instagram && (
               <a
                 href={site.instagram}
                 target="_blank"
@@ -36,7 +36,7 @@ export default function Footer() {
                 Instagram
               </a>
             )}
-            {site.linkedin !== "#" && (
+            {site.linkedin && (
               <a
                 href={site.linkedin}
                 target="_blank"

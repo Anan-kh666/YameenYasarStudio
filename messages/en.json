@@ -45,20 +45,39 @@
       "name": "Launch",
       "price": "300 USD",
       "duration": "7 days",
-      "features": "One bilingual page, contact form, WhatsApp button, map, mobile-ready, basic SEO in both languages, 2 revision rounds."
+      "features": [
+        "One bilingual page",
+        "Contact form",
+        "WhatsApp button",
+        "Map",
+        "Mobile-ready",
+        "Basic SEO in both languages",
+        "2 revision rounds"
+      ]
     },
     "business": {
       "name": "Business",
       "price": "750 USD",
       "duration": "14 days",
       "badge": "Most popular",
-      "features": "Up to 5 bilingual pages, everything in Launch, Google Business setup, domain and email connected, 3 revision rounds."
+      "features": [
+        "Up to 5 bilingual pages",
+        "Everything in Launch",
+        "Google Business setup",
+        "Domain and email connected",
+        "3 revision rounds"
+      ]
     },
     "custom": {
       "name": "Custom",
       "price": "from 1,500 USD",
       "duration": "by scope",
-      "features": "Booking systems, dashboards, web apps, AI assistants."
+      "features": [
+        "Booking systems",
+        "Dashboards",
+        "Web apps",
+        "AI assistants"
+      ]
     },
     "addons": {
       "title": "Add-ons",

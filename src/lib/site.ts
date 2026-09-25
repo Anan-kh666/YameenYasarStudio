@@ -6,11 +6,14 @@ export const site = {
   email: "hello@yameenyasar.com",
 
   // TODO(anan): replace with your WhatsApp number in international format (no + or spaces)
-  whatsappNumber: "60123456789",
+  whatsappNumber: "60172051922",
 
   // TODO(anan): add real URLs once created
-  instagram: "#",
-  linkedin: "#",
+  instagram: "",
+  linkedin: "",
+
+  // TODO(anan): replace with the real Zait & Za'atar live URL
+  zaitZaatarUrl: "",
 
   /** Launch-offer banner on the packages section. Set false to hide. */
   launchOffer: true,

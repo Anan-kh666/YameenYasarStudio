@@ -2,6 +2,7 @@ import { Readex_Pro } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getTranslations, getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { site } from "@/lib/site";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "@/app/globals.css";
@@ -30,6 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta" });
   const otherLocale = locale === "ar" ? "en" : "ar";
 
+  const ogImage = `${site.url}/og-${locale}.png`;
+
   return {
     title: t("title"),
     description: t("description"),
@@ -38,20 +41,53 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       apple: "/brand/favicon-512.png",
     },
     alternates: {
-      canonical: `/${locale}/`,
+      canonical: `${site.url}/${locale}/`,
       languages: {
-        ar: "/ar/",
-        en: "/en/",
-        "x-default": "/",
+        ar: `${site.url}/ar/`,
+        en: `${site.url}/en/`,
+        "x-default": `${site.url}/`,
       },
     },
     openGraph: {
       title: t("title"),
       description: t("description"),
+      url: `${site.url}/${locale}/`,
+      siteName: site.name,
       locale: locale === "ar" ? "ar_SA" : "en_US",
       alternateLocale: otherLocale === "ar" ? "ar_SA" : "en_US",
+      type: "website",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: t("title") }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+      images: [ogImage],
     },
   };
+}
+
+/* JSON-LD ProfessionalService — one per locale, embedded in the body */
+function JsonLd({ locale }: { locale: string }) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: locale === "ar" ? site.nameAr : site.name,
+    url: `${site.url}/${locale}/`,
+    email: site.email,
+    areaServed: "Worldwide",
+    description:
+      locale === "ar"
+        ? "مواقع وتطبيقات ويب بلغتين، بتصميم يمين لليسار حقيقي وخط عربي نظيف."
+        : "Arabic and English websites with real right-to-left layouts and proper Arabic type.",
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
 }
 
 export default async function LocaleLayout({ children, params }: Props) {
@@ -69,6 +105,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           {children}
           <Footer />
         </NextIntlClientProvider>
+        <JsonLd locale={locale} />
       </body>
     </html>
   );

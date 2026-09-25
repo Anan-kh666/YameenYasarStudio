@@ -1,6 +1,7 @@
 /* Central config for contact details, pricing, and feature flags. */
 
 export const site = {
+  url: "https://yameenyasar.com",
   name: "Yameen Yasar Studio",
   nameAr: "يمين يسار",
   email: "hello@yameenyasar.com",

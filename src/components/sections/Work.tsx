@@ -41,9 +41,10 @@ export default function Work() {
                 {/* Screenshot area — placeholder until Anan provides images */}
                 <div className="relative aspect-[16/10] bg-yameen-soft">
                   {isLive ? (
-                    /* TODO(anan): add AR + EN screenshots to public/images/work/ */
-                    <div className="flex h-full items-center justify-center text-small text-ink-muted">
-                      TODO(anan): screenshot
+                    /* TODO(anan): replace with AR + EN screenshots from public/images/work/ */
+                    <div className="flex h-full items-center justify-center">
+                      <img src="/brand/yy-mark.svg" alt="" className="h-10 w-auto opacity-20 dark:hidden" aria-hidden="true" />
+                      <img src="/brand/yy-mark-reversed.svg" alt="" className="hidden h-10 w-auto opacity-20 dark:block" aria-hidden="true" />
                     </div>
                   ) : (
                     <div className="flex h-full items-center justify-center text-small text-ink-muted">

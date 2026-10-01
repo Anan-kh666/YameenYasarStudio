@@ -106,7 +106,45 @@ body {
   top: 0.5rem;
 }
 
-/* ── Logo glow — subtle breathing light behind the header logo ── */
+/* ═══════════════════════════════════════════════════════════════════════
+   Logo animation system — three layers:
+   1. Staggered clip-path reveal (mark → pause → text)
+   2. Breathing glow (radial gradient behind)
+   3. Periodic gleam sweep (light streak across)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Layer 1: Staggered reveal ──
+   clip-path wipes left→right. The mark occupies ~34% of the logo,
+   so we pause at 66% right-inset to let the mark land alone, then
+   sweep the text in. */
+.logo-reveal {
+  animation: logo-reveal 1.3s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+@keyframes logo-reveal {
+  0% {
+    clip-path: inset(-4% 104% -4% -4%);
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  30% {
+    clip-path: inset(-4% 64% -4% -4%);
+    transform: scale(0.98);
+    opacity: 1;
+  }
+  /* Pause — mark is visible on its own */
+  42% {
+    clip-path: inset(-4% 64% -4% -4%);
+    transform: scale(1);
+  }
+  /* Text sweeps in */
+  100% {
+    clip-path: inset(-4% -4% -4% -4%);
+    transform: scale(1);
+  }
+}
+
+/* ── Layer 2: Breathing glow ── */
 .logo-glow {
   position: relative;
 }
@@ -114,26 +152,77 @@ body {
 .logo-glow::before {
   content: '';
   position: absolute;
-  inset: -8px -16px;
+  inset: -10px -20px;
   border-radius: 16px;
   background: radial-gradient(ellipse, var(--yameen), transparent 70%);
   opacity: 0;
-  animation: logo-pulse 4s ease-in-out infinite;
+  animation: logo-pulse 4s ease-in-out 1.6s infinite;
   z-index: -1;
 }
 
 @keyframes logo-pulse {
-  0%, 100% { opacity: 0; transform: scale(0.95); }
+  0%, 100% { opacity: 0; transform: scale(0.92); }
   50%      { opacity: 0.1; transform: scale(1); }
 }
 
 @media (prefers-color-scheme: dark) {
-  .logo-glow::before { animation-name: logo-pulse-dark; }
+  .logo-glow::before {
+    animation-name: logo-pulse-dark;
+  }
 }
 
 @keyframes logo-pulse-dark {
-  0%, 100% { opacity: 0; transform: scale(0.95); }
-  50%      { opacity: 0.15; transform: scale(1); }
+  0%, 100% { opacity: 0; transform: scale(0.92); }
+  50%      { opacity: 0.16; transform: scale(1); }
+}
+
+/* ── Layer 3: Gleam sweep ──
+   A thin diagonal light streak crosses the logo periodically.
+   Uses a real element (not pseudo, those are taken) clipped to bounds. */
+.logo-gleam-bar {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+.logo-gleam-bar::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  width: 35%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.14) 50%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent 80%
+  );
+  transform: translateX(-180%) skewX(-12deg);
+  animation: logo-gleam 8s ease-in-out 3s infinite;
+}
+
+@keyframes logo-gleam {
+  0%, 82%  { transform: translateX(-180%) skewX(-12deg); opacity: 0; }
+  85%      { opacity: 1; }
+  95%      { opacity: 1; }
+  100%     { transform: translateX(450%) skewX(-12deg); opacity: 0; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo-gleam-bar::before {
+    background: linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.05) 45%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 55%,
+      transparent 80%
+    );
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -245,6 +334,16 @@ body {
   }
 
   .hero-orb {
+    animation: none !important;
+  }
+
+  .logo-reveal {
+    animation: none;
+    clip-path: none;
+  }
+
+  .logo-glow::before,
+  .logo-gleam-bar::before {
     animation: none !important;
   }
 }

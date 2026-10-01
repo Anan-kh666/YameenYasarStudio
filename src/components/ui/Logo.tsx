@@ -11,7 +11,7 @@ export default function Logo() {
   const alt = t("logoAlt");
 
   return (
-    <span dir="ltr" className="inline-block">
+    <span dir="ltr" className="logo-glow inline-block">
       {/* Light mode */}
       <img
         src="/brand/yy-logo-horizontal.svg"

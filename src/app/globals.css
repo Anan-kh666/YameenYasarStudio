@@ -106,6 +106,36 @@ body {
   top: 0.5rem;
 }
 
+/* ── Logo glow — subtle breathing light behind the header logo ── */
+.logo-glow {
+  position: relative;
+}
+
+.logo-glow::before {
+  content: '';
+  position: absolute;
+  inset: -8px -16px;
+  border-radius: 16px;
+  background: radial-gradient(ellipse, var(--yameen), transparent 70%);
+  opacity: 0;
+  animation: logo-pulse 4s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes logo-pulse {
+  0%, 100% { opacity: 0; transform: scale(0.95); }
+  50%      { opacity: 0.1; transform: scale(1); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo-glow::before { animation-name: logo-pulse-dark; }
+}
+
+@keyframes logo-pulse-dark {
+  0%, 100% { opacity: 0; transform: scale(0.95); }
+  50%      { opacity: 0.15; transform: scale(1); }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    Hero aurora — animated gradient orbs that create a living background.
    Three blobs at different sizes, speeds, and trajectories give organic

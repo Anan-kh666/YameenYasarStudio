@@ -97,9 +97,10 @@
     "headline": "Work that speaks for itself.",
     "viewSite": "View site",
     "comingSoon": "Coming soon",
-    "zaitZaatar": {
-      "name": "Zait & Za'atar",
-      "description": "A bilingual Levantine restaurant site with a full right-to-left menu."
+    "onlineStore": {
+      "name": "Online store",
+      "tag": "concept project",
+      "description": "A fashion store with bilingual product pages and shopping cart."
     },
     "clinic": {
       "name": "Clinic",

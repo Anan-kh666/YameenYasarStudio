@@ -106,6 +106,84 @@ body {
   top: 0.5rem;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   Hero aurora — animated gradient orbs that create a living background.
+   Three blobs at different sizes, speeds, and trajectories give organic
+   depth. Heavy blur + low opacity keeps it ambient, not distracting.
+   ═══════════════════════════════════════════════════════════════════════ */
+.hero-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(clamp(60px, 10vw, 120px));
+  will-change: transform;
+}
+
+/* Primary green — top-end, largest */
+.hero-orb-1 {
+  width: clamp(280px, 45vw, 650px);
+  aspect-ratio: 1;
+  background: var(--yameen);
+  opacity: 0.08;
+  top: -15%;
+  inset-inline-end: -10%;
+  animation: orb-drift-1 28s ease-in-out infinite;
+}
+
+/* Saffron accent — bottom-start */
+.hero-orb-2 {
+  width: clamp(220px, 35vw, 500px);
+  aspect-ratio: 1;
+  background: var(--yasar);
+  opacity: 0.06;
+  bottom: -15%;
+  inset-inline-start: -8%;
+  animation: orb-drift-2 32s ease-in-out infinite;
+}
+
+/* Smaller green — center, drifts on its own path */
+.hero-orb-3 {
+  width: clamp(160px, 25vw, 380px);
+  aspect-ratio: 1;
+  background: var(--yameen);
+  opacity: 0.05;
+  top: 40%;
+  inset-inline-start: 30%;
+  animation: orb-drift-3 36s ease-in-out infinite;
+}
+
+/* In dark mode the orbs need slightly more presence */
+@media (prefers-color-scheme: dark) {
+  .hero-orb-1 { opacity: 0.14; }
+  .hero-orb-2 { opacity: 0.10; }
+  .hero-orb-3 { opacity: 0.08; }
+}
+
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%      { transform: translate(40px, 25px) scale(1.1); }
+  50%      { transform: translate(-25px, 55px) scale(0.94); }
+  75%      { transform: translate(20px, -30px) scale(1.05); }
+}
+
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  30%      { transform: translate(-40px, -30px) scale(1.12); }
+  60%      { transform: translate(30px, 40px) scale(0.92); }
+}
+
+@keyframes orb-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33%      { transform: translate(35px, -25px) scale(1.08) rotate(4deg); }
+  66%      { transform: translate(-25px, 35px) scale(0.95) rotate(-3deg); }
+}
+
 /* ── Hero entrance — two headlines meeting from opposite sides ── */
 /* Direction-aware slide distances */
 [dir="ltr"] { --hero-from-start: -1.5rem; --hero-from-end: 1.5rem; }
@@ -129,9 +207,14 @@ body {
   animation: heroSlideEnd 0.7s ease-out 0.12s both;
 }
 
+/* ── Respect user preference ── */
 @media (prefers-reduced-motion: reduce) {
   .hero-slide-start,
   .hero-slide-end {
     animation: none;
+  }
+
+  .hero-orb {
+    animation: none !important;
   }
 }

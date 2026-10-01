@@ -22,7 +22,14 @@ export default function Hero() {
       id="hero"
       className="relative flex min-h-[85vh] items-center overflow-hidden"
     >
-      {/* Decorative chevron from the brand mark — large, faint, end-side */}
+      {/* Aurora — animated gradient orbs that drift slowly */}
+      <div className="hero-aurora" aria-hidden="true">
+        <div className="hero-orb hero-orb-1" />
+        <div className="hero-orb hero-orb-2" />
+        <div className="hero-orb hero-orb-3" />
+      </div>
+
+      {/* Decorative chevron from the brand mark */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <img
           src="/brand/yy-mark.svg"

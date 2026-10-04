@@ -100,19 +100,17 @@ function LockIcon({ open }: { open: boolean }) {
 /* ═══════════════════════════════════════════════════════════════════════
    IntroPage — flow:
    matrix bg → logo → text → lock → unlock (text reveals) →
-   dino animation → fade to page
+   dino video plays → video ends → fade to main page
    ═══════════════════════════════════════════════════════════════════════ */
 type Phase = "init" | "matrix" | "logo" | "text" | "lock" | "unlock" | "dino" | "fade";
-
-/* Dino animation duration in ms */
-const DINO_DURATION = 5000;
 
 export default function IntroPage() {
   const [phase, setPhase] = useState<Phase>("init");
   const [glowPos, setGlowPos] = useState({ x: 0.5, y: 0.5 });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const bgVideoRef = useRef<HTMLVideoElement>(null);
+  const dinoVideoRef = useRef<HTMLVideoElement>(null);
   const mouseAbs = useRef({ x: 0, y: 0 });
   const matrixColsRef = useRef<MatrixCol[]>([]);
   const rafRef = useRef(0);
@@ -136,10 +134,10 @@ export default function IntroPage() {
     }
   }, []);
 
-  /* ── Start video ── */
+  /* ── Start background video ── */
   useEffect(() => {
-    if (phase === "matrix" && videoRef.current) {
-      videoRef.current.play().catch(() => {});
+    if (phase === "matrix" && bgVideoRef.current) {
+      bgVideoRef.current.play().catch(() => {});
     }
   }, [phase]);
 
@@ -173,6 +171,36 @@ export default function IntroPage() {
     }
   }, [phase]);
 
+  /* ── Play dino video when phase enters "dino" ── */
+  useEffect(() => {
+    if (phase !== "dino") return;
+    const vid = dinoVideoRef.current;
+    if (!vid) return;
+
+    vid.currentTime = 0;
+    vid.play().catch(() => {});
+
+    /* When the video ends, fade out and navigate */
+    const onEnd = () => {
+      setPhase("fade");
+      const locale = detectLocale();
+      setTimeout(() => {
+        window.location.href = `/${locale}/`;
+      }, 1000);
+    };
+    vid.addEventListener("ended", onEnd);
+
+    /* Safety fallback: if video stalls, navigate after 8s */
+    const fallback = setTimeout(() => {
+      if (phase === "dino") onEnd();
+    }, 8000);
+
+    return () => {
+      vid.removeEventListener("ended", onEnd);
+      clearTimeout(fallback);
+    };
+  }, [phase]);
+
   /* ── Main animation loop: matrix + glow tracking ── */
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
@@ -180,7 +208,6 @@ export default function IntroPage() {
     };
 
     const tick = () => {
-      /* Glow position */
       const w = window.innerWidth;
       const h = window.innerHeight;
       setGlowPos({
@@ -188,7 +215,6 @@ export default function IntroPage() {
         y: mouseAbs.current.y / h || 0.5,
       });
 
-      /* Matrix rendering */
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
       if (canvas && ctx) {
@@ -257,24 +283,15 @@ export default function IntroPage() {
   const brandAr = useTextDecode("يمين", textActive);
   const brandEn = useTextDecode("Yasar", textActive);
 
-  /* ── Lock click → unlock → dino animation → navigate ── */
+  /* ── Lock click → unlock → dino video → navigate ── */
   const handleUnlock = useCallback(() => {
     if (phase !== "lock") return;
     setPhase("unlock");
 
-    /* After unlock text reveals, start the dino animation */
+    /* After unlock text reveals, start the dino video */
     setTimeout(() => {
       setPhase("dino");
       try { localStorage.setItem("yy-intro-seen", "1"); } catch {}
-
-      /* When dino animation finishes, fade out and navigate */
-      setTimeout(() => {
-        setPhase("fade");
-        const locale = detectLocale();
-        setTimeout(() => {
-          window.location.href = `/${locale}/`;
-        }, 1000);
-      }, DINO_DURATION);
     }, 1400);
   }, [phase]);
 
@@ -289,9 +306,9 @@ export default function IntroPage() {
 
   return (
     <div className="intro-root">
-      {/* ── Video background (very subtle) ── */}
+      {/* ── Background video (very subtle) ── */}
       <video
-        ref={videoRef}
+        ref={bgVideoRef}
         className={`intro-video ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
         src="/images/intro-glow.mp4"
         muted loop playsInline preload="auto" aria-hidden="true"
@@ -306,10 +323,10 @@ export default function IntroPage() {
         <rect width="100%" height="100%" filter="url(#noise)" opacity="0.03" />
       </svg>
 
-      {/* ── Matrix canvas (numbers background) ── */}
+      {/* ── Matrix canvas ── */}
       <canvas ref={canvasRef} className="intro-matrix" aria-hidden="true" />
 
-      {/* ── Subtle cursor glow (very faint) ── */}
+      {/* ── Cursor glow ── */}
       <div
         className={`intro-glow ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
         style={{
@@ -323,9 +340,8 @@ export default function IntroPage() {
         <span lang="en">Skip</span>{" / "}<span lang="ar">تخطّي</span>
       </button>
 
-      {/* ── Main content ── */}
+      {/* ── Main content (logo, brand, lock) ── */}
       <div className={`intro-content ${showDino ? "hidden" : ""}`}>
-        {/* Logo mark */}
         <div className={`intro-logo ${atLeast("logo") ? "visible" : ""}`}>
           <div className={`intro-logo-halo ${atLeast("logo") ? "active" : ""}`} />
           <div className={`intro-logo-reveal ${atLeast("logo") ? "active" : ""}`}>
@@ -333,14 +349,12 @@ export default function IntroPage() {
           </div>
         </div>
 
-        {/* Brand text */}
         <div className={`intro-brand ${atLeast("text") ? "visible" : ""}`}>
           <span className="intro-brand-ar font-heading" lang="ar" dir="rtl">{brandAr}</span>
           <span className="intro-brand-divider" aria-hidden="true" />
           <span className="intro-brand-en font-heading" lang="en" dir="ltr">{brandEn}</span>
         </div>
 
-        {/* Lock button — click to unlock and reveal text */}
         <div className="intro-lock-area">
           <button
             onClick={handleUnlock}
@@ -351,7 +365,6 @@ export default function IntroPage() {
             <LockIcon open={phase === "unlock"} />
           </button>
 
-          {/* Revealed text — appears frameless after unlock */}
           <div className={`intro-revealed-text ${phase === "unlock" ? "visible" : ""}`}>
             <span className="intro-revealed-ar" lang="ar" dir="rtl">
               هل موقعك يتحدث العربية فعلاً، أم يكتفي بالترجمة؟
@@ -363,32 +376,23 @@ export default function IntroPage() {
         </div>
       </div>
 
-      {/* ── Dino transformation animation ── */}
-      {showDino && (
-        <div className="intro-dino-scene" aria-label="Loading">
-          <div className="intro-dino-viewport">
-            <img
-              src="/images/dino-transform.jpg"
-              alt=""
-              className="intro-dino-img"
-              aria-hidden="true"
-            />
-            {/* Glow overlay on the door area */}
-            <div className="intro-dino-glow" aria-hidden="true" />
-          </div>
-          {/* Caption */}
-          <div className="intro-dino-caption">
-            <span lang="ar" dir="rtl">نحوّل موقعك</span>
-            <span className="intro-dino-dot" aria-hidden="true" />
-            <span lang="en" dir="ltr">We transform your site</span>
-          </div>
-        </div>
-      )}
+      {/* ── Dino transformation video ──
+          Preloaded but hidden; plays when phase = "dino".
+          Automatically triggers fade + navigation on video end. */}
+      <video
+        ref={dinoVideoRef}
+        className={`intro-dino-video ${showDino ? "active" : ""}`}
+        src="/images/dino-intro.mp4"
+        muted
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+      />
 
       {/* ── Edge vignette ── */}
       <div className="intro-vignette" aria-hidden="true" />
 
-      {/* ── Fade overlay for smooth transition ── */}
+      {/* ── Fade overlay ── */}
       {phase === "fade" && <div className="intro-fade-out" />}
     </div>
   );

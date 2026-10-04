@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Intro page styles — only loaded for the "/" route.
-   The intro sequence: glow → logo → brand text → question button → exit.
+   Layers: video → noise → particles → glow → chevrons → scanline →
+   content (logo halo + brand + CTA border) → vignette → exit wipe.
    ═══════════════════════════════════════════════════════════════════════ */
 
 .intro-root {
@@ -13,7 +14,24 @@
   overflow: hidden;
 }
 
-/* ── Noise texture ── inline SVG with feTurbulence ── */
+/* ── Layer 0: Higgsfield video background ── */
+.intro-video {
+  position: absolute;
+  inset: -5%;
+  width: 110%;
+  height: 110%;
+  object-fit: cover;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 3s ease;
+  will-change: transform, opacity;
+}
+.intro-video.active {
+  opacity: 0.7;
+}
+
+/* ── Layer 1: Noise texture ── */
 .intro-noise {
   position: absolute;
   inset: 0;
@@ -23,31 +41,49 @@
   z-index: 1;
 }
 
-/* ── Cursor-reactive crimson glow ── */
-.intro-glow {
+/* ── Layer 2: Particle constellation canvas ── */
+.intro-particles {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 2;
   opacity: 0;
+  transition: opacity 2.5s ease 0.5s;
+}
+.intro-particles.active {
+  opacity: 1;
+}
+
+/* ── Layer 3: Cursor-reactive crimson glow ── */
+.intro-glow {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
   transition: opacity 2s ease;
+  will-change: transform;
 }
 .intro-glow.active {
   opacity: 1;
 }
 
-/* ── Floating chevron fragments ── */
+/* ── Layer 4: Floating chevron fragments ── */
 .intro-chevrons {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
+  will-change: transform;
 }
 
 .intro-chevron {
   position: absolute;
   color: #E5484D;
-  /* Each chevron sets its own --drift-x, --drift-y, --drift-rot via inline style */
   animation: chevron-drift linear infinite;
 }
 
@@ -57,6 +93,56 @@
   50%  { transform: translate(calc(var(--drift-x) * -0.6), var(--drift-y)) rotate(var(--drift-rot)); }
   75%  { transform: translate(calc(var(--drift-x) * 0.8), calc(var(--drift-y) * 0.7)) rotate(calc(var(--drift-rot) * -0.3)); }
   100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ── Scan line — sweeps top→bottom during text decode ── */
+.intro-scanline {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+}
+.intro-scanline.active {
+  opacity: 1;
+}
+.intro-scanline::before {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(229, 72, 77, 0.6) 20%,
+    rgba(229, 72, 77, 0.9) 50%,
+    rgba(229, 72, 77, 0.6) 80%,
+    transparent
+  );
+  box-shadow: 0 0 20px rgba(229, 72, 77, 0.4),
+              0 0 60px rgba(229, 72, 77, 0.15);
+  animation: scanline-sweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes scanline-sweep {
+  0%   { top: 15%; opacity: 0; }
+  5%   { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 85%; opacity: 0; }
+}
+
+/* ── Edge vignette — subtle darkening around edges ── */
+.intro-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  background: radial-gradient(
+    ellipse 70% 70% at 50% 50%,
+    transparent 40%,
+    rgba(11, 11, 11, 0.5) 100%
+  );
 }
 
 /* ── Skip button ── top-end, visible from first frame ── */
@@ -89,12 +175,14 @@
   flex-direction: column;
   align-items: center;
   gap: 2.5rem;
-  z-index: 5;
+  z-index: 7;
   position: relative;
+  will-change: transform;
 }
 
-/* ── Logo mark ── fades up with subtle scale ── */
+/* ── Logo mark ── fades up with scale + halo burst ── */
 .intro-logo {
+  position: relative;
   opacity: 0;
   transform: scale(0.85);
   transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
@@ -108,6 +196,36 @@
   opacity: 0;
   transform: scale(0.9);
   transition-duration: 0.4s;
+}
+
+/* Radial halo burst behind the logo on reveal */
+.intro-logo-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  margin-top: -100px;
+  margin-left: -100px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(229, 72, 77, 0.25) 0%,
+    rgba(139, 13, 26, 0.1) 40%,
+    transparent 70%
+  );
+  opacity: 0;
+  transform: scale(0.3);
+  pointer-events: none;
+}
+.intro-logo-halo.active {
+  animation: halo-burst 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes halo-burst {
+  0%   { opacity: 0; transform: scale(0.3); }
+  30%  { opacity: 0.8; transform: scale(1.2); }
+  100% { opacity: 0.15; transform: scale(1.8); }
 }
 
 /* ── Brand text pair ── Arabic from right, English from left ── */
@@ -125,6 +243,9 @@
     align-items: center;
     gap: 0.25rem;
   }
+  .intro-brand-divider {
+    display: none;
+  }
 }
 
 .intro-brand-ar,
@@ -133,6 +254,23 @@
   line-height: 1.2;
   color: #F5F2ED;
   white-space: nowrap;
+}
+
+/* Thin vertical divider between the two brand names */
+.intro-brand-divider {
+  width: 1px;
+  height: 2rem;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(229, 72, 77, 0.4) 30%,
+    rgba(229, 72, 77, 0.4) 70%,
+    transparent
+  );
+  opacity: 0;
+  transform: scaleY(0);
+  transition: opacity 0.8s ease 0.3s,
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
 }
 
 .intro-brand-ar {
@@ -154,6 +292,10 @@
   opacity: 1;
   transform: translateX(0);
 }
+.intro-brand.visible .intro-brand-divider {
+  opacity: 1;
+  transform: scaleY(1);
+}
 
 /* Exit: Arabic slides off right, English slides off left */
 .intro-brand.exit .intro-brand-ar {
@@ -167,44 +309,94 @@
   transition-duration: 0.6s;
   transition-delay: 0s;
 }
+.intro-brand.exit .intro-brand-divider {
+  opacity: 0;
+  transform: scaleY(0);
+  transition-duration: 0.3s;
+  transition-delay: 0s;
+}
 
-/* ── Question button (CTA) ── crimson fill, breathing glow ── */
+/* ── Question button (CTA) ── rotating conic border + breathing glow ── */
 .intro-cta {
   position: relative;
-  background: #8B0D1A;
+  background: transparent;
   color: #F5F2ED;
   border: none;
-  padding: 1.25rem 2.5rem;
+  padding: 0;
   border-radius: 0.75rem;
   cursor: pointer;
   text-align: center;
   max-width: 30rem;
   font-family: var(--font-readex-pro), system-ui, sans-serif;
   opacity: 0;
-  transform: translateY(1rem);
+  transform: translateY(1.5rem);
   transition: opacity 0.8s ease,
               transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.3s ease;
   will-change: transform;
 }
+
+/* Rotating conic gradient border */
+.intro-cta-border {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--cta-angle, 0deg),
+    #8B0D1A 0%,
+    #E5484D 25%,
+    #8B0D1A 50%,
+    #F5F2ED 75%,
+    #8B0D1A 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Inner content sits inside the rotating border */
+.intro-cta-inner {
+  display: block;
+  background: #8B0D1A;
+  border-radius: calc(0.75rem - 1.5px);
+  padding: 1.25rem 2.5rem;
+}
+
 .intro-cta.visible {
   opacity: 1;
   transform: translateY(0);
 }
+.intro-cta.visible .intro-cta-border {
+  animation: cta-rotate 6s linear infinite;
+}
 .intro-cta:hover {
-  box-shadow: 0 0 40px rgba(139, 13, 26, 0.5);
+  box-shadow: 0 0 50px rgba(139, 13, 26, 0.6),
+              0 0 100px rgba(229, 72, 77, 0.15);
 }
 .intro-cta:focus-visible {
   outline: 2px solid #E5484D;
-  outline-offset: 2px;
+  outline-offset: 4px;
+}
+
+@property --cta-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes cta-rotate {
+  to { --cta-angle: 360deg; }
 }
 
 /* Breathing glow behind the button */
 .intro-cta::before {
   content: '';
   position: absolute;
-  inset: -8px;
-  border-radius: 1rem;
+  inset: -12px;
+  border-radius: 1.25rem;
   background: radial-gradient(ellipse, #E5484D, transparent 70%);
   z-index: -1;
   opacity: 0;
@@ -215,7 +407,7 @@
 
 @keyframes cta-breathe {
   0%, 100% { opacity: 0; transform: scale(0.96); }
-  50%      { opacity: 0.2; transform: scale(1.03); }
+  50%      { opacity: 0.18; transform: scale(1.05); }
 }
 
 .intro-cta-ar {
@@ -274,9 +466,16 @@
 
 /* ── Reduced motion: skip all animation, show static state ── */
 @media (prefers-reduced-motion: reduce) {
+  .intro-video {
+    display: none;
+  }
+  .intro-particles {
+    display: none;
+  }
   .intro-logo,
   .intro-brand-ar,
   .intro-brand-en,
+  .intro-brand-divider,
   .intro-cta {
     transition: none !important;
   }
@@ -284,8 +483,15 @@
     opacity: 1;
     transform: none;
   }
+  .intro-logo-halo {
+    display: none;
+  }
   .intro-brand.visible .intro-brand-ar,
   .intro-brand.visible .intro-brand-en {
+    opacity: 1;
+    transform: none;
+  }
+  .intro-brand.visible .intro-brand-divider {
     opacity: 1;
     transform: none;
   }
@@ -293,10 +499,14 @@
     opacity: 1;
     transform: none;
   }
-  .intro-cta::before {
+  .intro-cta::before,
+  .intro-cta-border {
     animation: none !important;
   }
   .intro-chevron {
+    display: none;
+  }
+  .intro-scanline {
     display: none;
   }
   .intro-wipe {

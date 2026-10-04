@@ -8,9 +8,36 @@ const AR_CHARS = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
 const EN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const SCRAMBLE = AR_CHARS + EN_CHARS;
 
-/** Decode text character by character with a bilingual scramble effect.
- *  Characters resolve from the start of the string (which is the
- *  reading-direction start for both LTR and RTL text). */
+/* ── Particle system config ── */
+const PARTICLE_COUNT = 55;
+const CONNECT_DIST = 130;
+const MOUSE_REPEL_DIST = 120;
+const MOUSE_REPEL_FORCE = 3;
+
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  alpha: number;
+  /* Each particle oscillates its alpha for subtle twinkling */
+  phaseOffset: number;
+}
+
+function createParticles(w: number, h: number): Particle[] {
+  return Array.from({ length: PARTICLE_COUNT }, () => ({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: (Math.random() - 0.5) * 0.4,
+    size: Math.random() * 2 + 1,
+    alpha: Math.random() * 0.5 + 0.2,
+    phaseOffset: Math.random() * Math.PI * 2,
+  }));
+}
+
+/** Decode text character by character with a bilingual scramble effect. */
 function useTextDecode(text: string, active: boolean): string {
   const [output, setOutput] = useState(text);
 
@@ -59,28 +86,13 @@ function detectLocale(): string {
   return lang.startsWith("ar") ? "ar" : "en";
 }
 
-/* ── Floating chevron fragment ──
-   A simplified V from the brand mark, drifting on a slow diagonal path. */
+/* ── Floating chevron fragment ── */
 function ChevronFragment({
-  size,
-  x,
-  y,
-  opacity,
-  driftX,
-  driftY,
-  driftRot,
-  duration,
-  delay,
+  size, x, y, opacity, driftX, driftY, driftRot, duration, delay,
 }: {
-  size: number;
-  x: string;
-  y: string;
-  opacity: number;
-  driftX: string;
-  driftY: string;
-  driftRot: string;
-  duration: number;
-  delay: number;
+  size: number; x: string; y: string; opacity: number;
+  driftX: string; driftY: string; driftRot: string;
+  duration: number; delay: number;
 }) {
   return (
     <svg
@@ -89,9 +101,7 @@ function ChevronFragment({
       height={size * 0.83}
       className="intro-chevron"
       style={{
-        left: x,
-        top: y,
-        opacity,
+        left: x, top: y, opacity,
         animationDuration: `${duration}s`,
         animationDelay: `${delay}s`,
         "--drift-x": driftX,
@@ -113,9 +123,9 @@ function ChevronFragment({
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   IntroPage — the "/" experience.
-   Sequence: glow bloom → logo mark → brand text decode → question button.
-   Click the button → exit wipe → navigate to /ar/ or /en/.
+   IntroPage — the "/" cinematic experience.
+   Layers (back to front): video → noise → particles → glow → chevrons →
+   scan line → content (logo + text + CTA) → exit wipe.
    ═══════════════════════════════════════════════════════════════════════ */
 type Phase = "init" | "glow" | "logo" | "text" | "button" | "exit";
 
@@ -124,10 +134,17 @@ export default function IntroPage() {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [glowPos, setGlowPos] = useState({ x: 0.7, y: 0.8 });
   const [buttonOffset, setButtonOffset] = useState({ x: 0, y: 0 });
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [glowRadius, setGlowRadius] = useState(400);
+
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const mouseTarget = useRef({ x: 0.7, y: 0.8 });
+  const mouseAbs = useRef({ x: 0, y: 0 });
+  const particlesRef = useRef<Particle[]>([]);
   const rafRef = useRef(0);
+  const timeRef = useRef(0);
 
   /* ── Phase ordering helper ── */
   const atLeast = (target: Phase) => {
@@ -155,12 +172,38 @@ export default function IntroPage() {
     }
   }, []);
 
+  /* ── Start video playback when glow phase begins ── */
+  useEffect(() => {
+    if (phase === "glow" && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [phase]);
+
+  /* ── Initialize particle system ── */
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      /* Re-seed particles if they don't exist yet */
+      if (particlesRef.current.length === 0) {
+        particlesRef.current = createParticles(canvas.width, canvas.height);
+      }
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+
   /* ── Animation sequence timers ── */
   useEffect(() => {
     if (phase !== "glow") return;
     const t1 = setTimeout(() => setPhase("logo"), 1200);
     const t2 = setTimeout(() => setPhase("text"), 2600);
-    const t3 = setTimeout(() => setPhase("button"), 4800);
+    const t3 = setTimeout(() => setPhase("button"), 5200);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -177,44 +220,118 @@ export default function IntroPage() {
     }
   }, [phase]);
 
-  /* ── Mouse tracking: smooth glow + magnetic button ── */
+  /* ── Main animation loop: glow tracking + parallax + particles + magnetic button ── */
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
       mouseTarget.current = {
         x: e.clientX / window.innerWidth,
         y: e.clientY / window.innerHeight,
       };
+      mouseAbs.current = { x: e.clientX, y: e.clientY };
     };
 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-    let cx = 0.7,
-      cy = 0.8;
+    let cx = 0.7, cy = 0.8;
 
     const tick = () => {
-      // Smooth glow position with heavy damping
+      timeRef.current += 0.016; // ~60fps time accumulator
+
+      /* ── Smooth glow position ── */
       cx = lerp(cx, mouseTarget.current.x, 0.035);
       cy = lerp(cy, mouseTarget.current.y, 0.035);
       setGlowPos({ x: cx, y: cy });
 
-      // Magnetic button pull
+      /* ── Parallax offset (subtle 3D depth) ── */
+      const px = (mouseTarget.current.x - 0.5) * 2;
+      const py = (mouseTarget.current.y - 0.5) * 2;
+      setParallax({ x: px, y: py });
+
+      /* ── Magnetic button pull ── */
       if (buttonRef.current && phase === "button") {
         const rect = buttonRef.current.getBoundingClientRect();
         const bx = rect.left + rect.width / 2;
         const by = rect.top + rect.height / 2;
-        const mx = mouseTarget.current.x * window.innerWidth;
-        const my = mouseTarget.current.y * window.innerHeight;
+        const mx = mouseAbs.current.x;
+        const my = mouseAbs.current.y;
         const dx = mx - bx;
         const dy = my - by;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 120 && dist > 0) {
-          const pull = (1 - dist / 120) * 6;
+        if (dist < 150 && dist > 0) {
+          const pull = (1 - dist / 150) * 8;
           setButtonOffset({ x: (dx / dist) * pull, y: (dy / dist) * pull });
         } else {
           setButtonOffset((prev) => ({
             x: prev.x * 0.85,
             y: prev.y * 0.85,
           }));
+        }
+      }
+
+      /* ── Particle system (canvas) ── */
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+      if (canvas && ctx && particlesRef.current.length > 0) {
+        const w = canvas.width;
+        const h = canvas.height;
+        const t = timeRef.current;
+
+        ctx.clearRect(0, 0, w, h);
+
+        const particles = particlesRef.current;
+
+        for (const p of particles) {
+          /* Mouse repulsion */
+          const dmx = p.x - mouseAbs.current.x;
+          const dmy = p.y - mouseAbs.current.y;
+          const dmd = Math.sqrt(dmx * dmx + dmy * dmy);
+          if (dmd < MOUSE_REPEL_DIST && dmd > 0) {
+            const force = (1 - dmd / MOUSE_REPEL_DIST) * MOUSE_REPEL_FORCE;
+            p.vx += (dmx / dmd) * force * 0.1;
+            p.vy += (dmy / dmd) * force * 0.1;
+          }
+
+          /* Drift with soft velocity damping */
+          p.vx *= 0.99;
+          p.vy *= 0.99;
+          p.x += p.vx;
+          p.y += p.vy;
+
+          /* Wrap around edges */
+          if (p.x < -10) p.x = w + 10;
+          if (p.x > w + 10) p.x = -10;
+          if (p.y < -10) p.y = h + 10;
+          if (p.y > h + 10) p.y = -10;
+        }
+
+        /* Draw connecting lines first (behind particles) */
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const a = particles[i];
+            const b = particles[j];
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < CONNECT_DIST) {
+              const lineAlpha = (1 - d / CONNECT_DIST) * 0.15;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.strokeStyle = `rgba(229, 72, 77, ${lineAlpha})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+
+        /* Draw particles */
+        for (const p of particles) {
+          const twinkle = Math.sin(t * 1.5 + p.phaseOffset) * 0.15 + 0.85;
+          const a = p.alpha * twinkle;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(229, 72, 77, ${a})`;
+          ctx.fill();
         }
       }
 
@@ -265,7 +382,22 @@ export default function IntroPage() {
 
   return (
     <div className="intro-root">
-      {/* ── Noise texture via SVG feTurbulence ── */}
+      {/* ── Layer 0: Higgsfield video background ── */}
+      <video
+        ref={videoRef}
+        className={`intro-video ${atLeast("glow") && phase !== "init" ? "active" : ""}`}
+        src="/images/intro-glow.mp4"
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        style={{
+          transform: `translate(${parallax.x * -4}px, ${parallax.y * -4}px) scale(1.1)`,
+        }}
+      />
+
+      {/* ── Layer 1: Noise texture via SVG feTurbulence ── */}
       <svg
         className="intro-noise"
         xmlns="http://www.w3.org/2000/svg"
@@ -283,43 +415,73 @@ export default function IntroPage() {
         <rect width="100%" height="100%" filter="url(#noise)" opacity="0.035" />
       </svg>
 
-      {/* ── Cursor-reactive crimson glow ── */}
+      {/* ── Layer 2: Particle constellation canvas ── */}
+      <canvas
+        ref={canvasRef}
+        className={`intro-particles ${atLeast("glow") && phase !== "init" ? "active" : ""}`}
+        aria-hidden="true"
+      />
+
+      {/* ── Layer 3: Cursor-reactive crimson glow ── */}
       <div
         className={`intro-glow ${atLeast("glow") && phase !== "init" ? "active" : ""}`}
         style={{
-          background: `radial-gradient(${glowRadius}px circle at ${glowPos.x * 100}% ${glowPos.y * 100}%, rgba(139, 13, 26, 0.18), transparent 70%)`,
+          background: `radial-gradient(${glowRadius}px circle at ${glowPos.x * 100}% ${glowPos.y * 100}%, rgba(139, 13, 26, 0.22), transparent 70%)`,
+          transform: `translate(${parallax.x * -8}px, ${parallax.y * -8}px)`,
         }}
         aria-hidden="true"
       />
 
-      {/* ── Floating chevron fragments ── */}
-      <div className="intro-chevrons" aria-hidden="true">
+      {/* ── Layer 4: Floating chevron fragments (parallax shifted) ── */}
+      <div
+        className="intro-chevrons"
+        aria-hidden="true"
+        style={{
+          transform: `translate(${parallax.x * -12}px, ${parallax.y * -12}px)`,
+        }}
+      >
         <ChevronFragment
-          size={20} x="12%" y="18%" opacity={0.06}
+          size={20} x="12%" y="18%" opacity={0.08}
           driftX="35px" driftY="-70px" driftRot="15deg"
           duration={42} delay={0}
         />
         <ChevronFragment
-          size={32} x="78%" y="12%" opacity={0.04}
+          size={32} x="78%" y="12%" opacity={0.05}
           driftX="-45px" driftY="60px" driftRot="-10deg"
           duration={55} delay={3}
         />
         <ChevronFragment
-          size={14} x="55%" y="72%" opacity={0.07}
+          size={14} x="55%" y="72%" opacity={0.09}
           driftX="25px" driftY="-50px" driftRot="20deg"
           duration={38} delay={1}
         />
         <ChevronFragment
-          size={26} x="22%" y="62%" opacity={0.05}
+          size={26} x="22%" y="62%" opacity={0.06}
           driftX="-30px" driftY="-80px" driftRot="-12deg"
           duration={48} delay={5}
         />
         <ChevronFragment
-          size={18} x="88%" y="48%" opacity={0.05}
+          size={18} x="88%" y="48%" opacity={0.06}
           driftX="40px" driftY="45px" driftRot="8deg"
           duration={44} delay={2}
         />
+        <ChevronFragment
+          size={24} x="40%" y="85%" opacity={0.04}
+          driftX="-20px" driftY="-60px" driftRot="18deg"
+          duration={50} delay={4}
+        />
+        <ChevronFragment
+          size={16} x="65%" y="30%" opacity={0.07}
+          driftX="50px" driftY="30px" driftRot="-15deg"
+          duration={36} delay={6}
+        />
       </div>
+
+      {/* ── Scan line — sweeps during text decode phase ── */}
+      <div
+        className={`intro-scanline ${phase === "text" ? "active" : ""}`}
+        aria-hidden="true"
+      />
 
       {/* ── Skip button — visible from first frame, keyboard reachable ── */}
       <button onClick={handleSkip} className="intro-skip" type="button">
@@ -328,12 +490,18 @@ export default function IntroPage() {
         <span lang="ar">تخطي</span>
       </button>
 
-      {/* ── Main content ── */}
-      <div className="intro-content">
-        {/* Logo mark — off-white + crimson */}
+      {/* ── Main content (subtle parallax) ── */}
+      <div
+        className="intro-content"
+        style={{
+          transform: `translate(${parallax.x * -6}px, ${parallax.y * -6}px)`,
+        }}
+      >
+        {/* Logo mark with radial halo burst */}
         <div
           className={`intro-logo ${atLeast("logo") ? "visible" : ""} ${phase === "exit" ? "exit" : ""}`}
         >
+          <div className={`intro-logo-halo ${atLeast("logo") ? "active" : ""}`} />
           <img
             src="/brand/yy-mark-intro.svg"
             alt=""
@@ -349,12 +517,13 @@ export default function IntroPage() {
           <span className="intro-brand-ar font-heading" lang="ar" dir="rtl">
             {brandAr}
           </span>
+          <span className="intro-brand-divider" aria-hidden="true" />
           <span className="intro-brand-en font-heading" lang="en" dir="ltr">
             {brandEn}
           </span>
         </div>
 
-        {/* Question button — the punchline */}
+        {/* Question button — rotating border + magnetic pull */}
         <button
           ref={buttonRef}
           onClick={handleClick}
@@ -368,14 +537,21 @@ export default function IntroPage() {
           }
           type="button"
         >
-          <span className="intro-cta-ar" lang="ar" dir="rtl">
-            موقعك بيحكي عربي، ولا بس مترجم؟
-          </span>
-          <span className="intro-cta-en" lang="en" dir="ltr">
-            Does your website speak Arabic, or just translate it?
+          {/* Rotating conic border */}
+          <span className="intro-cta-border" aria-hidden="true" />
+          <span className="intro-cta-inner">
+            <span className="intro-cta-ar" lang="ar" dir="rtl">
+              موقعك بيحكي عربي، ولا بس مترجم؟
+            </span>
+            <span className="intro-cta-en" lang="en" dir="ltr">
+              Does your website speak Arabic, or just translate it?
+            </span>
           </span>
         </button>
       </div>
+
+      {/* ── Edge vignette ── */}
+      <div className="intro-vignette" aria-hidden="true" />
 
       {/* ── Exit wipe — crimson circle expanding from center ── */}
       {phase === "exit" && <div className="intro-wipe" />}

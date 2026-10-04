@@ -22,6 +22,17 @@ export default function Hero() {
       id="hero"
       className="relative flex min-h-[85vh] items-center overflow-hidden"
     >
+      {/* Higgsfield atmospheric background */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <img
+          src="/images/hero-atmosphere.png"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+        />
+        {/* Gradient fade so content stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/60 to-transparent" />
+      </div>
+
       {/* Aurora — animated gradient orbs that drift slowly */}
       <div className="hero-aurora" aria-hidden="true">
         <div className="hero-orb hero-orb-1" />
@@ -32,14 +43,9 @@ export default function Hero() {
       {/* Decorative chevron from the brand mark */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <img
-          src="/brand/yy-mark.svg"
-          alt=""
-          className="absolute top-1/2 end-[5%] h-[60%] w-auto -translate-y-1/2 opacity-[0.04] dark:hidden"
-        />
-        <img
           src="/brand/yy-mark-reversed.svg"
           alt=""
-          className="absolute top-1/2 end-[5%] h-[60%] w-auto -translate-y-1/2 opacity-[0.07] hidden dark:block"
+          className="absolute top-1/2 end-[5%] h-[60%] w-auto -translate-y-1/2 opacity-[0.07]"
         />
       </div>
 

@@ -30,7 +30,7 @@ export default function LanguageSwitch() {
       onClick={handleClick}
       /* The label is already in the other language's script, so set its lang */
       lang={otherLocale}
-      className="text-small font-medium text-ink-muted hover:text-ink transition-colors"
+      className="text-small font-medium text-text-muted hover:text-text transition-colors"
     >
       {t("label")}
     </a>

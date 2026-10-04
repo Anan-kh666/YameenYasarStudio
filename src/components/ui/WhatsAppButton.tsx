@@ -1,7 +1,6 @@
 import { useTranslations, useLocale } from "next-intl";
 import { whatsappUrl } from "@/lib/site";
 
-/* Simple WhatsApp icon — lucide doesn't include brand icons */
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -33,7 +32,7 @@ export default function WhatsAppButton({ compact, className }: Props) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={t("header.whatsapp")}
-        className={`inline-flex items-center justify-center rounded-xl bg-yameen p-2 text-on-yameen transition-colors hover:bg-yameen/90 ${className ?? ""}`}
+        className={`inline-flex items-center justify-center rounded-xl bg-crimson p-2 text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
       >
         <WhatsAppIcon className="size-5" />
       </a>
@@ -45,7 +44,7 @@ export default function WhatsAppButton({ compact, className }: Props) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-2 rounded-xl bg-yameen px-4 py-2 text-small font-medium text-on-yameen transition-colors hover:bg-yameen/90 ${className ?? ""}`}
+      className={`inline-flex items-center gap-2 rounded-xl bg-crimson px-4 py-2 text-small font-medium text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
     >
       <WhatsAppIcon className="size-4" />
       {t("header.whatsapp")}

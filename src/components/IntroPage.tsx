@@ -330,7 +330,7 @@ export default function IntroPage() {
       <div
         className={`intro-glow ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
         style={{
-          background: `radial-gradient(400px circle at ${glowPos.x * 100}% ${glowPos.y * 100}%, rgba(208, 204, 198, 0.04), transparent 70%)`,
+          background: `radial-gradient(160px circle at ${glowPos.x * 100}% ${glowPos.y * 100}%, rgba(208, 204, 198, 0.04), transparent 70%)`,
         }}
         aria-hidden="true"
       />
@@ -376,18 +376,21 @@ export default function IntroPage() {
         </div>
       </div>
 
-      {/* ── Dino transformation video ──
+      {/* ── Dino transformation video + headline ──
           Preloaded but hidden; plays when phase = "dino".
           Automatically triggers fade + navigation on video end. */}
-      <video
-        ref={dinoVideoRef}
-        className={`intro-dino-video ${showDino ? "active" : ""}`}
-        src="/images/dino-intro.mp4"
-        muted
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-      />
+      <div className={`intro-dino-wrap ${showDino ? "active" : ""}`}>
+        <p className="intro-dino-headline">Level up your performance with us</p>
+        <video
+          ref={dinoVideoRef}
+          className="intro-dino-video"
+          src="/images/dino-intro.mp4"
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        />
+      </div>
 
       {/* ── Edge vignette ── */}
       <div className="intro-vignette" aria-hidden="true" />

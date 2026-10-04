@@ -117,8 +117,6 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale} dir={dir} className={`${readexPro.variable} ${cormorant.variable} ${tajawal.variable}`}>
       <body className="font-sans antialiased">
-        {/* Moving wallpaper — subtle looping background pattern */}
-        <div className="wallpaper" aria-hidden="true" />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Header />
           {children}

@@ -22,25 +22,24 @@ export default function Hero() {
       id="hero"
       className="relative flex min-h-[85vh] items-center overflow-hidden"
     >
-      {/* Higgsfield atmospheric background */}
+      {/* Atmospheric background */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <img
           src="/images/hero-atmosphere.png"
           alt=""
           className="absolute inset-0 w-full h-full object-cover opacity-40"
         />
-        {/* Gradient fade so content stays readable */}
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/60 to-transparent" />
       </div>
 
-      {/* Aurora — animated gradient orbs that drift slowly */}
+      {/* Aurora orbs */}
       <div className="hero-aurora" aria-hidden="true">
         <div className="hero-orb hero-orb-1" />
         <div className="hero-orb hero-orb-2" />
         <div className="hero-orb hero-orb-3" />
       </div>
 
-      {/* Decorative chevron from the brand mark */}
+      {/* Decorative chevron */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <img
           src="/brand/yy-mark-reversed.svg"
@@ -50,19 +49,12 @@ export default function Hero() {
       </div>
 
       <div className="relative mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-24">
-        {/*
-         * Signature moment: both headlines on screen.
-         * Current locale = display size, on its reading side (start).
-         * Other locale = small, on the opposite side (end), aligned to its edge.
-         * On desktop they meet in the middle; on mobile they stack.
-         */}
         <div className="grid gap-4 md:grid-cols-2 md:items-end md:gap-8">
-          <h1 className="text-h1 font-semibold leading-[1.2] text-ink md:text-display hero-slide-start">
+          <h1 className="font-heading text-h1 font-semibold leading-[1.2] text-text md:text-display hero-slide-start">
             {t("headline")}
           </h1>
-          {/* dir isolates bidi so punctuation stays in the right place */}
           <p
-            className="text-small text-ink-muted md:justify-self-end md:self-end hero-slide-end"
+            className="text-small text-text-muted md:justify-self-end md:self-end hero-slide-end"
             lang={otherLocale}
             dir={otherLocale === "ar" ? "rtl" : "ltr"}
           >
@@ -70,25 +62,23 @@ export default function Hero() {
           </p>
         </div>
 
-        {/* Subline */}
-        <p className="mt-6 max-w-xl text-body text-ink-muted">
+        <p className="mt-6 max-w-xl text-body text-text-muted">
           {t("subline")}
         </p>
 
-        {/* CTAs */}
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <a
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-yameen px-6 py-3 text-body font-medium text-on-yameen transition-colors hover:bg-yameen/90"
+            className="inline-flex items-center gap-2 rounded-xl bg-crimson px-6 py-3 text-body font-medium text-text transition-colors hover:bg-crimson/90"
           >
             <WaIcon className="size-5" />
             {t("ctaWhatsapp")}
           </a>
           <a
             href="#packages"
-            className="inline-flex items-center rounded-xl border-2 border-yameen px-6 py-3 text-body font-medium text-yameen transition-colors hover:bg-yameen-soft"
+            className="inline-flex items-center rounded-xl border-2 border-crimson-bright px-6 py-3 text-body font-medium text-crimson-bright transition-colors hover:bg-surface"
           >
             {t("ctaPackages")}
           </a>

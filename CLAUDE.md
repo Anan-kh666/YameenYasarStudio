@@ -20,7 +20,7 @@ Marketing site for Yameen Yasar Studio (يمين يسار), a one-person studio 
 - Next.js (latest stable, App Router, TypeScript, `src/` dir), static export: `output: 'export'`, `images: { unoptimized: true }`, `trailingSlash: true`.
 - Tailwind CSS (latest stable). Use logical utilities only for direction-sensitive spacing/position (see RTL rules).
 - `next-intl` for i18n, set up for static export: `[locale]` segment, `generateStaticParams` for `ar` and `en`, `setRequestLocale` in every layout/page. No middleware (static export can't run it).
-- Font: Readex Pro via `next/font/google`, subsets `['arabic', 'latin']`, weights 400/500/600, `display: 'swap'`, exposed as CSS variable `--font-sans`. One family for both scripts. No other fonts.
+- Fonts: Headlines use Cormorant Garamond (600, Latin, `--font-cormorant`) and Amiri (700, Arabic, `--font-amiri`) — direction-aware via `--font-heading` / `font-heading` class. Body/UI uses Readex Pro (400/500/600, Arabic+Latin) via `--font-sans`. All loaded via `next/font/google` with `display: 'swap'`.
 - Contact form: Web3Forms (works on a static site). Key in `.env.local` as `NEXT_PUBLIC_WEB3FORMS_KEY`. If the key is missing, the form shows the WhatsApp and email fallback instead of failing silently.
 - Icons: `lucide-react` only, and only where an icon adds meaning.
 - No other runtime dependencies without asking Anan first. No UI kits, no animation libraries, no CMS.
@@ -66,29 +66,26 @@ messages/ ar.json, en.json  # every visible string, built from docs/website-copy
 
 ## Brand tokens
 
-Define as CSS variables in `globals.css` (light by default, dark via `@media (prefers-color-scheme: dark)`) and map them into Tailwind's theme so classes like `bg-paper text-ink bg-yameen` work.
+Dark-only site. Define as CSS variables in `globals.css` and map into Tailwind's theme so classes like `bg-bg text-text bg-crimson` work. No light/dark toggle.
 
-| Token | Light | Dark | Use |
-| --- | --- | --- | --- |
-| `paper` | `#F6F2EA` | `#121A18` | Page background (never pure white) |
-| `surface` | `#FFFFFF` | `#1B2522` | Cards, inputs |
-| `line` | `#E2DBCD` | `#2C3834` | Borders, dividers |
-| `ink` | `#15201D` | `#F3EFE6` | Text, headings; text on a `yasar` fill |
-| `ink-muted` | `#5B6560` | `#A9B3AE` | Secondary text |
-| `yameen` | `#0E6B5C` | `#5FD0B6` | Primary: main buttons, links, focus ring |
-| `yameen-soft` | `#DCEEE8` | `#123A33` | Tinted highlights |
-| `on-yameen` | `#FFFFFF` | `#0B1614` | Text on a `yameen` fill |
-| `yasar` | `#E39B2D` | `#E9A845` | Accent, FILLS ONLY (fails contrast as text) |
-| `yasar-ink` | `#8A5310` | `#F0B45A` | Accent when it must be text |
-| `yasar-soft` | `#FBEBD2` | `#3A2A12` | Launch-offer banner, notices |
+| Token | Value | Use |
+| --- | --- | --- |
+| `bg` | `#0B0B0B` | Page background |
+| `surface` | `#151313` | Cards, inputs on black |
+| `line` | `#2A2424` | Borders, dividers |
+| `text` | `#F5F2ED` | Main text on black |
+| `text-muted` | `#A3A09B` | Secondary text on black |
+| `crimson` | `#8B0D1A` | FILLS ONLY on black: primary buttons, badges, glows. Text on it = `#F5F2ED` |
+| `crimson-bright` | `#E5484D` | Crimson as TEXT on black: links, highlights, focus ring |
+| `paper` | `#F5F2ED` | Light contrast sections (e.g. Problem, FAQ). Text on paper = `#0B0B0B`; crimson `#8B0D1A` IS allowed as text on paper |
 
-All listed text pairs pass WCAG AA in both themes. Use saffron sparingly: one saffron element per screen.
+Rules: never `#8B0D1A` text on black (fails contrast). Keep every text pair at WCAG AA. Glows are radial gradients of crimson at low opacity, used in at most 2 places per screen.
 
-Type scale (px, size/line-height, weight): display 56/60 600 (hero only) · h1 36/44 600 · h2 24/32 600 · body 17/28 400 · small 14/22 400 · label 13/18 500. On mobile, display drops to 36/44.
+Type scale (px, size/line-height, weight): display 56/60 Cormorant 600 / Amiri 700 (hero only) · h1 36/44 Cormorant 600 / Amiri 700 · h2 24/32 Cormorant 600 / Amiri 700 · body 17/28 Readex Pro 400 · small 14/22 Readex Pro 400 · label 13/18 Readex Pro 500. On mobile, display drops to 36/44. Use `font-heading` class on all headings.
 
 Spacing steps: 8, 16, 24, 48 (sections: 48 mobile, 96 desktop). Radius: 6px inputs/tags, 12px buttons/cards/images, full for pills.
 
-Logos: header uses `yy-logo-horizontal.svg` (dark theme: `-reversed`), about/footer may use the mark. Minimum sizes: mark 24px, horizontal 32px tall. Clear space = width of the saffron chevron.
+Logos: header always uses `yy-logo-horizontal-reversed.svg` (dark-only site), about/footer may use the mark. Minimum sizes: mark 24px, horizontal 32px tall. Clear space = width of the crimson chevron.
 
 ## Design direction
 
@@ -96,7 +93,7 @@ The brand idea is "right to left, left to right": two languages meeting. Spend t
 
 - Hero: both headlines are present on both locales. The current locale's headline is large (display) on its reading side; the other language's headline sits small on the opposite side, aligned to the opposite edge. On desktop they visibly meet in the middle; on mobile they stack (current language first). This is the signature moment — make it excellent, not decorated.
 - Decorative motif: the chevron (V) shape from the mark, used large and sparingly (hero background or one section break). Never as a pattern/wallpaper.
-- Packages: three cards with real hierarchy — Business is emphasized (yameen border, "Most popular" badge on a `yasar` fill with `ink` text). Not three identical cards.
+- Packages: three cards with real hierarchy — Business is emphasized (crimson border, "Most popular" badge on a `crimson` fill with `text` color). Not three identical cards.
 - Process is a real sequence, so numbered steps are fine there. Don't number anything else.
 - Work: each card shows the Arabic and English screenshots side by side — that contrast is the proof.
 - Motion: at most one orchestrated moment on load (the hero headlines). Respect `prefers-reduced-motion`. No fade-in on every section, no hover animations on every card.
@@ -110,9 +107,9 @@ Avoid these generic tells: all-caps eyebrow labels above headings, `→` appende
 - Header: horizontal logo (links to `/{locale}/`), anchor nav (Packages, Work, About, Contact), language switch, WhatsApp button. Sticky, compact on scroll; mobile menu is a simple disclosure.
 - WhatsApp: primary CTA everywhere. Link built in `lib/site.ts`: `https://wa.me/<number>?text=<prefilled message in current locale>`. Prefilled AR: "مرحبا، حابب أعرف أكتر عن موقع بلغتين." EN: "Hi, I'd like to know more about a bilingual website."
 - Problem: three short cards side by side on desktop, stacked on mobile.
-- Packages: launch-offer banner above the cards on `yasar-soft`, controlled by one flag in `lib/site.ts` (`launchOffer: true`) so Anan can switch it off.
+- Packages: launch-offer banner above the cards on `surface` with crimson accent, controlled by one flag in `lib/site.ts` (`launchOffer: true`) so Anan can switch it off.
 - Work: Zait & Za'atar is real; clinic and SaaS are concept projects not built yet — show them as "قريباً / Coming soon" cards until URLs exist. Label concept projects clearly.
-- About: real photo of Anan (`public/images/anan.jpg`); until it exists, show the mark on `yameen-soft` — never a stock photo or avatar illustration.
+- About: real photo of Anan (`public/images/anan.jpg`); until it exists, show the mark on `surface` — never a stock photo or avatar illustration.
 - FAQ: native `<details>/<summary>` accordion (accessible, no JS).
 - Contact: labelled fields (not placeholder-only), inline validation messages in the current locale, success and error states from the copy file, honeypot field for spam.
 
@@ -120,7 +117,7 @@ Avoid these generic tells: all-caps eyebrow labels above headings, `→` appende
 
 - `npm run build` passes with zero type errors; `out/ar/index.html` and `out/en/index.html` exist.
 - Both locales checked at 375px and 1280px wide; no horizontal scroll; nothing mirrored that shouldn't be.
-- Visible focus ring (2px `yameen`, offset from the element) on every interactive element; skip-to-content link.
+- Visible focus ring (2px `crimson-bright`, offset from the element) on every interactive element; skip-to-content link.
 - Lighthouse on both locales: Accessibility ≥ 95, SEO ≥ 95, Performance ≥ 90 (mobile).
 - Every image has alt text in the current locale; the logo alt is the studio name.
 - No hardcoded user-facing strings in components — all from `messages/*.json`.

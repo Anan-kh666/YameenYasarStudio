@@ -1,4 +1,4 @@
-import { Readex_Pro, Cormorant_Garamond, Amiri } from "next/font/google";
+import { Readex_Pro, Cormorant_Garamond, Tajawal } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getTranslations, getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -16,8 +16,8 @@ const readexPro = Readex_Pro({
   variable: "--font-readex-pro",
 });
 
-/* Headline fonts — high-contrast serifs for the new brand direction.
-   Cormorant Garamond for Latin, Amiri for Arabic.
+/* Headline fonts — Cormorant Garamond for Latin, Tajawal for Arabic.
+   Tajawal gives Arabic a modern, clean feel vs the traditional Amiri serif.
    CSS switches between them via --font-heading-family in globals.css. */
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -26,11 +26,11 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
 });
 
-const amiri = Amiri({
-  subsets: ["arabic"],
-  weight: ["700"],
+const tajawal = Tajawal({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
   display: "swap",
-  variable: "--font-amiri",
+  variable: "--font-tajawal",
 });
 
 type Props = {
@@ -115,7 +115,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={locale} dir={dir} className={`${readexPro.variable} ${cormorant.variable} ${amiri.variable}`}>
+    <html lang={locale} dir={dir} className={`${readexPro.variable} ${cormorant.variable} ${tajawal.variable}`}>
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Header />

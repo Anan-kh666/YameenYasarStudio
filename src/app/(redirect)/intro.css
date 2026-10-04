@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Intro page styles — only loaded for the "/" route.
    Layers: video → noise → particles → glow → chevrons → scanline →
-   content (logo halo + brand + CTA border) → vignette → exit wipe.
+   content (logo + brand + CTA) → transition objects → vignette → wipe.
    ═══════════════════════════════════════════════════════════════════════ */
 
 .intro-root {
@@ -113,15 +113,13 @@
   right: 10%;
   height: 1px;
   background: linear-gradient(
-    90deg,
-    transparent,
+    90deg, transparent,
     rgba(229, 72, 77, 0.6) 20%,
     rgba(229, 72, 77, 0.9) 50%,
     rgba(229, 72, 77, 0.6) 80%,
     transparent
   );
-  box-shadow: 0 0 20px rgba(229, 72, 77, 0.4),
-              0 0 60px rgba(229, 72, 77, 0.15);
+  box-shadow: 0 0 20px rgba(229, 72, 77, 0.4), 0 0 60px rgba(229, 72, 77, 0.15);
   animation: scanline-sweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
@@ -132,20 +130,16 @@
   100% { top: 85%; opacity: 0; }
 }
 
-/* ── Edge vignette — subtle darkening around edges ── */
+/* ── Edge vignette ── */
 .intro-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 6;
-  background: radial-gradient(
-    ellipse 70% 70% at 50% 50%,
-    transparent 40%,
-    rgba(11, 11, 11, 0.5) 100%
-  );
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(11, 11, 11, 0.5) 100%);
 }
 
-/* ── Skip button ── top-end, visible from first frame ── */
+/* ── Skip button ── */
 .intro-skip {
   position: absolute;
   top: 1.5rem;
@@ -161,15 +155,10 @@
   border-radius: 0.75rem;
   transition: color 0.2s;
 }
-.intro-skip:hover {
-  color: #F5F2ED;
-}
-.intro-skip:focus-visible {
-  outline: 2px solid #E5484D;
-  outline-offset: 2px;
-}
+.intro-skip:hover { color: #F5F2ED; }
+.intro-skip:focus-visible { outline: 2px solid #E5484D; outline-offset: 2px; }
 
-/* ── Content wrapper ── centered flex column ── */
+/* ── Content wrapper ── */
 .intro-content {
   display: flex;
   flex-direction: column;
@@ -180,38 +169,50 @@
   will-change: transform;
 }
 
-/* ── Logo mark ── fades up with scale + halo burst ── */
+/* ═══════════════════════════════════════════════════════════════════════
+   LOGO ANIMATION — circle-reveal clip + halo burst + gleam sweep
+   ═══════════════════════════════════════════════════════════════════════ */
 .intro-logo {
   position: relative;
   opacity: 0;
-  transform: scale(0.85);
-  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.6s ease;
 }
 .intro-logo.visible {
   opacity: 1;
-  transform: scale(1);
 }
 .intro-logo.exit {
-  opacity: 0;
-  transform: scale(0.9);
-  transition-duration: 0.4s;
+  animation: logo-exit-zoom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Radial halo burst behind the logo on reveal */
+@keyframes logo-exit-zoom {
+  0%   { transform: scale(1); opacity: 1; filter: brightness(1); }
+  40%  { transform: scale(1.3); opacity: 1; filter: brightness(1.8); }
+  100% { transform: scale(1.6); opacity: 0; filter: brightness(2.5); }
+}
+
+/* Circle reveal — logo emerges from a point */
+.intro-logo-reveal {
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.intro-logo-reveal.active {
+  clip-path: circle(100% at 50% 50%);
+}
+
+/* Radial halo burst behind the logo */
 .intro-logo-halo {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 200px;
-  height: 200px;
-  margin-top: -100px;
-  margin-left: -100px;
+  width: 220px;
+  height: 220px;
+  margin-top: -110px;
+  margin-left: -110px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(229, 72, 77, 0.25) 0%,
-    rgba(139, 13, 26, 0.1) 40%,
+    rgba(229, 72, 77, 0.3) 0%,
+    rgba(139, 13, 26, 0.12) 40%,
     transparent 70%
   );
   opacity: 0;
@@ -219,16 +220,54 @@
   pointer-events: none;
 }
 .intro-logo-halo.active {
-  animation: halo-burst 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: halo-burst 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes halo-burst {
   0%   { opacity: 0; transform: scale(0.3); }
-  30%  { opacity: 0.8; transform: scale(1.2); }
-  100% { opacity: 0.15; transform: scale(1.8); }
+  25%  { opacity: 0.9; transform: scale(1.1); }
+  50%  { opacity: 0.5; transform: scale(1.4); }
+  100% { opacity: 0.12; transform: scale(2); }
 }
 
-/* ── Brand text pair ── Arabic from right, English from left ── */
+/* Gleam sweep across the logo — triggers after text phase starts */
+.intro-logo-gleam {
+  position: absolute;
+  inset: -4px;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 4px;
+  opacity: 0;
+}
+.intro-logo-gleam.active {
+  opacity: 1;
+}
+.intro-logo-gleam::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  width: 40%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(245, 242, 237, 0.06) 45%,
+    rgba(245, 242, 237, 0.12) 50%,
+    rgba(245, 242, 237, 0.06) 55%,
+    transparent 80%
+  );
+  transform: translateX(-200%) skewX(-12deg);
+  animation: logo-intro-gleam 1.2s ease-out 0.3s forwards;
+}
+
+@keyframes logo-intro-gleam {
+  0%   { transform: translateX(-200%) skewX(-12deg); }
+  100% { transform: translateX(400%) skewX(-12deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   BRAND TEXT — slide-in from opposite sides + divider
+   ═══════════════════════════════════════════════════════════════════════ */
 .intro-brand {
   display: flex;
   flex-direction: row;
@@ -243,9 +282,7 @@
     align-items: center;
     gap: 0.25rem;
   }
-  .intro-brand-divider {
-    display: none;
-  }
+  .intro-brand-divider { display: none; }
 }
 
 .intro-brand-ar,
@@ -256,67 +293,45 @@
   white-space: nowrap;
 }
 
-/* Thin vertical divider between the two brand names */
 .intro-brand-divider {
   width: 1px;
   height: 2rem;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(229, 72, 77, 0.4) 30%,
-    rgba(229, 72, 77, 0.4) 70%,
-    transparent
-  );
+  background: linear-gradient(180deg, transparent, rgba(229, 72, 77, 0.4) 30%, rgba(229, 72, 77, 0.4) 70%, transparent);
   opacity: 0;
   transform: scaleY(0);
-  transition: opacity 0.8s ease 0.3s,
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+  transition: opacity 0.8s ease 0.3s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
 }
 
 .intro-brand-ar {
   opacity: 0;
   transform: translateX(4rem);
-  transition: opacity 0.8s ease,
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .intro-brand-en {
   opacity: 0;
   transform: translateX(-4rem);
-  transition: opacity 0.8s ease,
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: 0.12s;
 }
 
 .intro-brand.visible .intro-brand-ar,
-.intro-brand.visible .intro-brand-en {
-  opacity: 1;
-  transform: translateX(0);
-}
-.intro-brand.visible .intro-brand-divider {
-  opacity: 1;
-  transform: scaleY(1);
-}
+.intro-brand.visible .intro-brand-en { opacity: 1; transform: translateX(0); }
+.intro-brand.visible .intro-brand-divider { opacity: 1; transform: scaleY(1); }
 
-/* Exit: Arabic slides off right, English slides off left */
+/* Exit: Arabic right, English left, divider shrinks */
 .intro-brand.exit .intro-brand-ar {
-  opacity: 0;
-  transform: translateX(100vw);
-  transition-duration: 0.6s;
+  opacity: 0; transform: translateX(100vw); transition-duration: 0.6s;
 }
 .intro-brand.exit .intro-brand-en {
-  opacity: 0;
-  transform: translateX(-100vw);
-  transition-duration: 0.6s;
-  transition-delay: 0s;
+  opacity: 0; transform: translateX(-100vw); transition-duration: 0.6s; transition-delay: 0s;
 }
 .intro-brand.exit .intro-brand-divider {
-  opacity: 0;
-  transform: scaleY(0);
-  transition-duration: 0.3s;
-  transition-delay: 0s;
+  opacity: 0; transform: scaleY(0); transition-duration: 0.3s; transition-delay: 0s;
 }
 
-/* ── Question button (CTA) ── rotating conic border + breathing glow ── */
+/* ═══════════════════════════════════════════════════════════════════════
+   CTA BUTTON — rotating conic border + breathing glow
+   ═══════════════════════════════════════════════════════════════════════ */
 .intro-cta {
   position: relative;
   background: transparent;
@@ -326,17 +341,14 @@
   border-radius: 0.75rem;
   cursor: pointer;
   text-align: center;
-  max-width: 30rem;
+  max-width: 32rem;
   font-family: var(--font-readex-pro), system-ui, sans-serif;
   opacity: 0;
   transform: translateY(1.5rem);
-  transition: opacity 0.8s ease,
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.3s ease;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
   will-change: transform;
 }
 
-/* Rotating conic gradient border */
 .intro-cta-border {
   position: absolute;
   inset: 0;
@@ -344,11 +356,7 @@
   padding: 1.5px;
   background: conic-gradient(
     from var(--cta-angle, 0deg),
-    #8B0D1A 0%,
-    #E5484D 25%,
-    #8B0D1A 50%,
-    #F5F2ED 75%,
-    #8B0D1A 100%
+    #8B0D1A 0%, #E5484D 25%, #8B0D1A 50%, #F5F2ED 75%, #8B0D1A 100%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -357,7 +365,6 @@
   pointer-events: none;
 }
 
-/* Inner content sits inside the rotating border */
 .intro-cta-inner {
   display: block;
   background: #8B0D1A;
@@ -365,21 +372,12 @@
   padding: 1.25rem 2.5rem;
 }
 
-.intro-cta.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.intro-cta.visible .intro-cta-border {
-  animation: cta-rotate 6s linear infinite;
-}
+.intro-cta.visible { opacity: 1; transform: translateY(0); }
+.intro-cta.visible .intro-cta-border { animation: cta-rotate 6s linear infinite; }
 .intro-cta:hover {
-  box-shadow: 0 0 50px rgba(139, 13, 26, 0.6),
-              0 0 100px rgba(229, 72, 77, 0.15);
+  box-shadow: 0 0 50px rgba(139, 13, 26, 0.6), 0 0 100px rgba(229, 72, 77, 0.15);
 }
-.intro-cta:focus-visible {
-  outline: 2px solid #E5484D;
-  outline-offset: 4px;
-}
+.intro-cta:focus-visible { outline: 2px solid #E5484D; outline-offset: 4px; }
 
 @property --cta-angle {
   syntax: '<angle>';
@@ -391,7 +389,7 @@
   to { --cta-angle: 360deg; }
 }
 
-/* Breathing glow behind the button */
+/* Breathing glow */
 .intro-cta::before {
   content: '';
   position: absolute;
@@ -401,9 +399,7 @@
   z-index: -1;
   opacity: 0;
 }
-.intro-cta.visible::before {
-  animation: cta-breathe 4s ease-in-out infinite;
-}
+.intro-cta.visible::before { animation: cta-breathe 4s ease-in-out infinite; }
 
 @keyframes cta-breathe {
   0%, 100% { opacity: 0; transform: scale(0.96); }
@@ -423,27 +419,107 @@
   opacity: 0.8;
 }
 
-.intro-cta.exit {
-  opacity: 0;
-  transform: scale(0.9);
-  transition-duration: 0.4s;
+.intro-cta.exit { opacity: 0; transform: scale(0.85); transition-duration: 0.35s; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TRANSITION OBJECTS — themed icons that scatter outward on exit
+   Represent the studio's domain: code, Arabic, Latin, bidi, design.
+   ═══════════════════════════════════════════════════════════════════════ */
+.intro-transition-objects {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 20;
 }
 
-/* ── Crimson wipe ── circle expanding from center to fill screen ── */
+.intro-transition-obj {
+  position: absolute;
+  font-size: 1.5rem;
+  color: #E5484D;
+  font-family: var(--font-readex-pro), system-ui, sans-serif;
+  font-weight: 600;
+  opacity: 0;
+  animation: obj-scatter 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  text-shadow: 0 0 20px rgba(229, 72, 77, 0.6);
+}
+
+@keyframes obj-scatter {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0);
+  }
+  15% {
+    opacity: 1;
+    transform:
+      translate(
+        calc(cos(var(--obj-angle)) * 40px),
+        calc(sin(var(--obj-angle)) * 40px)
+      )
+      rotate(45deg)
+      scale(1.2);
+  }
+  70% {
+    opacity: 0.8;
+    transform:
+      translate(
+        calc(cos(var(--obj-angle)) * 280px),
+        calc(sin(var(--obj-angle)) * 280px)
+      )
+      rotate(270deg)
+      scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform:
+      translate(
+        calc(cos(var(--obj-angle)) * 400px),
+        calc(sin(var(--obj-angle)) * 400px)
+      )
+      rotate(360deg)
+      scale(0.5);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   EXIT SEQUENCE — flash → wipe
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Brief bright flash before the wipe */
+.intro-flash {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(229, 72, 77, 0.3), transparent 60%);
+  z-index: 30;
+  animation: exit-flash 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes exit-flash {
+  0%   { opacity: 0; transform: scale(0.5); }
+  30%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* Crimson wipe — circle expanding from center */
 .intro-wipe {
   position: fixed;
   inset: 0;
   background: #8B0D1A;
   z-index: 50;
-  animation: wipe-expand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: wipe-expand 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  /* Start invisible, delay lets flash + objects play first */
+  clip-path: circle(0% at 50% 55%);
 }
 
 @keyframes wipe-expand {
-  from { clip-path: circle(0% at 50% 60%); }
-  to   { clip-path: circle(150% at 50% 60%); }
+  from { clip-path: circle(0% at 50% 55%); }
+  to   { clip-path: circle(150% at 50% 55%); }
 }
 
-/* ── Noscript fallback ── shown when JS is disabled ── */
+/* ── Noscript fallback ── */
 .intro-noscript {
   position: fixed;
   inset: 0;
@@ -460,57 +536,39 @@
   text-decoration: none;
   padding: 0.5rem 1rem;
 }
-.intro-noscript a:hover {
-  text-decoration: underline;
-}
+.intro-noscript a:hover { text-decoration: underline; }
 
-/* ── Reduced motion: skip all animation, show static state ── */
+/* ═══════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — skip all animation, show static state
+   ═══════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-  .intro-video {
-    display: none;
-  }
-  .intro-particles {
-    display: none;
-  }
+  .intro-video,
+  .intro-particles,
+  .intro-scanline,
+  .intro-logo-halo,
+  .intro-logo-gleam,
+  .intro-transition-objects,
+  .intro-flash { display: none; }
+
   .intro-logo,
   .intro-brand-ar,
   .intro-brand-en,
   .intro-brand-divider,
-  .intro-cta {
-    transition: none !important;
-  }
-  .intro-logo.visible {
-    opacity: 1;
-    transform: none;
-  }
-  .intro-logo-halo {
-    display: none;
-  }
+  .intro-cta { transition: none !important; }
+
+  .intro-logo.visible { opacity: 1; transform: none; }
+  .intro-logo-reveal { clip-path: none !important; transition: none !important; }
+
   .intro-brand.visible .intro-brand-ar,
-  .intro-brand.visible .intro-brand-en {
-    opacity: 1;
-    transform: none;
-  }
-  .intro-brand.visible .intro-brand-divider {
-    opacity: 1;
-    transform: none;
-  }
-  .intro-cta.visible {
-    opacity: 1;
-    transform: none;
-  }
+  .intro-brand.visible .intro-brand-en { opacity: 1; transform: none; }
+  .intro-brand.visible .intro-brand-divider { opacity: 1; transform: none; }
+
+  .intro-cta.visible { opacity: 1; transform: none; }
   .intro-cta::before,
-  .intro-cta-border {
-    animation: none !important;
-  }
-  .intro-chevron {
-    display: none;
-  }
-  .intro-scanline {
-    display: none;
-  }
-  .intro-wipe {
-    animation: none !important;
-    clip-path: none;
-  }
+  .intro-cta-border { animation: none !important; }
+
+  .intro-chevron { display: none; }
+
+  .intro-wipe { animation: none !important; clip-path: none; }
+  .intro-logo.exit { animation: none !important; opacity: 0; }
 }

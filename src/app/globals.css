@@ -15,13 +15,13 @@
   --crimson-bright: #E5484D;
   --paper: #F5F2ED;
 
-  /* Heading font: Cormorant Garamond for Latin, Amiri for Arabic */
+  /* Heading font: Cormorant Garamond for Latin, Tajawal for Arabic */
   --font-heading-family: var(--font-cormorant), serif;
 }
 
-/* Arabic headlines use Amiri */
+/* Arabic headlines use Tajawal — modern sans-serif */
 [dir="rtl"] {
-  --font-heading-family: var(--font-amiri), serif;
+  --font-heading-family: var(--font-tajawal), sans-serif;
 }
 
 /* ── Map tokens into Tailwind v4 theme ── */

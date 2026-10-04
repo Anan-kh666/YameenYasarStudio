@@ -1,4 +1,4 @@
-import { Readex_Pro, Cormorant_Garamond, Amiri } from "next/font/google";
+import { Readex_Pro, Cormorant_Garamond, Tajawal } from "next/font/google";
 import "@/app/globals.css";
 import "./intro.css";
 import type { Metadata } from "next";
@@ -19,11 +19,11 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
 });
 
-const amiri = Amiri({
-  subsets: ["arabic"],
-  weight: ["700"],
+const tajawal = Tajawal({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
   display: "swap",
-  variable: "--font-amiri",
+  variable: "--font-tajawal",
 });
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default function RedirectLayout({
   return (
     <html
       lang="en"
-      className={`${readexPro.variable} ${cormorant.variable} ${amiri.variable}`}
+      className={`${readexPro.variable} ${cormorant.variable} ${tajawal.variable}`}
     >
       <body>{children}</body>
     </html>

@@ -1,0 +1,306 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Intro page styles — only loaded for the "/" route.
+   The intro sequence: glow → logo → brand text → question button → exit.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.intro-root {
+  position: fixed;
+  inset: 0;
+  background: #0B0B0B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Noise texture ── inline SVG with feTurbulence ── */
+.intro-noise {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Cursor-reactive crimson glow ── */
+.intro-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+.intro-glow.active {
+  opacity: 1;
+}
+
+/* ── Floating chevron fragments ── */
+.intro-chevrons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.intro-chevron {
+  position: absolute;
+  color: #E5484D;
+  /* Each chevron sets its own --drift-x, --drift-y, --drift-rot via inline style */
+  animation: chevron-drift linear infinite;
+}
+
+@keyframes chevron-drift {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(var(--drift-x), calc(var(--drift-y) * 0.4)) rotate(calc(var(--drift-rot) * 0.5)); }
+  50%  { transform: translate(calc(var(--drift-x) * -0.6), var(--drift-y)) rotate(var(--drift-rot)); }
+  75%  { transform: translate(calc(var(--drift-x) * 0.8), calc(var(--drift-y) * 0.7)) rotate(calc(var(--drift-rot) * -0.3)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ── Skip button ── top-end, visible from first frame ── */
+.intro-skip {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: #A3A09B;
+  font-size: 0.875rem;
+  font-family: var(--font-readex-pro), system-ui, sans-serif;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  transition: color 0.2s;
+}
+.intro-skip:hover {
+  color: #F5F2ED;
+}
+.intro-skip:focus-visible {
+  outline: 2px solid #E5484D;
+  outline-offset: 2px;
+}
+
+/* ── Content wrapper ── centered flex column ── */
+.intro-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  z-index: 5;
+  position: relative;
+}
+
+/* ── Logo mark ── fades up with subtle scale ── */
+.intro-logo {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.intro-logo.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+.intro-logo.exit {
+  opacity: 0;
+  transform: scale(0.9);
+  transition-duration: 0.4s;
+}
+
+/* ── Brand text pair ── Arabic from right, English from left ── */
+.intro-brand {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 1.5rem;
+  overflow: visible;
+}
+
+@media (max-width: 640px) {
+  .intro-brand {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+.intro-brand-ar,
+.intro-brand-en {
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  line-height: 1.2;
+  color: #F5F2ED;
+  white-space: nowrap;
+}
+
+.intro-brand-ar {
+  opacity: 0;
+  transform: translateX(4rem);
+  transition: opacity 0.8s ease,
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.intro-brand-en {
+  opacity: 0;
+  transform: translateX(-4rem);
+  transition: opacity 0.8s ease,
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: 0.12s;
+}
+
+.intro-brand.visible .intro-brand-ar,
+.intro-brand.visible .intro-brand-en {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Exit: Arabic slides off right, English slides off left */
+.intro-brand.exit .intro-brand-ar {
+  opacity: 0;
+  transform: translateX(100vw);
+  transition-duration: 0.6s;
+}
+.intro-brand.exit .intro-brand-en {
+  opacity: 0;
+  transform: translateX(-100vw);
+  transition-duration: 0.6s;
+  transition-delay: 0s;
+}
+
+/* ── Question button (CTA) ── crimson fill, breathing glow ── */
+.intro-cta {
+  position: relative;
+  background: #8B0D1A;
+  color: #F5F2ED;
+  border: none;
+  padding: 1.25rem 2.5rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  text-align: center;
+  max-width: 30rem;
+  font-family: var(--font-readex-pro), system-ui, sans-serif;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.8s ease,
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease;
+  will-change: transform;
+}
+.intro-cta.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.intro-cta:hover {
+  box-shadow: 0 0 40px rgba(139, 13, 26, 0.5);
+}
+.intro-cta:focus-visible {
+  outline: 2px solid #E5484D;
+  outline-offset: 2px;
+}
+
+/* Breathing glow behind the button */
+.intro-cta::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 1rem;
+  background: radial-gradient(ellipse, #E5484D, transparent 70%);
+  z-index: -1;
+  opacity: 0;
+}
+.intro-cta.visible::before {
+  animation: cta-breathe 4s ease-in-out infinite;
+}
+
+@keyframes cta-breathe {
+  0%, 100% { opacity: 0; transform: scale(0.96); }
+  50%      { opacity: 0.2; transform: scale(1.03); }
+}
+
+.intro-cta-ar {
+  display: block;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  margin-bottom: 0.375rem;
+}
+.intro-cta-en {
+  display: block;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.intro-cta.exit {
+  opacity: 0;
+  transform: scale(0.9);
+  transition-duration: 0.4s;
+}
+
+/* ── Crimson wipe ── circle expanding from center to fill screen ── */
+.intro-wipe {
+  position: fixed;
+  inset: 0;
+  background: #8B0D1A;
+  z-index: 50;
+  animation: wipe-expand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wipe-expand {
+  from { clip-path: circle(0% at 50% 60%); }
+  to   { clip-path: circle(150% at 50% 60%); }
+}
+
+/* ── Noscript fallback ── shown when JS is disabled ── */
+.intro-noscript {
+  position: fixed;
+  inset: 0;
+  background: #0B0B0B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  font-family: system-ui, sans-serif;
+}
+.intro-noscript a {
+  color: #E5484D;
+  font-size: 1.25rem;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+}
+.intro-noscript a:hover {
+  text-decoration: underline;
+}
+
+/* ── Reduced motion: skip all animation, show static state ── */
+@media (prefers-reduced-motion: reduce) {
+  .intro-logo,
+  .intro-brand-ar,
+  .intro-brand-en,
+  .intro-cta {
+    transition: none !important;
+  }
+  .intro-logo.visible {
+    opacity: 1;
+    transform: none;
+  }
+  .intro-brand.visible .intro-brand-ar,
+  .intro-brand.visible .intro-brand-en {
+    opacity: 1;
+    transform: none;
+  }
+  .intro-cta.visible {
+    opacity: 1;
+    transform: none;
+  }
+  .intro-cta::before {
+    animation: none !important;
+  }
+  .intro-chevron {
+    display: none;
+  }
+  .intro-wipe {
+    animation: none !important;
+    clip-path: none;
+  }
+}

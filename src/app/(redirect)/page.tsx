@@ -1,34 +1,29 @@
+import IntroPage from "@/components/IntroPage";
+
 /**
- * Root "/" page — redirects to /ar or /en based on browser language.
- * Respects a manual choice stored in localStorage ("yy-locale").
- * Falls back to /ar (default locale) if JS is disabled.
+ * Root "/" page — the intro experience.
+ * Shows the brand animation sequence, then a question button
+ * that navigates to /ar/ or /en/ based on detected language.
+ *
+ * SEO: /ar/ and /en/ are the real landing pages (indexed, shareable).
+ * This page is noindex (set in layout.tsx metadata).
  */
 export default function RedirectPage() {
   return (
     <>
-      {/* Inline script runs before paint to avoid a flash */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              var saved = null;
-              try { saved = localStorage.getItem("yy-locale"); } catch(e) {}
-              if (saved === "ar" || saved === "en") {
-                location.replace("/" + saved + "/");
-                return;
-              }
-              var lang = (navigator.language || "").toLowerCase();
-              var loc = lang.startsWith("ar") ? "ar" : "en";
-              location.replace("/" + loc + "/");
-            })();
-          `,
-        }}
-      />
+      <IntroPage />
+      {/* Noscript fallback: if JS is disabled, redirect to /ar/ or show links */}
       <noscript>
+        {/* Hide the intro container (it renders empty without JS) */}
+        <style>{`.intro-root { display: none; }`}</style>
         <meta httpEquiv="refresh" content="0;url=/ar/" />
-        <p style={{ fontFamily: "system-ui", textAlign: "center", marginTop: "2rem" }}>
-          <a href="/ar/" lang="ar">العربية</a> &middot; <a href="/en/">English</a>
-        </p>
+        <div className="intro-noscript">
+          <a href="/ar/" lang="ar">
+            العربية
+          </a>
+          <span style={{ color: "#A3A09B", margin: "0 1rem" }}>&middot;</span>
+          <a href="/en/">English</a>
+        </div>
       </noscript>
     </>
   );

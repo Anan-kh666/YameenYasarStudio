@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Intro page styles — only loaded for the "/" route.
    Layers: video → noise → matrix canvas → glow →
-   content (logo + brand + lock + revealed text + loading) →
-   vignette → fade-out.
+   content (logo + brand + lock + revealed text) →
+   dino animation → vignette → fade-out.
    ═══════════════════════════════════════════════════════════════════════ */
 
 .intro-root {
@@ -103,6 +103,11 @@
   gap: 2.5rem;
   z-index: 7;
   position: relative;
+  transition: opacity 0.6s ease;
+}
+.intro-content.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -117,7 +122,6 @@
   opacity: 1;
 }
 
-/* Circle reveal — logo emerges from a point */
 .intro-logo-reveal {
   clip-path: circle(0% at 50% 50%);
   transition: clip-path 1.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -126,7 +130,6 @@
   clip-path: circle(100% at 50% 50%);
 }
 
-/* Subtle halo behind the logo — soft grey, no red */
 .intro-logo-halo {
   position: absolute;
   top: 50%;
@@ -253,7 +256,6 @@
   outline-offset: 4px;
 }
 
-/* After unlock: lock fades and scales up slightly */
 .intro-lock.unlocked {
   opacity: 0.3;
   transform: scale(1.1);
@@ -261,12 +263,10 @@
   border-color: rgba(208, 204, 198, 0.06);
 }
 
-/* Lock SVG */
 .intro-lock-svg {
   display: block;
 }
 
-/* Shackle animates up when open */
 .intro-lock-shackle {
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: center bottom;
@@ -310,30 +310,115 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   LOADING INDICATOR — looped ring while navigating
+   DINO TRANSFORMATION — the concept animation
+   Old pixel dino → walks through gate → becomes realistic dino.
+   Uses the static concept image with a cinematic pan + zoom effect.
    ═══════════════════════════════════════════════════════════════════════ */
-.intro-loading {
+.intro-dino-scene {
+  position: absolute;
+  inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 0.5rem;
+  gap: 2rem;
+  z-index: 15;
+  animation: dino-scene-in 0.8s ease-out both;
 }
 
-.intro-loading-ring {
-  width: 28px;
-  height: 28px;
+@keyframes dino-scene-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Viewport — clips the image and controls the visible area */
+.intro-dino-viewport {
+  position: relative;
+  width: min(80vw, 480px);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 0 80px rgba(208, 204, 198, 0.06);
+}
+
+/* The concept image — pans from left (pixel dino) to right (real dino) */
+.intro-dino-img {
+  width: 180%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 5% 75%;
+  animation: dino-pan 5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  filter: contrast(1.1) brightness(0.95);
+}
+
+@keyframes dino-pan {
+  0% {
+    object-position: 5% 75%;
+    transform: scale(1.15);
+  }
+  25% {
+    object-position: 30% 70%;
+    transform: scale(1.1);
+  }
+  55% {
+    object-position: 50% 65%;
+    transform: scale(1.05);
+  }
+  80% {
+    object-position: 80% 60%;
+    transform: scale(1.02);
+  }
+  100% {
+    object-position: 90% 55%;
+    transform: scale(1);
+  }
+}
+
+/* Subtle glow that pulses over the door area mid-animation */
+.intro-dino-glow {
+  position: absolute;
+  top: 20%;
+  left: 35%;
+  width: 30%;
+  height: 60%;
+  background: radial-gradient(ellipse, rgba(208, 204, 198, 0.15), transparent 70%);
+  pointer-events: none;
+  animation: dino-glow-pulse 5s ease-in-out forwards;
+}
+
+@keyframes dino-glow-pulse {
+  0%   { opacity: 0; }
+  30%  { opacity: 0; }
+  50%  { opacity: 1; }
+  70%  { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
+/* Caption — bilingual text below the animation */
+.intro-dino-caption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #706D68;
+  font-family: var(--font-readex-pro), system-ui, sans-serif;
+  animation: dino-caption-in 0.8s ease-out 0.5s both;
+}
+
+.intro-dino-dot {
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
-  border: 2px solid rgba(208, 204, 198, 0.1);
-  border-top-color: rgba(208, 204, 198, 0.5);
-  animation: loading-spin 0.8s linear infinite;
+  background: #706D68;
 }
 
-@keyframes loading-spin {
-  to { transform: rotate(360deg); }
+@keyframes dino-caption-in {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   FADE-OUT OVERLAY — smooth dark fade instead of crimson wipe
+   FADE-OUT OVERLAY — smooth dark fade
    ═══════════════════════════════════════════════════════════════════════ */
 .intro-fade-out {
   position: fixed;
@@ -380,7 +465,8 @@
   .intro-brand-en,
   .intro-brand-divider,
   .intro-lock,
-  .intro-revealed-text { transition: none !important; }
+  .intro-revealed-text,
+  .intro-content { transition: none !important; }
 
   .intro-logo.visible { opacity: 1; transform: none; }
   .intro-logo-reveal { clip-path: none !important; transition: none !important; }
@@ -391,7 +477,10 @@
 
   .intro-lock.visible { opacity: 1; transform: none; }
 
-  .intro-loading-ring { animation: none !important; }
+  .intro-dino-img { animation: none !important; }
+  .intro-dino-glow { animation: none !important; display: none; }
+  .intro-dino-scene { animation: none !important; }
+  .intro-dino-caption { animation: none !important; }
 
   .intro-fade-out { animation: none !important; opacity: 1; }
 }

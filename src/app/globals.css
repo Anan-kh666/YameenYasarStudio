@@ -71,6 +71,53 @@ body {
   line-height: 1.75rem;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   Moving wallpaper — subtle looping diagonal grid pattern.
+   Provides a continuous, living feel to the dark background.
+   ═══════════════════════════════════════════════════════════════════════ */
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.wallpaper::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image:
+    linear-gradient(45deg, transparent 48.5%, rgba(42, 36, 36, 0.3) 49%, rgba(42, 36, 36, 0.3) 51%, transparent 51.5%),
+    linear-gradient(-45deg, transparent 48.5%, rgba(42, 36, 36, 0.3) 49%, rgba(42, 36, 36, 0.3) 51%, transparent 51.5%);
+  background-size: 60px 60px;
+  animation: wallpaper-drift 45s linear infinite;
+}
+
+/* Faint dot grid on top of the lines */
+.wallpaper::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: radial-gradient(circle, rgba(163, 160, 155, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: wallpaper-drift-slow 90s linear infinite;
+}
+
+@keyframes wallpaper-drift {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(60px, 60px); }
+}
+
+@keyframes wallpaper-drift-slow {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(30px, 30px); }
+}
+
 /* Focus ring — 2px crimson-bright, offset */
 :focus-visible {
   outline: 2px solid var(--crimson-bright);

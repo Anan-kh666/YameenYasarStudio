@@ -82,7 +82,6 @@ function detectLocale(): string {
 function LockIcon({ open }: { open: boolean }) {
   return (
     <svg viewBox="0 0 24 28" width={32} height={37} className="intro-lock-svg" aria-hidden="true">
-      {/* Shackle — animates up when opening */}
       <path
         className={`intro-lock-shackle ${open ? "open" : ""}`}
         d="M7 11V7a5 5 0 0 1 10 0v4"
@@ -91,9 +90,7 @@ function LockIcon({ open }: { open: boolean }) {
         strokeWidth="2"
         strokeLinecap="round"
       />
-      {/* Body */}
       <rect x="4" y="11" width="16" height="13" rx="2" fill="currentColor" opacity="0.15" stroke="currentColor" strokeWidth="1.5" />
-      {/* Keyhole */}
       <circle cx="12" cy="17" r="2" fill="currentColor" />
       <rect x="11" y="18" width="2" height="3" rx="1" fill="currentColor" />
     </svg>
@@ -101,15 +98,17 @@ function LockIcon({ open }: { open: boolean }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   IntroPage — redesigned flow:
-   matrix bg → logo → text → lock → unlock (text reveals) → fade to page
-   No red wipe — smooth fade with looped loading animation.
+   IntroPage — flow:
+   matrix bg → logo → text → lock → unlock (text reveals) →
+   dino animation → fade to page
    ═══════════════════════════════════════════════════════════════════════ */
-type Phase = "init" | "matrix" | "logo" | "text" | "lock" | "unlock" | "loading";
+type Phase = "init" | "matrix" | "logo" | "text" | "lock" | "unlock" | "dino" | "fade";
+
+/* Dino animation duration in ms */
+const DINO_DURATION = 5000;
 
 export default function IntroPage() {
   const [phase, setPhase] = useState<Phase>("init");
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [glowPos, setGlowPos] = useState({ x: 0.5, y: 0.5 });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -117,17 +116,15 @@ export default function IntroPage() {
   const mouseAbs = useRef({ x: 0, y: 0 });
   const matrixColsRef = useRef<MatrixCol[]>([]);
   const rafRef = useRef(0);
-  const timeRef = useRef(0);
 
   const atLeast = (target: Phase) => {
-    const order: Phase[] = ["init", "matrix", "logo", "text", "lock", "unlock", "loading"];
+    const order: Phase[] = ["init", "matrix", "logo", "text", "lock", "unlock", "dino", "fade"];
     return order.indexOf(phase) >= order.indexOf(target);
   };
 
   /* ── Mount ── */
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setReducedMotion(prefersReduced);
 
     let skip = false;
     try { skip = localStorage.getItem("yy-intro-seen") === "1"; } catch {}
@@ -183,8 +180,6 @@ export default function IntroPage() {
     };
 
     const tick = () => {
-      timeRef.current += 0.016;
-
       /* Glow position */
       const w = window.innerWidth;
       const h = window.innerHeight;
@@ -210,7 +205,6 @@ export default function IntroPage() {
           if (col.y - col.length * 16 > ch) {
             col.y = -col.length * 16;
             col.speed = FALL_SPEED_MIN + Math.random() * (FALL_SPEED_MAX - FALL_SPEED_MIN);
-            /* Randomize a few chars on reset */
             for (let j = 0; j < col.chars.length; j++) {
               if (Math.random() > 0.6) {
                 col.chars[j] = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
@@ -222,21 +216,18 @@ export default function IntroPage() {
             const cy = col.y + j * 16;
             if (cy < -20 || cy > ch + 20) continue;
 
-            /* Distance to mouse for interactive glow */
             const dx = col.x - mx;
             const dy = cy - my;
             const dist = Math.sqrt(dx * dx + dy * dy);
             const nearMouse = dist < MOUSE_GLOW_DIST;
 
-            /* Base alpha: very dim. Near mouse: brighter */
             const fadeFromTail = j / col.chars.length;
             let alpha = 0.06 + fadeFromTail * 0.08;
-            let color = "208, 204, 198"; /* soft grey */
+            let color = "208, 204, 198";
 
             if (nearMouse) {
               const proximity = 1 - dist / MOUSE_GLOW_DIST;
               alpha = 0.1 + proximity * 0.5;
-              /* Slight warm tint near cursor */
               const r = Math.round(208 + proximity * 30);
               const g = Math.round(204 + proximity * 10);
               const b = Math.round(198 - proximity * 20);
@@ -266,21 +257,24 @@ export default function IntroPage() {
   const brandAr = useTextDecode("يمين", textActive);
   const brandEn = useTextDecode("Yasar", textActive);
 
-  /* ── Lock click → unlock → auto-navigate ── */
+  /* ── Lock click → unlock → dino animation → navigate ── */
   const handleUnlock = useCallback(() => {
     if (phase !== "lock") return;
     setPhase("unlock");
 
-    /* After unlock animation reveals text, start loading */
+    /* After unlock text reveals, start the dino animation */
     setTimeout(() => {
-      setPhase("loading");
+      setPhase("dino");
       try { localStorage.setItem("yy-intro-seen", "1"); } catch {}
 
-      const locale = detectLocale();
-      /* Navigate after a short delay — no red wipe, just fade */
+      /* When dino animation finishes, fade out and navigate */
       setTimeout(() => {
-        window.location.href = `/${locale}/`;
-      }, 1200);
+        setPhase("fade");
+        const locale = detectLocale();
+        setTimeout(() => {
+          window.location.href = `/${locale}/`;
+        }, 1000);
+      }, DINO_DURATION);
     }, 1400);
   }, [phase]);
 
@@ -290,6 +284,8 @@ export default function IntroPage() {
     const locale = detectLocale();
     window.location.href = `/${locale}/`;
   }, []);
+
+  const showDino = phase === "dino" || phase === "fade";
 
   return (
     <div className="intro-root">
@@ -328,7 +324,7 @@ export default function IntroPage() {
       </button>
 
       {/* ── Main content ── */}
-      <div className="intro-content">
+      <div className={`intro-content ${showDino ? "hidden" : ""}`}>
         {/* Logo mark */}
         <div className={`intro-logo ${atLeast("logo") ? "visible" : ""}`}>
           <div className={`intro-logo-halo ${atLeast("logo") ? "active" : ""}`} />
@@ -348,15 +344,15 @@ export default function IntroPage() {
         <div className="intro-lock-area">
           <button
             onClick={handleUnlock}
-            className={`intro-lock ${atLeast("lock") ? "visible" : ""} ${phase === "unlock" || phase === "loading" ? "unlocked" : ""}`}
+            className={`intro-lock ${atLeast("lock") ? "visible" : ""} ${phase === "unlock" ? "unlocked" : ""}`}
             type="button"
             aria-label="Unlock"
           >
-            <LockIcon open={phase === "unlock" || phase === "loading"} />
+            <LockIcon open={phase === "unlock"} />
           </button>
 
           {/* Revealed text — appears frameless after unlock */}
-          <div className={`intro-revealed-text ${phase === "unlock" || phase === "loading" ? "visible" : ""}`}>
+          <div className={`intro-revealed-text ${phase === "unlock" ? "visible" : ""}`}>
             <span className="intro-revealed-ar" lang="ar" dir="rtl">
               هل موقعك يتحدث العربية فعلاً، أم يكتفي بالترجمة؟
             </span>
@@ -365,20 +361,35 @@ export default function IntroPage() {
             </span>
           </div>
         </div>
-
-        {/* Loading indicator — looped animation while navigating */}
-        {phase === "loading" && (
-          <div className="intro-loading" aria-label="Loading">
-            <div className="intro-loading-ring" />
-          </div>
-        )}
       </div>
+
+      {/* ── Dino transformation animation ── */}
+      {showDino && (
+        <div className="intro-dino-scene" aria-label="Loading">
+          <div className="intro-dino-viewport">
+            <img
+              src="/images/dino-transform.jpg"
+              alt=""
+              className="intro-dino-img"
+              aria-hidden="true"
+            />
+            {/* Glow overlay on the door area */}
+            <div className="intro-dino-glow" aria-hidden="true" />
+          </div>
+          {/* Caption */}
+          <div className="intro-dino-caption">
+            <span lang="ar" dir="rtl">نحوّل موقعك</span>
+            <span className="intro-dino-dot" aria-hidden="true" />
+            <span lang="en" dir="ltr">We transform your site</span>
+          </div>
+        </div>
+      )}
 
       {/* ── Edge vignette ── */}
       <div className="intro-vignette" aria-hidden="true" />
 
-      {/* ── Fade overlay for smooth transition (no red wipe) ── */}
-      {phase === "loading" && <div className="intro-fade-out" />}
+      {/* ── Fade overlay for smooth transition ── */}
+      {phase === "fade" && <div className="intro-fade-out" />}
     </div>
   );
 }

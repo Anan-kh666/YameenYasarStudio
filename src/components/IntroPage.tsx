@@ -192,9 +192,9 @@ export default function IntroPage() {
   }, [phase]);
 
   /* ── Play reveal video when phase enters "dino" ──
-     FIX: old code called play() blindly and swallowed errors — if the
-     video hadn't loaded, nothing happened until the 8s fallback.
-     Now we wait for canplay, and navigate immediately if play fails. */
+     The video was already "unlocked" by handleUnlock calling play()
+     inside the click handler (iOS requirement). Mobile browsers may
+     not have preloaded it, so we call load() to force buffering. */
   useEffect(() => {
     if (phase !== "dino") return;
     const vid = dinoVideoRef.current;
@@ -211,22 +211,24 @@ export default function IntroPage() {
     if (!vid) { navigate(); return; }
 
     const startPlay = () => {
+      if (done) return;
       vid.currentTime = 0;
       vid.play().catch(() => navigate());
     };
 
-    /* If the video has enough data, play immediately.
-       Otherwise wait for the browser to buffer enough. */
     if (vid.readyState >= 3) {
+      /* Already buffered (desktop / fast connection) — play now */
       startPlay();
     } else {
+      /* Mobile likely hasn't preloaded — force it to start buffering */
+      vid.load();
       vid.addEventListener("canplay", startPlay, { once: true });
     }
 
     vid.addEventListener("ended", navigate, { once: true });
 
-    /* Fallback: if video stalls or never loads, navigate after 5s */
-    const fallback = setTimeout(navigate, 5000);
+    /* If video can't play within 4s, just navigate */
+    const fallback = setTimeout(navigate, 4000);
 
     return () => {
       vid.removeEventListener("canplay", startPlay);
@@ -317,9 +319,21 @@ export default function IntroPage() {
   const brandAr = useTextDecode("يمين", textActive);
   const brandEn = useTextDecode("Yasar", textActive);
 
-  /* ── Lock click → unlock → reveal video → navigate ── */
+  /* ── Lock click → unlock → reveal video → navigate ──
+     IMPORTANT: we call vid.play() immediately inside the click handler
+     to unlock autoplay on iOS (play only works in a user-gesture call
+     stack). We pause right away — the dino phase resumes playback. This
+     also forces mobile browsers to start buffering the video. */
   const handleUnlock = useCallback(() => {
     if (phase !== "lock") return;
+
+    const vid = dinoVideoRef.current;
+    if (vid) {
+      vid.muted = true;
+      const p = vid.play();
+      if (p) p.then(() => { vid.pause(); vid.currentTime = 0; }).catch(() => {});
+    }
+
     setPhase("unlock");
 
     setTimeout(() => {

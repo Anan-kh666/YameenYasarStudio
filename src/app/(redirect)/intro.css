@@ -310,8 +310,9 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   DINO TRANSFORMATION — headline + video wrapper.
-   Plays inline at content size; mix-blend-mode removes the dark bg.
+   LOGO REVEAL — video plays as a floating object on screen.
+   mix-blend-mode: screen removes the pure-black background so the
+   animation composites over the matrix/glow layers beneath.
    ═══════════════════════════════════════════════════════════════════════ */
 .intro-dino-wrap {
   position: absolute;
@@ -332,21 +333,11 @@
   opacity: 1;
 }
 
-.intro-dino-headline {
-  font-size: clamp(1.125rem, 3vw, 1.5rem);
-  line-height: 1.4;
-  color: #D0CCC6;
-  text-align: center;
-  font-family: var(--font-readex-pro), system-ui, sans-serif;
-  white-space: nowrap;
-}
-
 .intro-dino-video {
-  width: clamp(240px, 50vw, 420px);
+  width: clamp(360px, 80vw, 720px);
   aspect-ratio: 16 / 9;
   object-fit: contain;
-  mix-blend-mode: lighten;
-  border-radius: 8px;
+  mix-blend-mode: screen;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

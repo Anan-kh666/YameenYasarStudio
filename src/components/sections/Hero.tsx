@@ -39,15 +39,6 @@ export default function Hero() {
         <div className="hero-orb hero-orb-3" />
       </div>
 
-      {/* Decorative logo mark */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <img
-          src="/brand/yy-mark-new.png"
-          alt=""
-          className="absolute top-1/2 end-[5%] h-[60%] w-auto -translate-y-1/2 opacity-[0.07]"
-        />
-      </div>
-
       <div className="relative mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 md:py-24">
         <div className="grid gap-4 md:grid-cols-2 md:items-end md:gap-8">
           <h1 className="font-heading text-h1 font-semibold leading-[1.2] text-text md:text-display hero-slide-start">

@@ -191,10 +191,11 @@ export default function IntroPage() {
     }
   }, [phase]);
 
-  /* ── Play reveal video when phase enters "dino" ──
-     The video was already "unlocked" by handleUnlock calling play()
-     inside the click handler (iOS requirement). Mobile browsers may
-     not have preloaded it, so we call load() to force buffering. */
+  /* ── Make reveal video visible when phase enters "dino" ──
+     The video has been playing since handleUnlock (hidden behind
+     content). We reset to t=0 so the user sees the full reveal.
+     Never call load() — it revokes iOS autoplay. If the video is
+     paused (play failed, stall, etc.) just navigate to the main page. */
   useEffect(() => {
     if (phase !== "dino") return;
     const vid = dinoVideoRef.current;
@@ -210,28 +211,21 @@ export default function IntroPage() {
 
     if (!vid) { navigate(); return; }
 
-    const startPlay = () => {
-      if (done) return;
-      vid.currentTime = 0;
-      vid.play().catch(() => navigate());
-    };
+    /* Reset to start so user sees the full reveal animation */
+    vid.currentTime = 0;
 
-    if (vid.readyState >= 3) {
-      /* Already buffered (desktop / fast connection) — play now */
-      startPlay();
-    } else {
-      /* Mobile likely hasn't preloaded — force it to start buffering */
-      vid.load();
-      vid.addEventListener("canplay", startPlay, { once: true });
+    /* If the video isn't playing (play() failed in handleUnlock,
+       or it stalled), skip directly to the main page */
+    if (vid.paused) {
+      vid.play().catch(() => navigate());
     }
 
     vid.addEventListener("ended", navigate, { once: true });
 
-    /* If video can't play within 4s, just navigate */
-    const fallback = setTimeout(navigate, 4000);
+    /* Safety net — if video can't finish within 10s, navigate anyway */
+    const fallback = setTimeout(navigate, 10000);
 
     return () => {
-      vid.removeEventListener("canplay", startPlay);
       vid.removeEventListener("ended", navigate);
       clearTimeout(fallback);
     };
@@ -322,16 +316,17 @@ export default function IntroPage() {
   /* ── Lock click → unlock → reveal video → navigate ──
      IMPORTANT: we call vid.play() immediately inside the click handler
      to unlock autoplay on iOS (play only works in a user-gesture call
-     stack). We pause right away — the dino phase resumes playback. This
-     also forces mobile browsers to start buffering the video. */
+     stack). We let it keep playing (hidden behind content) so iOS never
+     revokes the autoplay permission. The dino phase just resets to t=0
+     and makes it visible. Never call load() or pause() — that revokes
+     the iOS autoplay token. */
   const handleUnlock = useCallback(() => {
     if (phase !== "lock") return;
 
     const vid = dinoVideoRef.current;
     if (vid) {
       vid.muted = true;
-      const p = vid.play();
-      if (p) p.then(() => { vid.pause(); vid.currentTime = 0; }).catch(() => {});
+      vid.play().catch(() => {});
     }
 
     setPhase("unlock");

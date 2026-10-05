@@ -99,15 +99,17 @@ function LockIcon({ open }: { open: boolean }) {
 
 /* ═══════════════════════════════════════════════════════════════════════
    IntroPage — flow:
-   matrix bg → logo → text → lock → unlock (text reveals) →
-   dino video plays → video ends → fade to main page
+   matrix bg → logo (brand text) → text (decode) → lock → unlock →
+   reveal video plays → video ends → fade to main page
    ═══════════════════════════════════════════════════════════════════════ */
 type Phase = "init" | "matrix" | "logo" | "text" | "lock" | "unlock" | "dino" | "fade";
 
 export default function IntroPage() {
   const [phase, setPhase] = useState<Phase>("init");
   const [glowPos, setGlowPos] = useState({ x: 0.5, y: 0.5 });
-  const [isPortrait, setIsPortrait] = useState(false);
+  /* null = not yet detected (SSR / first render). Set once on mount,
+     never changed — prevents video src swaps that discard preloaded data. */
+  const [orientation, setOrientation] = useState<"portrait" | "landscape" | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
@@ -121,15 +123,14 @@ export default function IntroPage() {
     return order.indexOf(phase) >= order.indexOf(target);
   };
 
-  /* ── Orientation detection ── */
+  const portrait = orientation === "portrait";
+
+  /* ── Detect orientation once on mount — never update after ── */
   useEffect(() => {
-    const check = () => setIsPortrait(window.innerHeight > window.innerWidth);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+    setOrientation(window.innerHeight > window.innerWidth ? "portrait" : "landscape");
   }, []);
 
-  /* ── Mount ── */
+  /* ── Mount — decide whether to skip or start the intro ── */
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -143,12 +144,12 @@ export default function IntroPage() {
     }
   }, []);
 
-  /* ── Start background video ── */
+  /* ── Start background video once it's mounted ── */
   useEffect(() => {
     if (phase === "matrix" && bgVideoRef.current) {
       bgVideoRef.current.play().catch(() => {});
     }
-  }, [phase]);
+  }, [phase, orientation]);
 
   /* ── Canvas init ── */
   useEffect(() => {
@@ -164,13 +165,23 @@ export default function IntroPage() {
     return () => window.removeEventListener("resize", resize);
   }, []);
 
-  /* ── Sequence timers ── */
+  /* ── Phase sequence — each phase sets up ONLY its own next transition.
+     FIX: the old code set all three timeouts at once; when t1 fired and
+     phase changed, React's cleanup cancelled t2 and t3 before they ran,
+     so the lock never appeared. Now each phase is independent. ── */
   useEffect(() => {
-    if (phase !== "matrix") return;
-    const t1 = setTimeout(() => setPhase("logo"), 800);
-    const t2 = setTimeout(() => setPhase("text"), 2200);
-    const t3 = setTimeout(() => setPhase("lock"), 4200);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    if (phase === "matrix") {
+      const t = setTimeout(() => setPhase("logo"), 800);
+      return () => clearTimeout(t);
+    }
+    if (phase === "logo") {
+      const t = setTimeout(() => setPhase("text"), 1400);
+      return () => clearTimeout(t);
+    }
+    if (phase === "text") {
+      const t = setTimeout(() => setPhase("lock"), 2000);
+      return () => clearTimeout(t);
+    }
   }, [phase]);
 
   /* ── Mark seen ── */
@@ -180,32 +191,46 @@ export default function IntroPage() {
     }
   }, [phase]);
 
-  /* ── Play dino video when phase enters "dino" ── */
+  /* ── Play reveal video when phase enters "dino" ──
+     FIX: old code called play() blindly and swallowed errors — if the
+     video hadn't loaded, nothing happened until the 8s fallback.
+     Now we wait for canplay, and navigate immediately if play fails. */
   useEffect(() => {
     if (phase !== "dino") return;
     const vid = dinoVideoRef.current;
-    if (!vid) return;
 
-    vid.currentTime = 0;
-    vid.play().catch(() => {});
-
-    /* When the video ends, fade out and navigate */
-    const onEnd = () => {
+    let done = false;
+    const navigate = () => {
+      if (done) return;
+      done = true;
       setPhase("fade");
       const locale = detectLocale();
-      setTimeout(() => {
-        window.location.href = `/${locale}/`;
-      }, 1000);
+      setTimeout(() => { window.location.href = `/${locale}/`; }, 1000);
     };
-    vid.addEventListener("ended", onEnd);
 
-    /* Safety fallback: if video stalls, navigate after 8s */
-    const fallback = setTimeout(() => {
-      if (phase === "dino") onEnd();
-    }, 8000);
+    if (!vid) { navigate(); return; }
+
+    const startPlay = () => {
+      vid.currentTime = 0;
+      vid.play().catch(() => navigate());
+    };
+
+    /* If the video has enough data, play immediately.
+       Otherwise wait for the browser to buffer enough. */
+    if (vid.readyState >= 3) {
+      startPlay();
+    } else {
+      vid.addEventListener("canplay", startPlay, { once: true });
+    }
+
+    vid.addEventListener("ended", navigate, { once: true });
+
+    /* Fallback: if video stalls or never loads, navigate after 5s */
+    const fallback = setTimeout(navigate, 5000);
 
     return () => {
-      vid.removeEventListener("ended", onEnd);
+      vid.removeEventListener("canplay", startPlay);
+      vid.removeEventListener("ended", navigate);
       clearTimeout(fallback);
     };
   }, [phase]);
@@ -292,12 +317,11 @@ export default function IntroPage() {
   const brandAr = useTextDecode("يمين", textActive);
   const brandEn = useTextDecode("Yasar", textActive);
 
-  /* ── Lock click → unlock → dino video → navigate ── */
+  /* ── Lock click → unlock → reveal video → navigate ── */
   const handleUnlock = useCallback(() => {
     if (phase !== "lock") return;
     setPhase("unlock");
 
-    /* After unlock text reveals, start the dino video */
     setTimeout(() => {
       setPhase("dino");
       try { localStorage.setItem("yy-intro-seen", "1"); } catch {}
@@ -313,15 +337,22 @@ export default function IntroPage() {
 
   const showDino = phase === "dino" || phase === "fade";
 
+  /* Video sources — resolved once orientation is known, never swapped */
+  const glowSrc = portrait ? "/images/logo-glow-portrait.mp4" : "/images/logo-glow.mp4";
+  const revealSrc = portrait ? "/images/logo-reveal-portrait.mp4" : "/images/logo-reveal.mp4";
+
   return (
     <div className="intro-root">
-      {/* ── Background video (logo glow animation, portrait-aware) ── */}
-      <video
-        ref={bgVideoRef}
-        className={`intro-video ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
-        src={isPortrait ? "/images/logo-glow-portrait.mp4" : "/images/logo-glow.mp4"}
-        muted loop playsInline preload="auto" aria-hidden="true"
-      />
+      {/* ── Background video — only rendered once orientation is known
+          so the src is correct from the start (no swap, no reload) ── */}
+      {orientation && (
+        <video
+          ref={bgVideoRef}
+          className={`intro-video ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
+          src={glowSrc}
+          muted loop playsInline preload="auto" aria-hidden="true"
+        />
+      )}
 
       {/* ── Noise texture ── */}
       <svg className="intro-noise" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -378,20 +409,20 @@ export default function IntroPage() {
         </div>
       </div>
 
-      {/* ── Logo reveal video (portrait-aware) ──
-          Preloaded but hidden; plays when phase = "dino".
-          Automatically triggers fade + navigation on video end. */}
-      <div className={`intro-dino-wrap ${showDino ? "active" : ""}`}>
-        <video
-          ref={dinoVideoRef}
-          className="intro-dino-video"
-          src={isPortrait ? "/images/logo-reveal-portrait.mp4" : "/images/logo-reveal.mp4"}
-          muted
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-        />
-      </div>
+      {/* ── Logo reveal video — only rendered once orientation is known ── */}
+      {orientation && (
+        <div className={`intro-dino-wrap ${showDino ? "active" : ""}`}>
+          <video
+            ref={dinoVideoRef}
+            className="intro-dino-video"
+            src={revealSrc}
+            muted
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+          />
+        </div>
+      )}
 
       {/* ── Edge vignette ── */}
       <div className="intro-vignette" aria-hidden="true" />

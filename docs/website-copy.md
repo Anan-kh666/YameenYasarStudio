@@ -64,8 +64,8 @@ WhatsApp link: `https://wa.me/[...]`
   - EN: Written in Arabic from scratch, not translated.
 
 ### November offer banner / عرض نوفمبر (removable)
-- AR: عرض نوفمبر: خصم ٣٠٪ لأول ٣ عملاء مقابل تقييم مكتوب.
-- EN: November offer: our first 3 clients get 30% off in exchange for a written review.
+- AR: عرض نوفمبر: خصم ٣٠٪ مقابل تقييم مكتوب.
+- EN: November offer: 30% off in exchange for a written review.
 
 ---
 

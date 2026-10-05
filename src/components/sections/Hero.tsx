@@ -22,12 +22,12 @@ export default function Hero() {
       id="hero"
       className="relative flex min-h-[85vh] items-center overflow-hidden"
     >
-      {/* Atmospheric background */}
+      {/* Atmospheric background — logo glow video */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <img
-          src="/images/hero-atmosphere.png"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
+        <video
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          src="/images/logo-glow.mp4"
+          muted loop playsInline autoPlay preload="auto"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/60 to-transparent" />
       </div>
@@ -39,10 +39,10 @@ export default function Hero() {
         <div className="hero-orb hero-orb-3" />
       </div>
 
-      {/* Decorative chevron */}
+      {/* Decorative logo mark */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <img
-          src="/brand/yy-mark-reversed.svg"
+          src="/brand/yy-mark-new.png"
           alt=""
           className="absolute top-1/2 end-[5%] h-[60%] w-auto -translate-y-1/2 opacity-[0.07]"
         />

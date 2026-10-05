@@ -306,11 +306,11 @@ export default function IntroPage() {
 
   return (
     <div className="intro-root">
-      {/* ── Background video (very subtle) ── */}
+      {/* ── Background video (logo glow animation) ── */}
       <video
         ref={bgVideoRef}
         className={`intro-video ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
-        src="/images/intro-glow.mp4"
+        src="/images/logo-glow.mp4"
         muted loop playsInline preload="auto" aria-hidden="true"
       />
 
@@ -345,7 +345,7 @@ export default function IntroPage() {
         <div className={`intro-logo ${atLeast("logo") ? "visible" : ""}`}>
           <div className={`intro-logo-halo ${atLeast("logo") ? "active" : ""}`} />
           <div className={`intro-logo-reveal ${atLeast("logo") ? "active" : ""}`}>
-            <img src="/brand/yy-mark-intro.svg" alt="" width={72} height={54} />
+            <img src="/brand/yy-mark-new.png" alt="" width={72} height={72} />
           </div>
         </div>
 
@@ -376,15 +376,14 @@ export default function IntroPage() {
         </div>
       </div>
 
-      {/* ── Dino transformation video + headline ──
+      {/* ── Logo reveal video ──
           Preloaded but hidden; plays when phase = "dino".
           Automatically triggers fade + navigation on video end. */}
       <div className={`intro-dino-wrap ${showDino ? "active" : ""}`}>
-        <p className="intro-dino-headline">Level up your performance with us</p>
         <video
           ref={dinoVideoRef}
           className="intro-dino-video"
-          src="/images/dino-intro.mp4"
+          src="/images/logo-reveal.mp4"
           muted
           playsInline
           preload="auto"

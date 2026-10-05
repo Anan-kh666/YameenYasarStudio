@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 
 /**
  * Horizontal logo with staggered reveal animation.
- * Dark-only site — always shows the reversed (light-on-dark) variant.
+ * Dark-only site — always shows the new Higgsfield-rendered logo on dark bg.
  * Wrapped in dir="ltr" so the logo never flips in RTL.
  */
 export default function Logo() {
@@ -12,7 +12,7 @@ export default function Logo() {
   return (
     <span dir="ltr" className="logo-glow inline-block relative">
       <img
-        src="/brand/yy-logo-horizontal-reversed.svg"
+        src="/brand/yy-logo-new.png"
         alt={alt}
         width={138}
         height={32}

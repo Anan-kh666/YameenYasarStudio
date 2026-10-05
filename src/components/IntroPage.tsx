@@ -81,7 +81,7 @@ function detectLocale(): string {
 /* ── Lock SVG icon ── */
 function LockIcon({ open }: { open: boolean }) {
   return (
-    <svg viewBox="0 0 24 28" width={32} height={37} className="intro-lock-svg" aria-hidden="true">
+    <svg viewBox="0 0 24 28" width={42} height={49} className="intro-lock-svg" aria-hidden="true">
       <path
         className={`intro-lock-shackle ${open ? "open" : ""}`}
         d="M7 11V7a5 5 0 0 1 10 0v4"
@@ -340,16 +340,9 @@ export default function IntroPage() {
         <span lang="en">Skip</span>{" / "}<span lang="ar">تخطّي</span>
       </button>
 
-      {/* ── Main content (logo, brand, lock) ── */}
+      {/* ── Main content (brand text + lock) ── */}
       <div className={`intro-content ${showDino ? "hidden" : ""}`}>
-        <div className={`intro-logo ${atLeast("logo") ? "visible" : ""}`}>
-          <div className={`intro-logo-halo ${atLeast("logo") ? "active" : ""}`} />
-          <div className={`intro-logo-reveal ${atLeast("logo") ? "active" : ""}`}>
-            <img src="/brand/yy-mark-new.png" alt="" width={72} height={72} />
-          </div>
-        </div>
-
-        <div className={`intro-brand ${atLeast("text") ? "visible" : ""}`}>
+        <div className={`intro-brand ${atLeast("logo") ? "visible" : ""}`}>
           <span className="intro-brand-ar font-heading" lang="ar" dir="rtl">{brandAr}</span>
           <span className="intro-brand-divider" aria-hidden="true" />
           <span className="intro-brand-en font-heading" lang="en" dir="ltr">{brandEn}</span>

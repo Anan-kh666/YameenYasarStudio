@@ -13,7 +13,7 @@ export const site = {
   // TODO(anan): verify this LinkedIn URL is correct
   linkedin: "https://www.linkedin.com/company/yameen-yasar-studio",
 
-  /** Launch-offer banner on the packages section. Set false to hide. */
+  /** November-offer banner on the packages section. Set false to hide. */
   launchOffer: true,
 
   prices: {

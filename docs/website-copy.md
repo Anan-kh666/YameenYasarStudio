@@ -43,15 +43,15 @@ WhatsApp link: `https://wa.me/[...]`
 **AR** Headline: أسعار واضحة، بدون مفاجآت.
 **EN** Headline: Clear prices, no surprises.
 
-### Launch — الانطلاقة — 300 USD — 7 days / 7 أيام
+### Basic Website — موقع أساسي — 300 USD — 7 days / 7 أيام
 - AR: صفحة وحدة باللغتين، نموذج تواصل، زر واتساب، خريطة، متجاوبة مع الموبايل، SEO أساسي باللغتين، جولتين تعديل.
 - EN: One bilingual page, contact form, WhatsApp button, map, mobile-ready, basic SEO in both languages, 2 revision rounds.
 
-### Business — الأعمال — 750 USD — 14 days / 14 يوم — badge: الأكثر طلباً / Most popular
-- AR: لحد ٥ صفحات باللغتين، كل شي بالانطلاقة، إعداد Google Business، ربط الدومين والإيميل، ٣ جولات تعديل.
-- EN: Up to 5 bilingual pages, everything in Launch, Google Business setup, domain and email connected, 3 revision rounds.
+### Professional Website — موقع احترافي — 750 USD — 14 days / 14 يوم — badge: الأكثر طلباً / Most popular
+- AR: لحد ٥ صفحات باللغتين، كل شي بالموقع الأساسي، إعداد Google Business، ربط الدومين والإيميل، ٣ جولات تعديل.
+- EN: Up to 5 bilingual pages, everything in Basic Website, Google Business setup, domain and email connected, 3 revision rounds.
 
-### Custom — مخصص — from 1,500 USD / من ١٥٠٠ دولار — by scope / حسب المشروع
+### Specialized Website Development — تطوير موقع متخصّص — from 1,500 USD / من ١٥٠٠ دولار — by scope / حسب المشروع
 - AR: حجوزات، لوحات تحكم، تطبيقات ويب، مساعد ذكاء اصطناعي بالموقع.
 - EN: Booking systems, dashboards, web apps, AI assistants.
 
@@ -63,9 +63,9 @@ WhatsApp link: `https://wa.me/[...]`
   - AR: محتوى مكتوب بالعربي من الأساس.
   - EN: Written in Arabic from scratch, not translated.
 
-### Launch offer banner / عرض الإطلاق (removable)
-- AR: أول ٣ زبائن بياخدوا خصم ٤٠٪ مقابل تقييم مكتوب وإذن نعرض المشروع بأعمالنا.
-- EN: Our first 3 clients get 40% off in exchange for a written review and permission to feature the project.
+### November offer banner / عرض نوفمبر (removable)
+- AR: عرض نوفمبر: خصم ٣٠٪ لأول ٣ عملاء مقابل تقييم مكتوب.
+- EN: November offer: our first 3 clients get 30% off in exchange for a written review.
 
 ---
 
@@ -95,7 +95,7 @@ Zait & Za'atar URL: `[...]` · Clinic and SaaS: not built yet — show as "Comin
 3. منبني: منبني الموقع وبتجرّبه على رابط خاص، وبتطلب التعديلات.
 4. منطلق: منربط الدومين ومنطلق الموقع، وبنضل معك إذا بدك صيانة.
 
-الدفع: ٥٠٪ لنبلّش، و٥٠٪ قبل الإطلاق.
+الدفع: ٤٠٪ لنبلّش، ٤٠٪ لمّا نخلّص، و٢٠٪ بعد ٥ أيام من الإطلاق والتجربة.
 
 **EN** Headline: From first message to live site, in 4 steps.
 1. Talk: a short free call to understand your business, your customers and what the site needs to do.
@@ -103,7 +103,7 @@ Zait & Za'atar URL: `[...]` · Clinic and SaaS: not built yet — show as "Comin
 3. Build: we build it, you test it on a private link and ask for changes.
 4. Launch: we connect your domain, go live, and stay on if you want ongoing care.
 
-Payment: 50% to start, 50% before launch.
+Payment: 40% to start, 40% when finished, and 20% after 5 days of live testing.
 
 ---
 
@@ -126,7 +126,7 @@ Photo: `public/images/anan.jpg` `[...]`
 ## 7. FAQ
 
 **AR**
-- كيف بدفع؟ — تحويل بنكي أو PayPal أو Wise. ٥٠٪ لنبلّش، و٥٠٪ قبل الإطلاق.
+- كيف بدفع؟ — تحويل بنكي أو PayPal أو Wise. ٤٠٪ لنبلّش، ٤٠٪ لمّا نخلّص، و٢٠٪ بعد ٥ أيام من الإطلاق والتجربة.
 - إذا ما عجبني التصميم؟ — كل باقة فيها جولات تعديل، ومنعدّل لحتى يطلع متل ما بدك ضمن حدود الباقة.
 - مين بيكتب المحتوى؟ — إنت بتعطينا المعلومات، ومنرتبها. وإذا بدك نكتب المحتوى بالعربي من الأساس، في إضافة الكتابة.
 - لازم يكون عندي دومين واستضافة؟ — لا. منساعدك تشتري الدومين باسمك، والاستضافة مجانية للمواقع البسيطة.
@@ -134,7 +134,7 @@ Photo: `public/images/anan.jpg` `[...]`
 - بتشتغلوا مع زبائن من برّا الخليج؟ — أي، منشتغل أونلاين مع أي حدا بأي بلد.
 
 **EN**
-- How do I pay? — Bank transfer, PayPal or Wise. 50% to start, 50% before launch.
+- How do I pay? — Bank transfer, PayPal or Wise. 40% to start, 40% when finished, and 20% after 5 days of live testing.
 - What if I don't like the design? — Every package includes revision rounds, and we refine until it's right within the package scope.
 - Who writes the content? — You give us the information and we shape it. If you want Arabic copy written from scratch, add the copywriting add-on.
 - Do I need a domain and hosting? — No. We help you buy the domain in your name, and hosting is free for simple sites.
@@ -148,7 +148,7 @@ Photo: `public/images/anan.jpg` `[...]`
 **Contact**
 - AR: Headline: خلينا نحكي عن موقعك. · Subline: بعتلنا رسالة، ومنرد خلال ٢٤ ساعة.
 - EN: Headline: Let's talk about your website. · Subline: Send us a message and we'll reply within 24 hours.
-- Fields: الاسم / Name · الإيميل / Email · شو نوع شغلك؟ / What's your business? · شو الباقة يلي بتهمك؟ / Which package? (Launch, Business, Custom, Not sure / مش متأكد) · رسالتك / Your message
+- Fields: الاسم / Name · الإيميل / Email · شو نوع شغلك؟ / What's your business? · شو الباقة يلي بتهمك؟ / Which package? (Basic Website, Professional Website, Specialized Website Development, Not sure / مش متأكد) · رسالتك / Your message
 - Buttons: [ابعت] / [Send] · [واتساب] / [WhatsApp] · hello@yameenyasar.com
 - Success: AR: وصلت رسالتك، منرد عليك خلال ٢٤ ساعة. · EN: Message sent. We'll reply within 24 hours.
 - Error: AR: ما قدرنا نبعت الرسالة. جرّب مرة تانية أو احكينا على واتساب. · EN: Your message didn't send. Try again, or reach us on WhatsApp.

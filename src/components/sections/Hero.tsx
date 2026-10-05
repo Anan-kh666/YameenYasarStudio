@@ -25,11 +25,11 @@ export default function Hero() {
       {/* Atmospheric background — logo glow video */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <video
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          className="absolute inset-0 w-full h-full object-cover opacity-55"
           src="/images/logo-glow.mp4"
           muted loop playsInline autoPlay preload="auto"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/40 to-transparent" />
       </div>
 
       {/* Aurora orbs */}

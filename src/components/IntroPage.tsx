@@ -107,6 +107,7 @@ type Phase = "init" | "matrix" | "logo" | "text" | "lock" | "unlock" | "dino" | 
 export default function IntroPage() {
   const [phase, setPhase] = useState<Phase>("init");
   const [glowPos, setGlowPos] = useState({ x: 0.5, y: 0.5 });
+  const [isPortrait, setIsPortrait] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
@@ -119,6 +120,14 @@ export default function IntroPage() {
     const order: Phase[] = ["init", "matrix", "logo", "text", "lock", "unlock", "dino", "fade"];
     return order.indexOf(phase) >= order.indexOf(target);
   };
+
+  /* ── Orientation detection ── */
+  useEffect(() => {
+    const check = () => setIsPortrait(window.innerHeight > window.innerWidth);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   /* ── Mount ── */
   useEffect(() => {
@@ -306,11 +315,11 @@ export default function IntroPage() {
 
   return (
     <div className="intro-root">
-      {/* ── Background video (logo glow animation) ── */}
+      {/* ── Background video (logo glow animation, portrait-aware) ── */}
       <video
         ref={bgVideoRef}
         className={`intro-video ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
-        src="/images/logo-glow.mp4"
+        src={isPortrait ? "/images/logo-glow-portrait.mp4" : "/images/logo-glow.mp4"}
         muted loop playsInline preload="auto" aria-hidden="true"
       />
 
@@ -369,14 +378,14 @@ export default function IntroPage() {
         </div>
       </div>
 
-      {/* ── Logo reveal video ──
+      {/* ── Logo reveal video (portrait-aware) ──
           Preloaded but hidden; plays when phase = "dino".
           Automatically triggers fade + navigation on video end. */}
       <div className={`intro-dino-wrap ${showDino ? "active" : ""}`}>
         <video
           ref={dinoVideoRef}
           className="intro-dino-video"
-          src="/images/logo-reveal.mp4"
+          src={isPortrait ? "/images/logo-reveal-portrait.mp4" : "/images/logo-reveal.mp4"}
           muted
           playsInline
           preload="auto"

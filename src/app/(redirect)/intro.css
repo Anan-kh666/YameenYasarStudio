@@ -37,12 +37,7 @@
   opacity: 0.35;
 }
 
-/* Portrait mobile: contain so the logo in the video stays visible */
-@media (orientation: portrait) {
-  .intro-video {
-    object-fit: contain;
-  }
-}
+/* Portrait uses a dedicated 9:16 video — no object-fit override needed */
 
 /* ── Layer 1: Noise texture ── */
 .intro-noise {
@@ -307,12 +302,7 @@
   mix-blend-mode: screen;
 }
 
-/* Portrait: scale up so the 16:9 animation fills the screen width */
-@media (orientation: portrait) {
-  .intro-dino-video {
-    object-fit: cover;
-  }
-}
+/* Portrait uses a dedicated 9:16 video — fills naturally */
 
 /* ═══════════════════════════════════════════════════════════════════════
    FADE-OUT OVERLAY — smooth dark fade

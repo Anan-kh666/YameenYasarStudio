@@ -64,6 +64,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
+          <LanguageSwitch />
           <WhatsAppButton compact />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -91,9 +92,6 @@ export default function Header() {
               {t(`nav.${item}`)}
             </a>
           ))}
-          <div className="mt-3 border-t border-line pt-3">
-            <LanguageSwitch />
-          </div>
         </nav>
       )}
     </header>

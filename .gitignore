@@ -4,3 +4,10 @@ out/
 .env.local
 .DS_Store
 tsconfig.tsbuildinfo
+
+# Leftovers from the OpenNext / wrangler experiment (2026-10-01)
+.open-next/
+.wrangler/
+
+# Personal Claude Code settings
+.claude/settings.local.json

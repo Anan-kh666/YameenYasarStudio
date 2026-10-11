@@ -1,73 +1,48 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
+import { BrandField } from "@/lib/brandField";
+import { cssFontFamily } from "@/lib/cssFont";
 
-/* ── Matrix config ── */
-const MATRIX_CHARS = "01٠١٢٣٤٥٦٧٨٩<>/{}[]#=+-*&%$@!?;:";
-const COL_WIDTH = 22;
-const FALL_SPEED_MIN = 0.3;
-const FALL_SPEED_MAX = 1.2;
-const MOUSE_GLOW_DIST = 160;
+/* ═══════════════════════════════════════════════════════════════════════
+   IntroPage — flow:
+   assemble (particles stream in from both edges and build "Yasar | يمين")
+   → lock (enter button; particles react to the pointer)
+   → [click] unlock (the words are "compiled": they decode into digits,
+     type themselves out as bilingual code, a progress bar fills from both
+     ends, the code collapses into one line of light; the question appears)
+   → logo (the line's digits render the real logo, a scan opens it) → fade → navigate
 
-/* ── Text decode ── */
-const AR_CHARS = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
-const EN_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-const SCRAMBLE = AR_CHARS + EN_CHARS;
+   Returning visitors start at "lock" with a short fly-in.
+   Reduced motion: static text, no canvas; the button just enters.
+   ═══════════════════════════════════════════════════════════════════════ */
+type Phase = "init" | "assemble" | "lock" | "unlock" | "logo" | "fade";
+const ORDER: Phase[] = ["init", "assemble", "lock", "unlock", "logo", "fade"];
 
-interface MatrixCol {
-  x: number;
-  y: number;
-  speed: number;
-  chars: string[];
-  length: number;
-}
+/* Two lines on purpose: the Arabic breaks after the comma, where it pauses. */
+const QUESTION_AR = ["هل موقعك يتحدث العربية فعلاً،", "أم يكتفي بالترجمة؟"];
+const QUESTION_EN = "Does your website speak Arabic, or just translate it?";
 
-function createMatrixCols(w: number, h: number): MatrixCol[] {
-  const cols: MatrixCol[] = [];
-  const count = Math.ceil(w / COL_WIDTH);
-  for (let i = 0; i < count; i++) {
-    const length = Math.floor(Math.random() * 15) + 5;
-    const chars: string[] = [];
-    for (let j = 0; j < length; j++) {
-      chars.push(MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)]);
-    }
-    cols.push({
-      x: i * COL_WIDTH + COL_WIDTH / 2,
-      y: Math.random() * h * 1.5 - h * 0.5,
-      speed: FALL_SPEED_MIN + Math.random() * (FALL_SPEED_MAX - FALL_SPEED_MIN),
-      chars,
-      length,
-    });
+/* ── Client environment, read ONCE on the first client render ──
+   "Returning visitor?" and "reduced motion?" decide where the intro starts,
+   so they must not change mid-intro. Caching them in a module variable and
+   reading it through useSyncExternalStore gives us "null on the server,
+   fixed value on the client" without calling setState inside an effect. */
+interface ClientEnv { returning: boolean; reduced: boolean }
+let cachedEnv: ClientEnv | null = null;
+function getClientEnv(): ClientEnv {
+  if (!cachedEnv) {
+    let returning = false;
+    try { returning = localStorage.getItem("yy-intro-seen") === "1"; } catch {}
+    cachedEnv = {
+      returning,
+      reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    };
   }
-  return cols;
+  return cachedEnv;
 }
-
-function useTextDecode(text: string, active: boolean): string {
-  const [output, setOutput] = useState(text);
-  useEffect(() => {
-    if (!active) return;
-    const chars = text.split("");
-    const len = chars.length;
-    let frame = 0;
-    const framesPerChar = 4;
-    const totalFrames = len * framesPerChar;
-    const interval = setInterval(() => {
-      frame++;
-      const locked = Math.min(Math.floor(frame / framesPerChar), len);
-      const result = chars
-        .map((ch, i) => {
-          if (ch === " ") return " ";
-          if (i < locked) return ch;
-          return SCRAMBLE[Math.floor(Math.random() * SCRAMBLE.length)];
-        })
-        .join("");
-      setOutput(result);
-      if (frame >= totalFrames) { clearInterval(interval); setOutput(text); }
-    }, 50);
-    return () => clearInterval(interval);
-  }, [text, active]);
-  return output;
-}
+const subscribeNever = () => () => {};
+const getServerEnv = () => null;
 
 function detectLocale(): string {
   try {
@@ -78,17 +53,15 @@ function detectLocale(): string {
   return lang.startsWith("ar") ? "ar" : "en";
 }
 
-/* ── Lock SVG icon ── */
+const toArabicDigits = (n: number) => String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[+d]);
+
 function LockIcon({ open }: { open: boolean }) {
   return (
-    <svg viewBox="0 0 24 28" width={42} height={49} className="intro-lock-svg" aria-hidden="true">
+    <svg viewBox="0 0 24 28" width={34} height={40} className="intro-lock-svg" aria-hidden="true">
       <path
         className={`intro-lock-shackle ${open ? "open" : ""}`}
         d="M7 11V7a5 5 0 0 1 10 0v4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
+        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
       />
       <rect x="4" y="11" width="16" height="13" rx="2" fill="currentColor" opacity="0.15" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="12" cy="17" r="2" fill="currentColor" />
@@ -97,346 +70,276 @@ function LockIcon({ open }: { open: boolean }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   IntroPage — flow:
-   matrix bg → logo (brand text) → text (decode) → lock → unlock →
-   reveal video plays → video ends → fade to main page
-   ═══════════════════════════════════════════════════════════════════════ */
-type Phase = "init" | "matrix" | "logo" | "text" | "lock" | "unlock" | "dino" | "fade";
+/* Words animate one by one. We split on spaces only — never inside a word —
+   so Arabic letters stay joined. */
+function Words({ text, offset = 0 }: { text: string; offset?: number }) {
+  return text.split(" ").map((word, i, all) => (
+    <span key={i}>
+      <span className="intro-q-word" style={{ "--i": i + offset } as React.CSSProperties}>{word}</span>
+      {i < all.length - 1 ? " " : null}
+    </span>
+  ));
+}
 
 export default function IntroPage() {
-  const [phase, setPhase] = useState<Phase>("init");
-  const [glowPos, setGlowPos] = useState({ x: 0.5, y: 0.5 });
-  /* null = not yet detected (SSR / first render). Set once on mount,
-     never changed — prevents video src swaps that discard preloaded data. */
-  const [orientation, setOrientation] = useState<"portrait" | "landscape" | null>(null);
+  const env = useSyncExternalStore(subscribeNever, getClientEnv, getServerEnv);
+  const [phaseState, setPhase] = useState<Phase | null>(null);
+  /* Until something advances the phase, the starting phase follows from env. */
+  const phase: Phase = phaseState ?? (env ? (env.returning || env.reduced ? "lock" : "assemble") : "init");
+  const atLeast = (p: Phase) => ORDER.indexOf(phase) >= ORDER.indexOf(p);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const bgVideoRef = useRef<HTMLVideoElement>(null);
-  const dinoVideoRef = useRef<HTMLVideoElement>(null);
-  const mouseAbs = useRef({ x: 0, y: 0 });
-  const matrixColsRef = useRef<MatrixCol[]>([]);
-  const rafRef = useRef(0);
+  const fieldRef = useRef<BrandField | null>(null);
+  const enterRef = useRef<HTMLButtonElement>(null);
+  const barRef = useRef<HTMLSpanElement>(null);
+  const pctEnRef = useRef<HTMLSpanElement>(null);
+  const pctArRef = useRef<HTMLSpanElement>(null);
 
-  const atLeast = (target: Phase) => {
-    const order: Phase[] = ["init", "matrix", "logo", "text", "lock", "unlock", "dino", "fade"];
-    return order.indexOf(phase) >= order.indexOf(target);
-  };
-
-  const portrait = orientation === "portrait";
-
-  /* ── Detect orientation once on mount — never update after ── */
-  useEffect(() => {
-    setOrientation(window.innerHeight > window.innerWidth ? "portrait" : "landscape");
+  const navigate = useCallback(() => {
+    window.location.href = `/${detectLocale()}/`;
   }, []);
 
-  /* ── Mount — decide whether to skip or start the intro ── */
+  /* ── Particle field: wait for the brand fonts (max 1.5 s), then start ── */
   useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    let skip = false;
-    try { skip = localStorage.getItem("yy-intro-seen") === "1"; } catch {}
-
-    if (skip || prefersReduced) {
-      setPhase("lock");
-    } else {
-      setPhase("matrix");
-    }
-  }, []);
-
-  /* ── Start background video once it's mounted ── */
-  useEffect(() => {
-    if (phase === "matrix" && bgVideoRef.current) {
-      bgVideoRef.current.play().catch(() => {});
-    }
-  }, [phase, orientation]);
-
-  /* ── Canvas init ── */
-  useEffect(() => {
+    if (!env || env.reduced) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      matrixColsRef.current = createMatrixCols(canvas.width, canvas.height);
-    };
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, []);
 
-  /* ── Phase sequence — each phase sets up ONLY its own next transition.
-     FIX: the old code set all three timeouts at once; when t1 fired and
-     phase changed, React's cleanup cancelled t2 and t3 before they ran,
-     so the lock never appeared. Now each phase is independent. ── */
+    let cancelled = false;
+    const fonts = {
+      ar: cssFontFamily("--font-tajawal", "sans-serif"),
+      en: cssFontFamily("--font-cormorant", "serif"),
+    };
+    const fontsReady = Promise.all([
+      document.fonts.load(`700 100px ${fonts.ar}`, "يمين"),
+      document.fonts.load(`600 100px ${fonts.en}`, "Yasar"),
+    ]).catch(() => {});
+    Promise.race([fontsReady, new Promise((r) => setTimeout(r, 1500))]).then(() => {
+      if (cancelled) return;
+      const field = new BrandField(canvas, fonts);
+      field.resize();
+      field.start(env.returning);
+      fieldRef.current = field;
+      // If we started on the timeout (slow network), the letters were sampled
+      // from the fallback font. Re-sample once the real fonts arrive: the
+      // particles simply glide into the correct shapes.
+      fontsReady.then(() => { if (!cancelled) field.resize(); });
+    });
+
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => fieldRef.current?.resize(), 200);
+    };
+
+    /* Pointer drives the particles, and pulls the enter button a little
+       toward the cursor ("magnetic"). Touch only counts while pressed. */
+    const onMove = (e: PointerEvent) => {
+      const touching = e.pointerType !== "mouse" ? e.pressure > 0 || e.buttons > 0 : true;
+      fieldRef.current?.setPointer(e.clientX, e.clientY, touching);
+      const btn = enterRef.current;
+      if (btn && e.pointerType === "mouse") {
+        const r = btn.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width / 2);
+        const dy = e.clientY - (r.top + r.height / 2);
+        const near = Math.hypot(dx, dy) < 180;
+        btn.style.setProperty("--mx", `${near ? dx * 0.25 : 0}px`);
+        btn.style.setProperty("--my", `${near ? dy * 0.25 : 0}px`);
+      }
+    };
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") fieldRef.current?.setPointer(-9999, -9999, false);
+    };
+    const onLeave = () => fieldRef.current?.setPointer(-9999, -9999, false);
+
+    window.addEventListener("resize", onResize);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onMove, { passive: true });
+    window.addEventListener("pointerup", onUp);
+    document.documentElement.addEventListener("pointerleave", onLeave);
+    return () => {
+      cancelled = true;
+      clearTimeout(resizeTimer);
+      fieldRef.current?.stop();
+      fieldRef.current = null;
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onMove);
+      window.removeEventListener("pointerup", onUp);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
+    };
+  }, [env]);
+
+  /* ── Phase sequence — each phase schedules ONLY its own next step.
+     (Scheduling several timeouts in one effect let React's cleanup cancel
+     the later ones; see commit 20f11fe.) ── */
   useEffect(() => {
-    if (phase === "matrix") {
-      const t = setTimeout(() => setPhase("logo"), 800);
-      return () => clearTimeout(t);
-    }
-    if (phase === "logo") {
-      const t = setTimeout(() => setPhase("text"), 1400);
-      return () => clearTimeout(t);
-    }
-    if (phase === "text") {
-      const t = setTimeout(() => setPhase("lock"), 2000);
-      return () => clearTimeout(t);
-    }
+    if (phase !== "assemble") return;
+    const t = setTimeout(() => setPhase("lock"), 2700);
+    return () => clearTimeout(t);
   }, [phase]);
 
-  /* ── Mark seen ── */
   useEffect(() => {
     if (phase === "lock") {
       try { localStorage.setItem("yy-intro-seen", "1"); } catch {}
     }
   }, [phase]);
 
-  /* ── Make reveal video visible when phase enters "dino" ──
-     The video has been playing since handleUnlock (hidden behind
-     content). We reset to t=0 so the user sees the full reveal.
-     Never call load() — it revokes iOS autoplay. If the video is
-     paused (play failed, stall, etc.) just navigate to the main page. */
+  /* ── Tell the particles what to do in each phase ── */
   useEffect(() => {
-    if (phase !== "dino") return;
-    const vid = dinoVideoRef.current;
-
-    let done = false;
-    const navigate = () => {
-      if (done) return;
-      done = true;
-      setPhase("fade");
-      const locale = detectLocale();
-      setTimeout(() => { window.location.href = `/${locale}/`; }, 1000);
-    };
-
-    if (!vid) { navigate(); return; }
-
-    /* Reset to start so user sees the full reveal animation */
-    vid.currentTime = 0;
-
-    /* If the video isn't playing (play() failed in handleUnlock,
-       or it stalled), skip directly to the main page */
-    if (vid.paused) {
-      vid.play().catch(() => navigate());
+    const field = fieldRef.current;
+    if (!field) return;
+    if (phase === "unlock") {
+      // Leftover particles "upload" into the progress bar, so the engine
+      // needs to know where the bar is on screen.
+      if (barRef.current) field.setSink(barRef.current.getBoundingClientRect());
+      field.setMode("compile");
     }
-
-    vid.addEventListener("ended", navigate, { once: true });
-
-    /* Safety net — if video can't finish within 10s, navigate anyway */
-    const fallback = setTimeout(navigate, 10000);
-
-    return () => {
-      vid.removeEventListener("ended", navigate);
-      clearTimeout(fallback);
-    };
+    if (phase === "logo") field.setMode("render");
   }, [phase]);
 
-  /* ── Main animation loop: matrix + glow tracking ── */
+  /* ── Bilingual progress counter: 0% → 100% and ٠٪ → ١٠٠٪ together ──
+     Written straight into the DOM each frame (no React re-render per frame). */
   useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
-      mouseAbs.current = { x: e.clientX, y: e.clientY };
+    if (phase !== "unlock") return;
+    const en = pctEnRef.current;
+    const ar = pctArRef.current;
+    if (!en || !ar) return;
+    const t0 = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const p = Math.min(1, Math.max(0, (now - t0 - 350) / 2100));
+      const eased = 1 - (1 - p) ** 2;
+      const n = Math.round(eased * 100);
+      en.textContent = `${n}%`;
+      ar.textContent = `${toArabicDigits(n)}٪`;
+      if (p < 1) raf = requestAnimationFrame(tick);
     };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [phase]);
 
-    const tick = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      setGlowPos({
-        x: mouseAbs.current.x / w || 0.5,
-        y: mouseAbs.current.y / h || 0.5,
-      });
+  /* ── Finale: the real logo is rendered (see brandField "render" and
+     .intro-logo), holds for a moment, then we fade into the site. ── */
+  useEffect(() => {
+    if (phase !== "logo") return;
+    const t = setTimeout(() => {
+      setPhase("fade");
+      setTimeout(navigate, 1000);
+    }, 3600);
+    return () => clearTimeout(t);
+  }, [phase, navigate]);
 
-      const canvas = canvasRef.current;
-      const ctx = canvas?.getContext("2d");
-      if (canvas && ctx) {
-        const cw = canvas.width;
-        const ch = canvas.height;
-        ctx.clearRect(0, 0, cw, ch);
-
-        const cols = matrixColsRef.current;
-        const mx = mouseAbs.current.x;
-        const my = mouseAbs.current.y;
-
-        for (const col of cols) {
-          col.y += col.speed;
-          if (col.y - col.length * 16 > ch) {
-            col.y = -col.length * 16;
-            col.speed = FALL_SPEED_MIN + Math.random() * (FALL_SPEED_MAX - FALL_SPEED_MIN);
-            for (let j = 0; j < col.chars.length; j++) {
-              if (Math.random() > 0.6) {
-                col.chars[j] = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
-              }
-            }
-          }
-
-          for (let j = 0; j < col.chars.length; j++) {
-            const cy = col.y + j * 16;
-            if (cy < -20 || cy > ch + 20) continue;
-
-            const dx = col.x - mx;
-            const dy = cy - my;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const nearMouse = dist < MOUSE_GLOW_DIST;
-
-            const fadeFromTail = j / col.chars.length;
-            let alpha = 0.06 + fadeFromTail * 0.08;
-            let color = "208, 204, 198";
-
-            if (nearMouse) {
-              const proximity = 1 - dist / MOUSE_GLOW_DIST;
-              alpha = 0.1 + proximity * 0.5;
-              const r = Math.round(208 + proximity * 30);
-              const g = Math.round(204 + proximity * 10);
-              const b = Math.round(198 - proximity * 20);
-              color = `${r}, ${g}, ${b}`;
-            }
-
-            ctx.font = "13px monospace";
-            ctx.fillStyle = `rgba(${color}, ${alpha})`;
-            ctx.fillText(col.chars[j], col.x, cy);
-          }
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  /* ── Text decode ── */
-  const textActive = atLeast("text") && phase !== "init";
-  const brandAr = useTextDecode("يمين", textActive);
-  const brandEn = useTextDecode("Yasar", textActive);
-
-  /* ── Lock click → unlock → reveal video → navigate ──
-     IMPORTANT: we call vid.play() immediately inside the click handler
-     to unlock autoplay on iOS (play only works in a user-gesture call
-     stack). We let it keep playing (hidden behind content) so iOS never
-     revokes the autoplay permission. The dino phase just resets to t=0
-     and makes it visible. Never call load() or pause() — that revokes
-     the iOS autoplay token. */
+  /* ── Enter click ── */
   const handleUnlock = useCallback(() => {
     if (phase !== "lock") return;
+    try { localStorage.setItem("yy-intro-seen", "1"); } catch {}
 
-    const vid = dinoVideoRef.current;
-    if (vid) {
-      vid.muted = true;
-      vid.play().catch(() => {});
+    if (env?.reduced) {
+      setPhase("fade");
+      setTimeout(navigate, 300);
+      return;
     }
 
     setPhase("unlock");
+    setTimeout(() => setPhase("logo"), 3000);
+  }, [phase, env, navigate]);
 
-    setTimeout(() => {
-      setPhase("dino");
-      try { localStorage.setItem("yy-intro-seen", "1"); } catch {}
-    }, 1400);
-  }, [phase]);
-
-  /* ── Skip ── */
   const handleSkip = useCallback(() => {
     try { localStorage.setItem("yy-intro-seen", "1"); } catch {}
-    const locale = detectLocale();
-    window.location.href = `/${locale}/`;
-  }, []);
-
-  const showDino = phase === "dino" || phase === "fade";
-
-  /* Video sources — resolved once orientation is known, never swapped */
-  const glowSrc = portrait ? "/images/logo-glow-portrait.mp4" : "/images/logo-glow.mp4";
-  const revealSrc = portrait ? "/images/logo-reveal-portrait.mp4" : "/images/logo-reveal.mp4";
+    navigate();
+  }, [navigate]);
 
   return (
-    <div className="intro-root">
-      {/* ── Background video — only rendered once orientation is known
-          so the src is correct from the start (no swap, no reload) ── */}
-      {orientation && (
+    <div className={`intro-root phase-${phase}`}>
+      <h1 className="sr-only">Yameen Yasar Studio · يمين يسار</h1>
+
+      {/* Ambient silk loop — the same file the hero uses, so it is cached
+          by the time the visitor lands on /ar/ or /en/. */}
+      {env && !env.reduced && (
         <video
-          ref={bgVideoRef}
-          className={`intro-video ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
-          src={glowSrc}
-          muted loop playsInline preload="auto" aria-hidden="true"
+          className="intro-ambient"
+          src="/images/ambient-silk.mp4"
+          muted loop playsInline autoPlay preload="auto" aria-hidden="true"
         />
       )}
 
-      {/* ── Noise texture ── */}
-      <svg className="intro-noise" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <filter id="noise">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#noise)" opacity="0.03" />
-      </svg>
+      {/* Blueprint grid — fades in while the words are compiled into code */}
+      <div className="intro-grid" aria-hidden="true" />
 
-      {/* ── Matrix canvas ── */}
-      <canvas ref={canvasRef} className="intro-matrix" aria-hidden="true" />
+      {/* The real logo (exact file, transparent background). It sits under
+          the canvas and is opened by a CSS scan in the "logo" phase, in the
+          same place and with the same timing the particles use. */}
+      {env && !env.reduced && (
+        <div className="intro-logo" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export, images are unoptimized anyway */}
+          <img src="/brand/yy-logo-intro.png" alt="" width={1016} height={304} decoding="async" />
+        </div>
+      )}
 
-      {/* ── Cursor glow ── */}
-      <div
-        className={`intro-glow ${atLeast("matrix") && phase !== "init" ? "active" : ""}`}
-        style={{
-          background: `radial-gradient(160px circle at ${glowPos.x * 100}% ${glowPos.y * 100}%, rgba(208, 204, 198, 0.04), transparent 70%)`,
-        }}
-        aria-hidden="true"
-      />
+      <canvas ref={canvasRef} className="intro-canvas" aria-hidden="true" />
 
-      {/* ── Skip button ── */}
+      {env?.reduced && (
+        <div className="intro-static-brand" aria-hidden="true">
+          <span className="intro-static-en" lang="en">Yasar</span>
+          <span className="intro-static-divider" />
+          <span className="intro-static-ar" lang="ar" dir="rtl">يمين</span>
+        </div>
+      )}
+
+      {/* Direction-neutral page: the Skip button stays physically top-right. */}
       <button onClick={handleSkip} className="intro-skip" type="button">
         <span lang="en">Skip</span>{" / "}<span lang="ar">تخطّي</span>
       </button>
 
-      {/* ── Main content (brand text + lock) ── */}
-      <div className={`intro-content ${showDino ? "hidden" : ""}`}>
-        <div className={`intro-brand ${atLeast("logo") ? "visible" : ""}`}>
-          <span className="intro-brand-ar font-heading" lang="ar" dir="rtl">{brandAr}</span>
-          <span className="intro-brand-divider" aria-hidden="true" />
-          <span className="intro-brand-en font-heading" lang="en" dir="ltr">{brandEn}</span>
+      <div className="intro-stage">
+        <div className={`intro-enter-wrap ${phase === "lock" ? "visible" : ""} ${atLeast("unlock") ? "gone" : ""}`}>
+          <button
+            ref={enterRef}
+            onClick={handleUnlock}
+            className="intro-enter"
+            type="button"
+            aria-label="Enter · ادخل"
+            tabIndex={phase === "lock" ? 0 : -1}
+          >
+            <span className="intro-enter-ring" aria-hidden="true" />
+            <LockIcon open={atLeast("unlock")} />
+          </button>
+          <span className="intro-enter-hint" aria-hidden="true">
+            <span lang="ar">ادخل</span> · <span lang="en">Enter</span>
+          </span>
         </div>
 
-        <div className="intro-lock-area">
-          <button
-            onClick={handleUnlock}
-            className={`intro-lock ${atLeast("lock") ? "visible" : ""} ${phase === "unlock" ? "unlocked" : ""}`}
-            type="button"
-            aria-label="Unlock"
-          >
-            <LockIcon open={phase === "unlock"} />
-          </button>
-
-          <div className={`intro-revealed-text ${phase === "unlock" ? "visible" : ""}`}>
-            <span className="intro-revealed-ar" lang="ar" dir="rtl">
-              هل موقعك يتحدث العربية فعلاً، أم يكتفي بالترجمة؟
-            </span>
-            <span className="intro-revealed-en" lang="en" dir="ltr">
-              Does your website speak Arabic, or just translate it?
-            </span>
+        <div className={`intro-question ${atLeast("unlock") ? "visible" : ""}`}>
+          {/* "Loading" bar: fills from BOTH ends and meets in the middle —
+              left-to-right and right-to-left at the same time. Physical
+              left/right on purpose: this page is direction-neutral. */}
+          <div className="intro-progress" aria-hidden="true">
+            <span ref={pctEnRef} className="intro-progress-num" lang="en">0%</span>
+            <span ref={barRef} className="intro-progress-bar" />
+            <span ref={pctArRef} className="intro-progress-num" lang="ar" dir="rtl">٠٪</span>
           </div>
+          <p className="intro-q" aria-live="polite">
+            <span className="intro-q-ar" lang="ar" dir="rtl">
+              <span className="block"><Words text={QUESTION_AR[0]} /></span>
+              <span className="block"><Words text={QUESTION_AR[1]} offset={5} /></span>
+            </span>
+            <span className="intro-q-en" lang="en" dir="ltr">
+              <Words text={QUESTION_EN} offset={6} />
+            </span>
+          </p>
         </div>
       </div>
 
-      {/* ── Logo reveal video — only rendered once orientation is known ── */}
-      {orientation && (
-        <div className={`intro-dino-wrap ${showDino ? "active" : ""}`}>
-          <video
-            ref={dinoVideoRef}
-            className="intro-dino-video"
-            src={revealSrc}
-            muted
-            playsInline
-            preload="auto"
-            aria-hidden="true"
-          />
-        </div>
-      )}
-
-      {/* ── Edge vignette ── */}
+      <svg className="intro-noise" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <filter id="intro-noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#intro-noise)" opacity="0.05" />
+      </svg>
       <div className="intro-vignette" aria-hidden="true" />
 
-      {/* ── Fade overlay ── */}
       {phase === "fade" && <div className="intro-fade-out" />}
     </div>
   );

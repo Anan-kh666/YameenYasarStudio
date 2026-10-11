@@ -1,322 +1,451 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Intro page styles — only loaded for the "/" route.
-   Layers: video → noise → matrix canvas → glow →
-   content (logo + brand + lock + revealed text) →
-   dino animation → vignette → fade-out.
+   Layers (bottom → top): ambient silk video → blueprint grid → real logo →
+   particle canvas → static brand (reduced motion) → stage (enter button /
+   progress / question) → grain → vignette → skip → fade-out.
+   The phase is a class on .intro-root (phase-assemble, phase-lock, ...).
    ═══════════════════════════════════════════════════════════════════════ */
 
 .intro-root {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   width: 100dvw;
   height: 100vh;
   height: 100dvh;
-  background: #0B0B0B;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
+  /* Faint crimson warmth behind where the words form */
+  background:
+    radial-gradient(ellipse 55% 45% at 50% 42%, #1c0709 0%, rgba(11, 11, 11, 0) 70%),
+    #050505;
+  /* Let a finger drag through the particles without the browser panning */
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* ── Layer 0: Higgsfield video background (very subtle) ── */
-.intro-video {
+/* ── Ambient silk loop (Higgsfield / Kling) ── */
+.intro-ambient {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   pointer-events: none;
-  z-index: 0;
   opacity: 0;
-  transition: opacity 3s ease;
-  will-change: opacity;
+  transition: opacity 2.5s ease;
 }
-.intro-video.active {
-  opacity: 0.35;
+.phase-assemble .intro-ambient { opacity: 0.16; }
+.phase-lock .intro-ambient { opacity: 0.34; }
+.phase-unlock .intro-ambient { opacity: 0.12; }
+.phase-logo .intro-ambient,
+.phase-fade .intro-ambient { opacity: 0; transition-duration: 0.8s; }
+
+/* ── Particle canvas ── */
+.intro-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
-/* Portrait uses a dedicated 9:16 video — no object-fit override needed */
+/* ── Static brand text (reduced motion only) — same layout idea:
+      "Yasar" (left) on the left, «يمين» (right) on the right ── */
+.intro-static-brand {
+  position: absolute;
+  inset-inline: 0;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 3rem);
+  color: #F5F2ED;
+}
+.intro-static-en {
+  font-family: var(--font-cormorant), serif;
+  font-weight: 600;
+  font-size: clamp(3rem, 11vw, 8rem);
+  line-height: 1;
+}
+.intro-static-ar {
+  font-family: var(--font-tajawal), sans-serif;
+  font-weight: 700;
+  font-size: clamp(3rem, 10vw, 7.5rem);
+  line-height: 1.2;
+  color: #E5484D;
+}
+.intro-static-divider {
+  width: 1px;
+  height: clamp(3rem, 8vw, 6rem);
+  background: linear-gradient(180deg, transparent, rgba(245, 242, 237, 0.5), transparent);
+}
 
-/* ── Layer 1: Noise texture ── */
+/* ── Stage: enter button and question share one grid cell ── */
+.intro-stage {
+  position: absolute;
+  inset-inline: 0;
+  top: 64%;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  padding-inline: 1.25rem;
+  z-index: 5;
+}
+@media (orientation: portrait) {
+  .intro-stage { top: 61%; }
+}
+.intro-enter-wrap,
+.intro-question { grid-area: 1 / 1; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ENTER BUTTON — rotating two-colour ring, pulsing halos, magnetic hover.
+   --mx/--my are set from JS when the mouse is near.
+   ═══════════════════════════════════════════════════════════════════════ */
+.intro-enter-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  opacity: 0;
+  transform: translateY(1.25rem) scale(0.85);
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.intro-enter-wrap.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.intro-enter-wrap.gone {
+  opacity: 0;
+  transform: scale(1.5);
+  transition-duration: 0.6s;
+  pointer-events: none;
+}
+
+.intro-enter {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #F5F2ED;
+  cursor: pointer;
+  background: radial-gradient(circle at 50% 38%, rgba(139, 13, 26, 0.55), rgba(11, 11, 11, 0.9) 72%);
+  box-shadow: 0 0 40px rgba(229, 72, 77, 0.18), inset 0 0 18px rgba(229, 72, 77, 0.2);
+  transform: translate(var(--mx, 0px), var(--my, 0px));
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+.intro-enter:hover {
+  box-shadow: 0 0 70px rgba(229, 72, 77, 0.45), inset 0 0 24px rgba(229, 72, 77, 0.35);
+}
+.intro-enter:focus-visible {
+  outline: 2px solid #E5484D;
+  outline-offset: 6px;
+}
+
+/* Halos: two rings expanding out of the button, out of step */
+.intro-enter::before,
+.intro-enter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(229, 72, 77, 0.55);
+  animation: intro-halo 2.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  pointer-events: none;
+}
+.intro-enter::after {
+  border-color: rgba(222, 218, 212, 0.35);
+  animation-delay: 1.4s;
+}
+@keyframes intro-halo {
+  from { transform: scale(1); opacity: 0.9; }
+  to   { transform: scale(2.3); opacity: 0; }
+}
+
+/* Ring: conic gradient masked to a 2px band, spinning */
+.intro-enter-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  padding: 2px;
+  background: conic-gradient(#E5484D, rgba(229, 72, 77, 0) 28%, #DEDAD4 50%, rgba(222, 218, 212, 0) 78%, #E5484D);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: intro-spin 3.2s linear infinite;
+}
+@keyframes intro-spin { to { transform: rotate(1turn); } }
+
+.intro-lock-svg { position: relative; display: block; }
+.intro-lock-shackle {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center bottom;
+}
+.intro-lock-shackle.open { transform: translateY(-3px) rotate(-18deg); }
+
+.intro-enter-hint {
+  font-family: var(--font-readex-pro), system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: #A3A09B;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   QUESTION — words sharpen out of a blur one after another
+   ═══════════════════════════════════════════════════════════════════════ */
+.intro-q { margin: 0; }
+.intro-question {
+  margin: 0;
+  max-width: min(42rem, 92vw);
+  text-align: center;
+  text-wrap: balance; /* break the Arabic after the comma, not mid-clause */
+  pointer-events: none;
+}
+.intro-q-ar {
+  display: block;
+  font-family: var(--font-tajawal), sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 4.2vw, 2.6rem);
+  line-height: 1.5;
+  color: #F5F2ED;
+}
+.intro-q-en {
+  display: block;
+  margin-top: 0.6rem;
+  font-family: var(--font-cormorant), serif;
+  font-weight: 600;
+  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+  line-height: 1.4;
+  color: #A3A09B;
+}
+.intro-q-word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(0.35em);
+  transition:
+    opacity 0.7s ease,
+    filter 0.8s ease,
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(0.35s + var(--i, 0) * 85ms);
+}
+.intro-question.visible .intro-q-word {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+}
+.phase-logo .intro-question,
+.phase-fade .intro-question {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PROGRESS — "0% … 100%" on the left, "٠٪ … ١٠٠٪" on the right, and a bar
+   that fills from both ends toward the middle (LTR and RTL meeting).
+   The numbers are written by JS; the fill is pure CSS on the same timing
+   (starts 0.35 s after the click, runs 2.1 s, ease-out).
+   ═══════════════════════════════════════════════════════════════════════ */
+.intro-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: min(26rem, 84vw);
+  margin: 0 auto 1.6rem;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.2s;
+}
+.intro-question.visible .intro-progress { opacity: 1; }
+.phase-logo .intro-progress { opacity: 0; transition-delay: 0s; }
+
+.intro-progress-num {
+  min-width: 3.4em;
+  font-family: var(--font-readex-pro), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: #A3A09B;
+}
+.intro-progress-num:first-child { text-align: left; }
+.intro-progress-num:last-child { text-align: right; color: #E5484D; }
+
+.intro-progress-bar {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(245, 242, 237, 0.1);
+  overflow: hidden;
+}
+.intro-progress-bar::before,
+.intro-progress-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  transform: scaleX(0);
+}
+.intro-progress-bar::before {
+  left: 0;
+  transform-origin: left;
+  background: linear-gradient(to right, rgba(222, 218, 212, 0.3), #F5F2ED);
+}
+.intro-progress-bar::after {
+  right: 0;
+  transform-origin: right;
+  background: linear-gradient(to left, rgba(229, 72, 77, 0.4), #E5484D);
+}
+.intro-question.visible .intro-progress-bar::before,
+.intro-question.visible .intro-progress-bar::after {
+  animation: intro-fill 2.1s cubic-bezier(0.33, 1, 0.68, 1) 0.35s forwards;
+}
+@keyframes intro-fill { to { transform: scaleX(1); } }
+
+/* ── Blueprint grid behind the code ── */
+.intro-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+  background-image:
+    linear-gradient(rgba(229, 72, 77, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(229, 72, 77, 0.07) 1px, transparent 1px);
+  background-size: 36px 36px;
+  background-position: center center;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 80%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 80%);
+}
+.phase-unlock .intro-grid { opacity: 1; }
+.phase-logo .intro-grid,
+.phase-fade .intro-grid { opacity: 0; transition-duration: 0.4s; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LOGO — the real file (/brand/yy-logo-intro.png, exact colours, transparent).
+   Size and position MUST match BrandField.logoWidth() (centred, 60vw up to
+   880px; 84vw in portrait), because the particles land on its pixels first.
+   In the "logo" phase a scan opens it from the centre line outward:
+   clip-path timing = T_OPEN (0.95s) / D_OPEN (0.8s) in brandField.ts.
+   ═══════════════════════════════════════════════════════════════════════ */
+.intro-logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(60vw, 880px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  visibility: hidden;
+}
+@media (orientation: portrait) {
+  .intro-logo { width: 84vw; }
+}
+.phase-logo .intro-logo,
+.phase-fade .intro-logo { visibility: visible; }
+
+.intro-logo img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Starts as a zero-height line at the centre; ends BEYOND the edges so the
+     glow (drop-shadow) isn't cut off by the clip */
+  clip-path: inset(50% -12% 50% -12%);
+  /* A soft crimson light around the letters so the logo reads bright on black */
+  filter: drop-shadow(0 0 18px rgba(229, 72, 77, 0.35)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.25));
+}
+.phase-logo .intro-logo img,
+.phase-fade .intro-logo img {
+  animation: intro-logo-open 0.8s cubic-bezier(0.65, 0, 0.35, 1) 0.95s forwards;
+}
+@keyframes intro-logo-open { to { clip-path: inset(-30% -12% -30% -12%); } }
+
+/* Backlight: a wide crimson glow that blooms once the logo is open */
+.intro-logo::before {
+  content: "";
+  position: absolute;
+  inset: -45% -20%;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(229, 72, 77, 0.22), rgba(139, 13, 26, 0.1) 45%, transparent 70%);
+  opacity: 0;
+}
+.phase-logo .intro-logo::before,
+.phase-fade .intro-logo::before {
+  animation: intro-logo-glow 1.2s ease-out 1.4s forwards;
+}
+@keyframes intro-logo-glow { to { opacity: 1; } }
+
+/* One light sweep across the letters, masked to the logo's own shape */
+.intro-logo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  -webkit-mask: url("/brand/yy-logo-intro.png") center / 100% 100% no-repeat;
+  mask: url("/brand/yy-logo-intro.png") center / 100% 100% no-repeat;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.6) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  opacity: 0;
+}
+.phase-logo .intro-logo::after,
+.phase-fade .intro-logo::after {
+  animation: intro-logo-gleam 1.2s ease-in-out 2s forwards;
+}
+@keyframes intro-logo-gleam {
+  0%   { opacity: 1; background-position: 130% 0; }
+  100% { opacity: 1; background-position: -30% 0; }
+}
+
+/* ── Grain + vignette ── */
 .intro-noise {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 16;
+  mix-blend-mode: overlay;
 }
-
-/* ── Layer 2: Matrix falling numbers canvas ── */
-.intro-matrix {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* ── Layer 3: Cursor-reactive glow (very faint grey, no red) ── */
-.intro-glow {
-  position: absolute;
-  inset: -10%;
-  width: 120%;
-  height: 120%;
-  pointer-events: none;
-  z-index: 3;
-  opacity: 0;
-  transition: opacity 2s ease;
-}
-.intro-glow.active {
-  opacity: 1;
-}
-
-/* ── Edge vignette ── */
 .intro-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 6;
-  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(11, 11, 11, 0.6) 100%);
+  z-index: 17;
+  background: radial-gradient(ellipse 75% 75% at 50% 45%, transparent 45%, rgba(0, 0, 0, 0.7) 100%);
 }
 
-/* ── Skip button ── */
+/* ── Skip (physical "right": this page is direction-neutral) ── */
 .intro-skip {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  color: #706D68;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 20;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(245, 242, 237, 0.12);
+  border-radius: 9999px;
+  background: rgba(11, 11, 11, 0.4);
+  backdrop-filter: blur(6px);
+  color: #A3A09B;
   font-size: 0.875rem;
   font-family: var(--font-readex-pro), system-ui, sans-serif;
-  background: none;
-  border: none;
   cursor: pointer;
-  z-index: 10;
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
-  transition: color 0.2s;
+  transition: color 0.2s, border-color 0.2s;
 }
-.intro-skip:hover { color: #D0CCC6; }
-.intro-skip:focus-visible { outline: 2px solid #D0CCC6; outline-offset: 2px; }
+.intro-skip:hover { color: #F5F2ED; border-color: rgba(245, 242, 237, 0.3); }
+.intro-skip:focus-visible { outline: 2px solid #E5484D; outline-offset: 2px; }
 
-/* ── Content wrapper ── */
-.intro-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2.5rem;
-  z-index: 7;
-  position: relative;
-  transition: opacity 0.6s ease;
-}
-.intro-content.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   BRAND TEXT — slide-in from opposite sides + divider
-   ═══════════════════════════════════════════════════════════════════════ */
-.intro-brand {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  gap: 1.5rem;
-  overflow: visible;
-}
-
-@media (max-width: 640px) {
-  .intro-brand {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  .intro-brand-divider { display: none; }
-}
-
-.intro-brand-ar,
-.intro-brand-en {
-  font-size: clamp(2.25rem, 6vw, 3.5rem);
-  line-height: 1.2;
-  color: #D0CCC6;
-  white-space: nowrap;
-}
-
-.intro-brand-divider {
-  width: 1px;
-  height: 2rem;
-  background: linear-gradient(180deg, transparent, rgba(208, 204, 198, 0.25) 30%, rgba(208, 204, 198, 0.25) 70%, transparent);
-  opacity: 0;
-  transform: scaleY(0);
-  transition: opacity 0.8s ease 0.3s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
-}
-
-.intro-brand-ar {
-  opacity: 0;
-  transform: translateX(4rem);
-  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.intro-brand-en {
-  opacity: 0;
-  transform: translateX(-4rem);
-  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: 0.12s;
-}
-
-.intro-brand.visible .intro-brand-ar,
-.intro-brand.visible .intro-brand-en { opacity: 1; transform: translateX(0); }
-.intro-brand.visible .intro-brand-divider { opacity: 1; transform: scaleY(1); }
-
-/* ═══════════════════════════════════════════════════════════════════════
-   LOCK BUTTON — the unlock interaction
-   ═══════════════════════════════════════════════════════════════════════ */
-.intro-lock-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  min-height: 140px;
-  margin-top: 3rem;
-}
-
-.intro-lock {
-  background: none;
-  border: 2px solid rgba(208, 204, 198, 0.3);
-  border-radius: 50%;
-  width: 88px;
-  height: 88px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #D0CCC6;
-  transition: color 0.3s, border-color 0.3s, transform 0.3s, opacity 0.5s, box-shadow 0.3s;
-  opacity: 0;
-  transform: translateY(1rem);
-}
-
-.intro-lock.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.intro-lock:hover {
-  color: #F5F2ED;
-  border-color: rgba(245, 242, 237, 0.5);
-  transform: scale(1.1);
-  box-shadow: 0 0 24px rgba(208, 204, 198, 0.15);
-}
-
-.intro-lock:focus-visible {
-  outline: 2px solid #F5F2ED;
-  outline-offset: 4px;
-}
-
-.intro-lock.unlocked {
-  opacity: 0.3;
-  transform: scale(1.15);
-  pointer-events: none;
-  border-color: rgba(208, 204, 198, 0.06);
-}
-
-.intro-lock-svg {
-  display: block;
-}
-
-.intro-lock-shackle {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: center bottom;
-}
-.intro-lock-shackle.open {
-  transform: translateY(-3px) rotate(-15deg);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   REVEALED TEXT — frameless, appears after unlock
-   ═══════════════════════════════════════════════════════════════════════ */
-.intro-revealed-text {
-  text-align: center;
-  max-width: 34rem;
-  opacity: 0;
-  transform: translateY(0.75rem);
-  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-
-.intro-revealed-text.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.intro-revealed-ar {
-  display: block;
-  font-size: 1.0625rem;
-  line-height: 1.8;
-  color: #D0CCC6;
-  margin-bottom: 0.5rem;
-  font-family: var(--font-readex-pro), system-ui, sans-serif;
-}
-
-.intro-revealed-en {
-  display: block;
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: #706D68;
-  font-family: var(--font-readex-pro), system-ui, sans-serif;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   LOGO REVEAL — fullscreen video composited over the intro layers.
-   mix-blend-mode: screen removes the pure-black background so the
-   animation floats as a transparent object on screen.
-   Uses 100dvh/100dvw to account for mobile browser chrome.
-   ═══════════════════════════════════════════════════════════════════════ */
-.intro-dino-wrap {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  width: 100dvw;
-  height: 100vh;
-  height: 100dvh;
-  z-index: 15;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.8s ease;
-}
-
-.intro-dino-wrap.active {
-  opacity: 1;
-}
-
-.intro-dino-video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  mix-blend-mode: screen;
-}
-
-/* Portrait uses a dedicated 9:16 video — fills naturally */
-
-/* ═══════════════════════════════════════════════════════════════════════
-   FADE-OUT OVERLAY — smooth dark fade
-   ═══════════════════════════════════════════════════════════════════════ */
+/* ── Fade-out into the site ── */
 .intro-fade-out {
   position: fixed;
   inset: 0;
   background: #0B0B0B;
   z-index: 50;
-  animation: fade-to-dark 1s ease-in forwards;
+  animation: intro-fade 1s ease-in forwards;
   pointer-events: none;
 }
-
-@keyframes fade-to-dark {
+@keyframes intro-fade {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
@@ -340,26 +469,17 @@
 }
 .intro-noscript a:hover { text-decoration: underline; }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   REDUCED MOTION — skip all animation, show static state
-   ═══════════════════════════════════════════════════════════════════════ */
+/* ── Reduced motion: everything static (the canvas/videos aren't rendered) ── */
 @media (prefers-reduced-motion: reduce) {
-  .intro-video { display: none; }
-
-  .intro-brand-ar,
-  .intro-brand-en,
-  .intro-brand-divider,
-  .intro-lock,
-  .intro-revealed-text,
-  .intro-content { transition: none !important; }
-
-  .intro-brand.visible .intro-brand-ar,
-  .intro-brand.visible .intro-brand-en { opacity: 1; transform: none; }
-  .intro-brand.visible .intro-brand-divider { opacity: 1; transform: none; }
-
-  .intro-lock.visible { opacity: 1; transform: none; }
-
-  .intro-dino-video { transition: none !important; }
-
-  .intro-fade-out { animation: none !important; opacity: 1; }
+  .intro-enter-wrap,
+  .intro-enter,
+  .intro-q-word { transition: none !important; }
+  .intro-enter::before,
+  .intro-enter::after,
+  .intro-enter-ring,
+  .intro-progress-bar::before,
+  .intro-progress-bar::after { animation: none !important; }
+  .intro-enter::before,
+  .intro-enter::after { opacity: 0; }
+  .intro-fade-out { animation: none; opacity: 1; }
 }

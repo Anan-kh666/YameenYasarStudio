@@ -15,7 +15,7 @@ export default function Footer() {
             <p className="mt-1 text-small text-text-muted">{t("copyright")}</p>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             <a
               href={`mailto:${site.email}`}
               dir="ltr"

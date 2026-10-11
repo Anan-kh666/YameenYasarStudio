@@ -72,8 +72,8 @@ src/
   lib/site.ts               # ONE place for email, WhatsApp number, socials, launchOffer flag
 messages/ar.json, en.json   # every visible string on /ar and /en (same key tree in both)
 docs/website-copy.md        # original copy brief — partly OUT OF DATE, see "Copy"
-public/brand/               # logos + favicon (only yy-logo-new.png and favicon-512.png are used)
-public/images/              # photo, intro/hero videos, unused leftovers (see Known issues)
+public/brand/               # yy-logo-new.png (header), yy-logo-intro.png (intro finale), favicon-512.png
+public/images/              # anan.jpg (About), ambient-silk.mp4 (hero + intro background)
 public/og-ar.png, og-en.png # Open Graph images 1200×630
 assets/                     # Anan's raw source files (logo jpeg, photo, social handles) — not served
 .agents/skills/, .claude/skills/  # Higgsfield AI asset-generation skills (symlinked) — not app code
@@ -123,7 +123,7 @@ Type scale (Tailwind classes `text-display/h1/h2/body/small/label`): display 56/
 
 Radius: `rounded-xl` buttons/inputs, `rounded-2xl` cards/images, `rounded-full` pills. Section padding `py-16 md:py-24`, content width `max-w-6xl` (`max-w-3xl` for FAQ and Contact).
 
-Logo: the header uses `public/brand/yy-logo-new.png` (crimson/grey, Higgsfield-rendered) with three CSS layers: clip-path reveal, crimson breathing glow, periodic gleam. Never redraw, recolour, crop or mirror logos. The SVGs in `public/brand/` are the **old green/saffron** identity and are currently unused. Favicon/app icon: `public/brand/favicon-512.png`.
+Logo: the header uses `public/brand/yy-logo-new.png` (crimson/grey, Higgsfield-rendered) with three CSS layers: clip-path reveal, crimson breathing glow, periodic gleam. Never redraw, recolour, crop or mirror logos. The old green/saffron SVG logos were deleted on 2026-10-11 (recoverable from git history). Intro finale: `public/brand/yy-logo-intro.png` (same logo, transparent). Favicon/app icon: `public/brand/favicon-512.png`.
 
 ## Design direction
 
@@ -178,7 +178,7 @@ Rules (the first comes from a real bug, commit `20f11fe`):
 Brand videos and images were generated with the Higgsfield skills in `.agents/skills/` (GPT Image 2.5 for stills, Seedance 2.5 for video). Before adding any video:
 - Encode **H.264, `yuv420p`, `+faststart`** (HEVC fails on Firefox, Chrome on Windows and older Android). Example: `ffmpeg -i in.mov -c:v libx264 -pix_fmt yuv420p -movflags +faststart -an out.mp4`.
 - Provide 1920×1080 and 1080×1920 variants for anything full-screen.
-- Keep files small (current ones are 0.7–2.6 MB). Use `muted playsInline` for anything that autoplays.
+- Keep files small (the current `ambient-silk.mp4` is 0.6 MB). Use `muted playsInline` for anything that autoplays.
 
 ## Quality floor (check before saying a task is done)
 
@@ -198,7 +198,6 @@ Static files only. Production = the contents of `out/` on Cloudflare at `yameeny
 
 - **Lint errors** (2): `no-html-link-for-pages` on the two `<a>` tags in the `/` noscript block (fine on a static export; add an eslint-disable comment with a reason).
 - **OG images are off-brand**: `og-ar.png` / `og-en.png` still show the old green/saffron logo on paper. Regenerate them for the crimson brand.
-- **Dead weight in `public/`** (copied into `out/`, about 10 MB): `hero-atmosphere.png` (3.6 MB), `texture-dark.jpg` (2 MB), `intro-glow.mp4`, `dino-intro.mp4`, `yy-mark-new.png`, `yy-mark-intro.svg`, all old SVG logos, and (since the Oct 11 intro/hero redesign) `logo-glow*.mp4` and `logo-reveal*.mp4`. Confirm with Anan, then delete.
 - Heavy images: `yy-logo-new.png` is 1344×752 / 847 KB for a 32px-tall header logo; `favicon-512.png` is actually 1024×1024 / 528 KB. Export properly sized versions.
 - Arabic price strings are inconsistent: "300 USD" (Western) vs «يبدأ من ١٥٠٠ دولار» (Arabic-Indic). Rule 7 says Western digits for prices.
 - `launchOffer` says "November offer" — switch `site.launchOffer` to `false` after November 2026.

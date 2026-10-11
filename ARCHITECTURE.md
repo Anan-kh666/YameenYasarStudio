@@ -423,9 +423,8 @@ The Milestone 7 Lighthouse pass (2026-09-25, mobile emulation) scored Performanc
 | `images/anan.jpg` (666×1182) | 430 KB | About section |
 | `images/ambient-silk.mp4` (1280×720, 9.3 s seamless loop) | 0.6 MB | Hero background; intro background |
 | `brand/yy-logo-intro.png` (1016×304, transparent, exact colours) | 0.17 MB | Intro finale (image + particle targets + light-sweep mask) |
-| `images/hero-atmosphere.png`, `images/texture-dark.jpg`, `images/intro-glow.mp4`, `images/dino-intro.mp4`, `images/logo-glow*.mp4`, `images/logo-reveal*.mp4`, `brand/yy-mark-new.png`, `brand/yy-mark-intro.svg`, all `brand/yy-*.svg` | ~16 MB total | **Unused** (still copied into `out/`) |
 
-Brand media is generated with the Higgsfield skills (GPT Image 2.5 for stills, Seedance 2.5 for video) and re-encoded with ffmpeg to H.264 / yuv420p / faststart. Reveal videos are rendered on pure black so `mix-blend-mode: screen` removes the background.
+Brand media is generated with the Higgsfield skills (GPT Image 2.5 for stills, Seedance 2.5 for video) and re-encoded with ffmpeg to H.264 / yuv420p / faststart. Sixteen unused files (old SVG logos, old intro/reveal/glow videos, unused textures, ~16 MB) were deleted on 2026-10-11; they remain in git history.
 
 ## 16. Accessibility
 
@@ -442,8 +441,8 @@ Brand media is generated with the Higgsfield skills (GPT Image 2.5 for stills, S
 | Area | Issue | Suggested fix |
 | --- | --- | --- |
 | Lint | 2 errors: `no-html-link-for-pages` ×2 in `(redirect)/page.tsx` noscript. 4 warnings (`<img>` ×2, `window.location`, unused var in `Footer`). | Justified eslint-disable comments for the noscript links and navigation. |
-| Performance | 847 KB header logo; 528 KB favicons; the intro canvas draws ~4,000 sprites per frame (fine on recent phones, untested on low-end Android); ~16 MB of unused files ship in `out/`. | Export a ~2× sized logo (WebP/PNG) and a small favicon set; lower the particle cap if low-end devices stutter; delete unused assets. |
-| Brand | OG images show the old logo; old SVG logos still present. | Regenerate OG cards on the crimson palette; remove the old SVGs once confirmed. |
+| Performance | 847 KB header logo; 528 KB favicons; the intro canvas draws ~4,000 sprites per frame (fine on recent phones, untested on low-end Android). | Export a ~2× sized logo (WebP/PNG) and a small favicon set; lower the particle cap if low-end devices stutter. |
+| Brand | OG images show the old logo. | Regenerate OG cards on the crimson palette. |
 | Content | `docs/website-copy.md` drifted from the messages; Arabic custom-tier price uses Arabic-Indic digits while the others use Western; "November offer" is time-bound; Work has only placeholders; LinkedIn URL unverified. | Re-sync the doc from the messages; normalise price digits; turn off `launchOffer` after November 2026; add real projects. |
 | Config | `site.prices` duplicates the message strings but is unused; `whatsappUrl` ignores its `locale` parameter; stale TODO next to the WhatsApp number. | Either render prices from `site.prices` (single source) or delete it; remove the unused parameter and the stale TODO. |
 | Forms | Honeypot named `_gotcha` is only checked client-side. | Use Web3Forms' `botcheck` field so the service filters bots server-side too. |

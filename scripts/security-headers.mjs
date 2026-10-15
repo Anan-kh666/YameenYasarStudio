@@ -12,7 +12,9 @@
 // why this runs at build time instead of being a hand-written file.
 //
 // It also removes macOS .DS_Store files, which Finder drops into public/
-// and which would otherwise be deployed (they list folder contents).
+// and which would otherwise be deployed (they list folder contents), and
+// iCloud Drive conflict copies ("logo 2.png"): the project lives in an
+// iCloud-synced folder, which duplicates files that change quickly.
 
 import { createHash } from "node:crypto";
 import { readdir, readFile, writeFile, rm } from "node:fs/promises";
@@ -96,9 +98,11 @@ function urlPaths(file) {
 
 const files = await walk(OUT);
 
+const ICLOUD_COPY = / \d+(\.[^/\\]+)?$/; // "name 2.ext" or "name 2"
 let removed = 0;
 for (const f of files) {
-  if (f.endsWith(".DS_Store")) {
+  if (f.endsWith(".DS_Store") || ICLOUD_COPY.test(f)) {
+    if (!f.endsWith(".DS_Store")) console.warn(`security-headers: removed iCloud copy ${f}`);
     await rm(f);
     removed++;
   }
@@ -113,7 +117,7 @@ const lines = [
 ];
 
 let pages = 0;
-for (const f of files.filter((f) => f.endsWith(".html")).sort()) {
+for (const f of files.filter((f) => f.endsWith(".html") && !ICLOUD_COPY.test(f)).sort()) {
   const hashes = inlineScriptHashes(await readFile(f, "utf8"));
   const value = csp(hashes);
   // Cloudflare's limit for a single header line in _headers.
@@ -123,4 +127,4 @@ for (const f of files.filter((f) => f.endsWith(".html")).sort()) {
 }
 
 await writeFile(join(OUT, "_headers"), lines.join("\n"));
-console.log(`security-headers: CSP for ${pages} pages written to ${OUT}/_headers` + (removed ? `, removed ${removed} .DS_Store` : ""));
+console.log(`security-headers: CSP for ${pages} pages written to ${OUT}/_headers` + (removed ? `, removed ${removed} stray file(s)` : ""));

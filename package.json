@@ -7,7 +7,8 @@
     "build": "next build",
     "postbuild": "node scripts/security-headers.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:site": "node scripts/test-site.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.47.0",

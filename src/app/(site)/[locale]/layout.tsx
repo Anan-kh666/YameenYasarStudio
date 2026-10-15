@@ -102,7 +102,9 @@ function JsonLd({ locale }: { locale: string }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      // Escape "<" so no value can ever close this <script> tag early
+      // (the pattern the Next.js JSON-LD guide recommends).
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
     />
   );
 }

@@ -22,7 +22,8 @@ export default function Contact() {
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    if (data.get("_gotcha")) {
+    // Honeypot ticked → a bot. Pretend it worked and send nothing.
+    if (data.get("botcheck")) {
       setStatus("success");
       return;
     }
@@ -32,7 +33,10 @@ export default function Contact() {
         method: "POST",
         body: data,
       });
-      if (res.ok) {
+      // Web3Forms can answer 200 with { success: false } (e.g. a rejected
+      // key), so check the body too, not just the HTTP status.
+      const json = await res.json().catch(() => null);
+      if (res.ok && json?.success !== false) {
         setStatus("success");
         form.reset();
       } else {
@@ -88,10 +92,12 @@ export default function Contact() {
 
         <form onSubmit={handleSubmit} className="mt-10 space-y-5">
           <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
-          {/* Honeypot — hidden from real users */}
+          {/* Honeypot, hidden from real users. "botcheck" is the name
+              Web3Forms checks on its server, so it also stops bots that
+              post to the API directly instead of using this form. */}
           <input
-            type="text"
-            name="_gotcha"
+            type="checkbox"
+            name="botcheck"
             tabIndex={-1}
             autoComplete="off"
             className="hidden"
@@ -102,21 +108,21 @@ export default function Contact() {
             <label htmlFor="contact-name" className="block text-small font-medium text-text">
               {t("fieldName")}
             </label>
-            <input id="contact-name" name="name" type="text" required className={inputClass} />
+            <input id="contact-name" name="name" type="text" required maxLength={100} autoComplete="name" className={inputClass} />
           </div>
 
           <div>
             <label htmlFor="contact-email" className="block text-small font-medium text-text">
               {t("fieldEmail")}
             </label>
-            <input id="contact-email" name="email" type="email" required dir="ltr" className={inputClass} />
+            <input id="contact-email" name="email" type="email" required maxLength={254} autoComplete="email" dir="ltr" className={inputClass} />
           </div>
 
           <div>
             <label htmlFor="contact-business" className="block text-small font-medium text-text">
               {t("fieldBusiness")}
             </label>
-            <input id="contact-business" name="business" type="text" className={inputClass} />
+            <input id="contact-business" name="business" type="text" maxLength={200} autoComplete="organization" className={inputClass} />
           </div>
 
           <div>
@@ -145,6 +151,7 @@ export default function Contact() {
               name="message"
               rows={4}
               required
+              maxLength={5000}
               className="mt-1.5 block w-full resize-y rounded-xl border border-line bg-bg px-4 py-3 text-body text-text placeholder:text-text-muted/50 focus:border-crimson-bright focus:outline-none focus:ring-1 focus:ring-crimson-bright"
             />
           </div>

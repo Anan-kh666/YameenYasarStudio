@@ -18,10 +18,14 @@ export default function RedirectPage() {
         <style>{`.intro-root { display: none; }`}</style>
         <meta httpEquiv="refresh" content="0;url=/ar/" />
         <div className="intro-noscript">
+          {/* Plain <a> on purpose: "/" and "/ar/" are different root layouts,
+              so this is always a full page load (and JS is off here anyway). */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/ar/" lang="ar">
             العربية
           </a>
           <span style={{ color: "#A3A09B", margin: "0 1rem" }}>&middot;</span>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/en/">English</a>
         </div>
       </noscript>

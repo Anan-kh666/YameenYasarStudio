@@ -1,0 +1,6 @@
+# How to report a security problem with yameenyasar.com (RFC 9116).
+# Renew "Expires" before it passes; scanners treat an expired file as stale.
+Contact: mailto:hello@yameenyasar.com
+Expires: 2027-10-16T00:00:00.000Z
+Preferred-Languages: en, ar
+Canonical: https://yameenyasar.com/.well-known/security.txt

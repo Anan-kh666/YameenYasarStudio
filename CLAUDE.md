@@ -69,14 +69,14 @@ src/
     Header.tsx              # client: sticky header, anchor nav, mobile disclosure menu
     Footer.tsx
     sections/               # Hero, Problem, Packages, Work, Process, About, Faq, Contact
-    ui/                     # Logo, LanguageSwitch (client), WhatsAppButton
+    ui/                     # Logo, LanguageSwitch (client), WhatsAppButton (+ shared WhatsAppIcon), SectionHeading
   i18n/routing.ts           # locales ["ar","en"], defaultLocale "ar"
   i18n/request.ts           # loads messages/<locale>.json
   lib/site.ts               # ONE place for email, WhatsApp number, socials, launchOffer flag
 messages/ar.json, en.json   # every visible string on /ar and /en (same key tree in both)
 docs/website-copy.md        # original copy brief — partly OUT OF DATE, see "Copy"
 public/brand/               # yy-logo-new.png (header), yy-logo-intro.png (intro finale), favicon-512.png
-public/images/              # anan.jpg (About), ambient-silk.mp4 (hero + intro background)
+public/images/              # anan.jpg (About), ambient-silk.mp4 (hero + intro background), work/*.jpg (concept mood images)
 public/og-ar.png, og-en.png # Open Graph images 1200×630
 assets/                     # Anan's raw source files (logo jpeg, photo, social handles) — not served
 .agents/skills/, .claude/skills/  # Higgsfield AI asset-generation skills (symlinked) — not app code
@@ -135,6 +135,7 @@ The brand idea is "right to left, left to right": two languages meeting.
 - **Intro (`/`)** is the one cinematic exception: crimson particles stream in from the right and build «يمين» (right) on the right half, silver particles stream in from the left and build "Yasar" (left) on the left half (engine: `src/lib/brandField.ts`, letter shapes sampled from the real fonts); the pointer pushes them around. Then an enter button (lock icon), then a "compile" transition: scan beams turn the words into digits, the digits type themselves out as bilingual code (LTR code left, RTL Arabic-Indic number rows right; Arabic side uses digits only so no letter is ever shown un-joined), a progress bar fills from both ends (`0%→100%` / `٠٪→١٠٠٪`) while the question «هل موقعك يتحدث العربية فعلاً، أم يكتفي بالترجمة؟» appears, the code collapses into one horizontal line of light, then a finale where that line's digits render the real logo (crimson/silver digits on its exact pixels), a scan opens the actual logo image with a glow and one light sweep, then a fade into the site. Background: `ambient-silk.mp4`. The mixed-script brand text (Arabic «يمين» + Latin "Yasar") is intentional — don't "fix" it.
 - **Hero**: both headlines on both locales. Current language large on its reading side, the other language small on the opposite side; headline words rise out of a blur in reading order, the other language arrives from the opposite side. Background: `ambient-silk.mp4` (crimson + silver silk ribbons, seamless loop, shared with the intro so it's cached), `HeroFx` floating Arabic/Latin letters with pointer parallax, and a mouse spotlight. Hero text lifts/fades on scroll via CSS scroll-driven animation.
 - Everything after the hero stays quiet, disciplined and fast. No fade-in on every section, no hover animation on every card. Respect `prefers-reduced-motion` everywhere.
+- **Below the hero (Oct 16 refresh)**: every section title is `SectionHeading` (heading + short crimson→silver `.brand-rule`). Dark sections may use `.section-glow` (faint crimson corner light; move it with `--glow-x/--glow-y`). Problem: icon cards + the closing line as a statement with a `border-s` bar. Packages: large lining-numeral prices, check icons, a WhatsApp button on every card, featured card taller with `.pkg-featured`. Work: editorial grid (large first tile + two small), Higgsfield mood images with no text. Process: markers on one line (`.steps-line`). About: framed photo + pull quote. FAQ: two columns, plus→close icon. Contact: two columns, form in a card. Footer: logo, nav, contacts, language switch. Motion stays minimal (image zoom on hover, FAQ icon); no scroll animations — Anan rolled those back.
 - Packages have real hierarchy: Professional (`business` key) gets a `crimson-bright` border and a "Most popular" badge on a `crimson` fill.
 - Process is the only numbered list on the site.
 - Avoid generic tells: all-caps eyebrow labels, `→` on buttons, one coloured/italic word in a headline, identical grey-shadow cards, emoji in headings, monospace labels, stock photos.
@@ -215,7 +216,8 @@ Static files only. Production = the contents of `out/` on Cloudflare at `yameeny
 - Performance (Lighthouse mobile, local, Oct 16): 77 on both locales (A11y/Best practices/SEO 100). The LCP element is the hero `<video>`, which fades in over 2.4s by design; a poster image or a shorter fade would be the next gain. Images were resized on Oct 16 (logo 827→29 KB, favicons 515→125 KB, photo 409→184 KB).
 - Arabic price strings are inconsistent: "300 USD" (Western) vs «يبدأ من ١٥٠٠ دولار» (Arabic-Indic). Rule 7 says Western digits for prices.
 - `launchOffer` says "November offer" — switch `site.launchOffer` to `false` after November 2026.
-- Work section: all three cards are "Coming soon" concept placeholders; `work.viewSite` and `public/images/work/` are unused until real projects exist.
+- Work section: all three cards are "Coming soon" concept projects with abstract mood images (decorative `alt=""`); `work.viewSite` is unused until real projects exist.
+- The project sits in an iCloud-synced folder (`~/Documents`), and iCloud creates "`name 2.ext`" conflict copies of files that change quickly (`.next/`, `node_modules/`, even `public/`). They broke `next build` once. The postbuild script deletes any in `out/`; delete stray ones in the source with care (compare first). Moving the project out of iCloud (e.g. `~/Developer`) fixes it for good.
 - `site.linkedin` is still marked `TODO(anan): verify`. The `whatsappNumber` TODO comment is stale (a number is set).
 - Small cleanups: unused `locale` in `Footer.tsx`; unused `locale` parameter in `whatsappUrl`; the About photo's alt text is the section headline rather than Anan's name; font setup is duplicated in both root layouts (keep them in sync or extract to `src/lib/fonts.ts`).
 

@@ -1,7 +1,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { whatsappUrl } from "@/lib/site";
 
-function WhatsAppIcon({ className }: { className?: string }) {
+export function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"

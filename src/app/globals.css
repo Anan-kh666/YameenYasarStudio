@@ -330,6 +330,64 @@ body {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   Sections below the hero — shared visual language
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Short brand hairline under section headings: crimson where the reading
+   starts, fading to silver (same idea as .hero-line). */
+.brand-rule {
+  display: block;
+  width: 4.5rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--crimson-bright), rgba(222, 218, 212, 0.55));
+}
+[dir="rtl"] .brand-rule {
+  background: linear-gradient(to left, var(--crimson-bright), rgba(222, 218, 212, 0.55));
+}
+
+/* Faint crimson light in a corner of a dark section. Decorative only. */
+.section-glow {
+  position: relative;
+  isolation: isolate;
+}
+.section-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(48rem 28rem at var(--glow-x, 88%) var(--glow-y, 0%), rgba(139, 13, 26, 0.2), transparent 70%);
+}
+[dir="rtl"] .section-glow::before {
+  background: radial-gradient(48rem 28rem at calc(100% - var(--glow-x, 88%)) var(--glow-y, 0%), rgba(139, 13, 26, 0.2), transparent 70%);
+}
+
+/* Featured package: crimson light from the top and a soft halo */
+.pkg-featured {
+  background:
+    linear-gradient(180deg, rgba(139, 13, 26, 0.28), rgba(139, 13, 26, 0) 55%),
+    var(--surface);
+  box-shadow: 0 40px 90px -40px rgba(229, 72, 77, 0.45);
+}
+
+/* Process: the line that joins the step markers. Horizontal from md up
+   (crimson at the start of the row), vertical on phones. */
+.steps-line {
+  position: absolute;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--crimson-bright), rgba(222, 218, 212, 0.35) 70%, transparent);
+}
+@media (min-width: 768px) {
+  .steps-line {
+    background: linear-gradient(to right, var(--crimson-bright), rgba(222, 218, 212, 0.35) 70%, transparent);
+  }
+  [dir="rtl"] .steps-line {
+    background: linear-gradient(to left, var(--crimson-bright), rgba(222, 218, 212, 0.35) 70%, transparent);
+  }
+}
+
 /* ── Respect user preference ── */
 @media (prefers-reduced-motion: reduce) {
   .hero-word,

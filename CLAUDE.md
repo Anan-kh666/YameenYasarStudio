@@ -27,18 +27,21 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 npm install            # Node >= 20.9 (Next 16 requirement)
 npm run dev            # http://localhost:3000  → "/" intro, "/ar/", "/en/"
 npm run build          # static export → out/   (needs internet: next/font downloads Google Fonts at build time)
-npx tsc --noEmit       # typecheck (currently clean)
-npm run lint           # ESLint 9 flat config (currently 2 errors, 4 warnings — see Known issues)
+                       #   then "postbuild" runs scripts/security-headers.mjs → out/_headers
+npm run test:site      # 83 end-to-end checks on out/ in headless Chrome (run after build; see below)
+npx tsc --noEmit       # typecheck (clean)
+npm run lint           # ESLint 9 flat config (0 errors, a few <img>/navigation warnings)
+npm audit --omit=dev   # production dependencies (0 vulnerabilities on Oct 16 2026)
 npx serve out          # preview the real static output (or: npx wrangler pages dev out)
 ```
 
-There are no automated tests. "Done" means the Quality floor below passes.
+`npm run test:site` (`scripts/test-site.mjs`) serves `out/` the way Cloudflare does (applies `_headers`, trailing-slash redirects, 404) and checks both locales at 375px and 1280px (headers, CSP violations, JS errors, lang/dir, horizontal scroll, alt text, link `rel`, fonts, anchors, JSON-LD), that the CSP blocks injected scripts, the contact form with Web3Forms mocked (success, rejected, HTTP error, honeypot), the language switch, skip link, mobile menu, every intro path, and the static files. It uses the installed Google Chrome (`CHROME_PATH` to override). It doesn't replace the manual Quality floor (real iPhone, Lighthouse).
 
 ## Stack (decided — don't swap without asking Anan)
 
 | Layer | Choice | Version |
 | --- | --- | --- |
-| Framework | Next.js App Router, TypeScript, `src/` dir, **static export** (`output: "export"`, `images.unoptimized`, `trailingSlash: true`) | next 16.3.6, react 19.2.8 |
+| Framework | Next.js App Router, TypeScript, `src/` dir, **static export** (`output: "export"`, `images.unoptimized`, `trailingSlash: true`) | next 16.4.1, react 19.2.8 |
 | i18n | `next-intl` without middleware (static export can't run it) | 4.14.6 |
 | Styling | Tailwind CSS v4 via `@tailwindcss/postcss`, tokens in `globals.css` with `@theme inline` (there is no `tailwind.config`) | tailwindcss ^4 |
 | Icons | `lucide-react` only (Menu, X). WhatsApp icon is inline SVG (lucide has no brand icons) | 1.47.0 |
@@ -46,7 +49,7 @@ There are no automated tests. "Done" means the Quality floor below passes.
 | Contact form | Web3Forms (client-side POST), key in `NEXT_PUBLIC_WEB3FORMS_KEY` | — |
 | Hosting | Cloudflare (Workers & Pages) serving `out/`. Domain already on Cloudflare. **Never Vercel Hobby** — it forbids commercial use. | — |
 
-No other runtime dependencies without asking first: no UI kits, no animation libraries, no CMS. `puppeteer-core` is a dev-only dependency (used for screenshots/OG generation during development, no script in the repo).
+No other runtime dependencies without asking first: no UI kits, no animation libraries, no CMS. `puppeteer-core` is a dev-only dependency (drives Chrome for `npm run test:site`).
 
 ## Repo map
 
@@ -158,7 +161,8 @@ Heads-up: `site.prices` is **not rendered anywhere**. The visible prices are the
 
 - POSTs `FormData` to `https://api.web3forms.com/submit` with fields `access_key, name, email, business, package, message`. States: idle → sending → success | error, messages from `contact.*`.
 - If `NEXT_PUBLIC_WEB3FORMS_KEY` is missing **at build time**, the whole form is replaced by WhatsApp + email buttons. `NEXT_PUBLIC_*` values are inlined during `next build`, so the key must be set in the build environment (e.g. Cloudflare build variables), not just locally.
-- Spam: a hidden `_gotcha` field that the client checks before sending. Web3Forms' own honeypot field is `botcheck`; switching to it would also block bots that post directly.
+- Spam: a hidden `botcheck` checkbox (Web3Forms' own honeypot name, so their server also drops bots that post to the API directly); the client also checks it and fakes success. Fields have `maxLength` limits. A response is only "success" if it's 2xx **and** the JSON body isn't `success: false`.
+- Recommended in the Web3Forms dashboard (can't be done from code): restrict the access key to the `yameenyasar.com` domain. The key is public by design (it's in the page JS), so this stops others reusing it to spam the inbox.
 
 ## Intro page invariants (`IntroPage.tsx`) — read before touching
 
@@ -194,11 +198,21 @@ Brand videos and images were generated with the Higgsfield skills in `.agents/sk
 
 Static files only. Production = the contents of `out/` on Cloudflare at `yameenyasar.com`. The repo does not record whether Cloudflare builds from GitHub or `out/` is uploaded with `npx wrangler pages deploy out` (both have been used in this project's tooling). Either way, the build environment needs Node ≥ 20.9, internet access for Google Fonts, and `NEXT_PUBLIC_WEB3FORMS_KEY`. Build command `npm run build`, output directory `out`. Ask Anan which path is live before changing deployment.
 
+## Security
+
+- **Headers** live in `out/_headers` (Cloudflare reads it on Pages and on Workers static assets), generated by `scripts/security-headers.mjs` on every build. Never hand-edit it; edit the script. All responses: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: DENY`, `Cross-Origin-Opener-Policy`, `Permissions-Policy` (camera, mic, location, payment… all off), `Strict-Transport-Security` (1 year, no `includeSubDomains`/preload on purpose).
+- **CSP** per page: scripts only from `'self'` plus the SHA-256 hash of each inline script Next.js emitted (no `'unsafe-inline'`, no `'unsafe-eval'`). Hashes change every build, which is why they're generated. Network: `connect-src`/`form-action` allow only `'self'` and `https://api.web3forms.com`; Cloudflare Web Analytics' beacon origins are pre-allowed in case it's switched on. Adding any third-party script, font, iframe or API **requires adding its origin in the script**, or the browser blocks it — `npm run test:site` fails on any CSP violation.
+- If a Cloudflare feature injects **inline** scripts (Rocket Loader, Zaraz, some "Scrape Shield" options), the CSP blocks them. Keep those off, or add the origin/hash in the script.
+- **JSON-LD** escapes `<` before `dangerouslySetInnerHTML`. Keep it that way if the schema ever includes editable text.
+- **Images**: strip EXIF/GPS from every photo before adding it to `public/` (iPhone photos carry location; the repo is public). `anan.jpg` and `assets/myphoto.jpeg` were cleaned on 2026-10-16.
+- `public/.well-known/security.txt` (RFC 9116) — renew its `Expires` line before 2027-10-16.
+- `.DS_Store` files are deleted from `out/` by the postbuild script.
+- Accepted dev-only advisory: `braces` (via eslint-config-next → fast-glob → micromatch) has no patched release yet; it only runs inside ESLint on trusted patterns and never ships to visitors. Recheck with `npm audit` and update when a fix lands.
+
 ## Known issues / open items (verified Oct 2026)
 
-- **Lint errors** (2): `no-html-link-for-pages` on the two `<a>` tags in the `/` noscript block (fine on a static export; add an eslint-disable comment with a reason).
 - **OG images are off-brand**: `og-ar.png` / `og-en.png` still show the old green/saffron logo on paper. Regenerate them for the crimson brand.
-- Heavy images: `yy-logo-new.png` is 1344×752 / 847 KB for a 32px-tall header logo; `favicon-512.png` is actually 1024×1024 / 528 KB. Export properly sized versions.
+- Performance (Lighthouse mobile, local, Oct 16): 77 on both locales (A11y/Best practices/SEO 100). The LCP element is the hero `<video>`, which fades in over 2.4s by design; a poster image or a shorter fade would be the next gain. Images were resized on Oct 16 (logo 827→29 KB, favicons 515→125 KB, photo 409→184 KB).
 - Arabic price strings are inconsistent: "300 USD" (Western) vs «يبدأ من ١٥٠٠ دولار» (Arabic-Indic). Rule 7 says Western digits for prices.
 - `launchOffer` says "November offer" — switch `site.launchOffer` to `false` after November 2026.
 - Work section: all three cards are "Coming soon" concept placeholders; `work.viewSite` and `public/images/work/` are unused until real projects exist.

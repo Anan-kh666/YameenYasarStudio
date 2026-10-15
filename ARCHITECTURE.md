@@ -42,7 +42,7 @@ Google Fonts is contacted **only at build time**. `next/font/google` downloads t
 
 | Concern | Technology | Version | Notes |
 | --- | --- | --- | --- |
-| Framework | Next.js App Router | 16.3.6 | `output: "export"`, `trailingSlash: true`, `images.unoptimized: true` |
+| Framework | Next.js App Router | 16.4.1 | `output: "export"`, `trailingSlash: true`, `images.unoptimized: true` |
 | UI runtime | React / React DOM | 19.2.8 | Mostly Server Components rendered at build time |
 | Language | TypeScript (strict) | ^5 | Path alias `@/*` → `src/*` |
 | i18n | next-intl | 4.14.6 | No middleware. Locale comes from the `[locale]` segment |
@@ -50,8 +50,8 @@ Google Fonts is contacted **only at build time**. `next/font/google` downloads t
 | Icons | lucide-react | 1.47.0 | `Menu`, `X` only |
 | Fonts | next/font/google | — | Readex Pro, Cormorant Garamond, Tajawal |
 | Forms | Web3Forms | SaaS | Public access key via `NEXT_PUBLIC_WEB3FORMS_KEY` |
-| Lint | ESLint 9 flat config + eslint-config-next 16.3.6 | ^9 | core-web-vitals + typescript presets |
-| Dev-only | puppeteer-core | ^25 | Used ad hoc during development; no committed script |
+| Lint | ESLint 9 flat config + eslint-config-next 16.4.1 | ^9 | core-web-vitals + typescript presets |
+| Dev-only | puppeteer-core | ^25 | Drives Chrome for `npm run test:site` (`scripts/test-site.mjs`) |
 | Hosting | Cloudflare (Workers & Pages) | — | Static assets only |
 | Runtime requirement | Node.js | ≥ 20.9 | From Next 16's `engines` field |
 
@@ -124,6 +124,7 @@ Key points:
 - **`trailingSlash: true`** makes Next emit `ar/index.html` instead of `ar.html`. Every internal link uses the trailing slash (`/ar/`, `/en/`).
 - **next-intl plugin** (`createNextIntlPlugin("./src/i18n/request.ts")`) wires the request config into the build.
 - **Environment variables**: `NEXT_PUBLIC_WEB3FORMS_KEY` is inlined into the client JS during the build. The value present in the build environment decides whether the contact form exists in the output.
+- **Security headers**: `next build` is followed by the npm `postbuild` hook, `scripts/security-headers.mjs`, which hashes every inline script in each page, writes `out/_headers` (per-page Content-Security-Policy plus HSTS, nosniff, frame denial, referrer and permissions policies) and removes `.DS_Store` files. Cloudflare applies `_headers` when serving. See "Security" in `CLAUDE.md`.
 - **Deploy**: upload or serve `out/`. Build command `npm run build`, output dir `out`. The repo contains no CI workflow or `wrangler` config, so the deploy is either Cloudflare's Git integration or a manual `npx wrangler pages deploy out`.
 
 ## 6. Routing design: two root layouts
@@ -371,7 +372,7 @@ sequenceDiagram
   participant M as hello@yameenyasar.com
   U->>C: fill name, email, business, package, message → Send
   C->>C: preventDefault, status = sending
-  alt honeypot _gotcha filled
+  alt honeypot botcheck ticked
     C-->>U: fake success (bot silently dropped)
   else
     C->>W: POST https://api.web3forms.com/submit (FormData incl. access_key)
@@ -440,12 +441,11 @@ Brand media is generated with the Higgsfield skills (GPT Image 2.5 for stills, S
 
 | Area | Issue | Suggested fix |
 | --- | --- | --- |
-| Lint | 2 errors: `no-html-link-for-pages` ×2 in `(redirect)/page.tsx` noscript. 4 warnings (`<img>` ×2, `window.location`, unused var in `Footer`). | Justified eslint-disable comments for the noscript links and navigation. |
-| Performance | 847 KB header logo; 528 KB favicons; the intro canvas draws ~4,000 sprites per frame (fine on recent phones, untested on low-end Android). | Export a ~2× sized logo (WebP/PNG) and a small favicon set; lower the particle cap if low-end devices stutter. |
+| Lint | 0 errors (noscript links carry a justified eslint-disable). Warnings: `<img>` ×2, `window.location`, unused var in `Footer`. | — |
+| Performance | Hero `<video>` is the LCP element and fades in slowly (Lighthouse mobile 77); the intro canvas draws ~4,000 sprites per frame (untested on low-end Android). | Poster image or shorter fade for the hero; lower the particle cap if low-end devices stutter. |
 | Brand | OG images show the old logo. | Regenerate OG cards on the crimson palette. |
 | Content | `docs/website-copy.md` drifted from the messages; Arabic custom-tier price uses Arabic-Indic digits while the others use Western; "November offer" is time-bound; Work has only placeholders; LinkedIn URL unverified. | Re-sync the doc from the messages; normalise price digits; turn off `launchOffer` after November 2026; add real projects. |
 | Config | `site.prices` duplicates the message strings but is unused; `whatsappUrl` ignores its `locale` parameter; stale TODO next to the WhatsApp number. | Either render prices from `site.prices` (single source) or delete it; remove the unused parameter and the stale TODO. |
-| Forms | Honeypot named `_gotcha` is only checked client-side. | Use Web3Forms' `botcheck` field so the service filters bots server-side too. |
 | Code duplication | Font definitions repeated in both root layouts; WhatsApp SVG path duplicated in `Hero` and `WhatsAppButton`. | Extract `src/lib/fonts.ts` and a shared `WhatsAppIcon`. |
 | Repo hygiene | `.gitignore` lacks `.open-next/`, `.wrangler/`, `.claude/settings.local.json`; `assets/`, `.agents/`, `.claude/`, `skills-lock.json` are untracked; `CLAUDE.md` was deleted from the working tree. | Decide what to track, commit `CLAUDE.md` and `ARCHITECTURE.md`. |
 

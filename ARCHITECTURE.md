@@ -124,7 +124,7 @@ Key points:
 - **`trailingSlash: true`** makes Next emit `ar/index.html` instead of `ar.html`. Every internal link uses the trailing slash (`/ar/`, `/en/`).
 - **next-intl plugin** (`createNextIntlPlugin("./src/i18n/request.ts")`) wires the request config into the build.
 - **Environment variables**: `NEXT_PUBLIC_WEB3FORMS_KEY` is inlined into the client JS during the build. The value present in the build environment decides whether the contact form exists in the output.
-- **Security headers**: `next build` is followed by the npm `postbuild` hook, `scripts/security-headers.mjs`, which hashes every inline script in each page, writes `out/_headers` (per-page Content-Security-Policy plus HSTS, nosniff, frame denial, referrer and permissions policies) and removes `.DS_Store` files. Cloudflare applies `_headers` when serving. See "Security" in `CLAUDE.md`.
+- **Security headers**: `next build` is followed by the npm `postbuild` hook, `scripts/security-headers.mjs`, which hashes every inline script in each page, writes `out/_headers` (one site-wide Content-Security-Policy holding every page's script hashes, plus HSTS, nosniff, frame denial, referrer and permissions policies) and removes `.DS_Store`/`.gitkeep` files. Cloudflare applies `_headers` when serving. See "Security" in `CLAUDE.md`.
 - **Deploy**: upload or serve `out/`. Build command `npm run build`, output dir `out`. The repo contains no CI workflow or `wrangler` config, so the deploy is either Cloudflare's Git integration or a manual `npx wrangler pages deploy out`.
 
 ## 6. Routing design: two root layouts

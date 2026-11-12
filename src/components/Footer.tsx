@@ -65,7 +65,9 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line py-6">
-<p className="text-label text-text-muted">{t("footer.copyright")}</p>
+          {/* dir="auto": the Arabic copyright line is Latin text ("© 2026 Yameen Yasar
+              Studio"); without it RTL reordering shows "Yameen Yasar Studio 2026 ©" */}
+          <p dir="auto" className="text-label text-text-muted">{t("footer.copyright")}</p>
           <LanguageSwitch />
         </div>
       </div>

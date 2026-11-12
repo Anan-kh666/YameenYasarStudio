@@ -351,7 +351,7 @@ All storage access is wrapped in `try/catch`, so private mode or blocked storage
 
 - **Tailwind v4, CSS-first.** `globals.css` does `@import "tailwindcss"`, defines raw CSS variables on `:root`, then maps them with `@theme inline` into Tailwind's namespaces. That produces `bg-bg`, `text-text`, `text-text-muted`, `bg-surface`, `border-line`, `bg-crimson`, `text-crimson-bright`, `bg-paper`, `font-sans`, `font-heading`, and `text-display|h1|h2|body|small|label` (each with a paired line-height).
 - **Palette** (dark-only): bg `#0B0B0B`, surface `#151313`, line `#2A2424`, text `#F5F2ED`, text-muted `#A3A09B`, crimson `#8B0D1A` (fills), crimson-bright `#E5484D` (text on dark, focus ring), paper `#F5F2ED` (light sections).
-- **Fonts**: three `next/font/google` instances expose CSS variables (`--font-readex-pro`, `--font-cormorant`, `--font-tajawal`) on `<html>`. Both root layouts declare the same three fonts so the intro and the site share them.
+- **Fonts**: three `next/font/google` instances expose CSS variables (`--font-readex-pro`, `--font-cormorant`, `--font-tajawal`) on `<html>`. They are defined once in `src/lib/fonts.ts`; both root layouts put its `fontVariableClass` on `<html>`, so the intro and the site share them.
 - **Global behaviours**: 2px crimson-bright `:focus-visible` ring with 2px offset, and a skip-to-content link that is off-screen until focused (logical `inset-inline-start`).
 
 Animation inventory (all disabled or neutralised under `prefers-reduced-motion`, except the intro canvas):
@@ -410,7 +410,7 @@ The Milestone 7 Lighthouse pass (2026-09-25, mobile emulation) scored Performanc
 | --- | --- |
 | `messages/ar.json`, `messages/en.json` | **Live content.** What visitors see. |
 | `docs/website-copy.md` | Original brief and **partly out of date**: Levantine Arabic (the site now uses MSA), "Syrian" still in the bio, Work lists "Zait & Za'atar" (replaced by an online-store concept), Arabic heading and footer wording differ. Prices, package names, payment terms and the November offer still match. |
-| `src/lib/site.ts` | Contact details, socials, `launchOffer` flag. The `prices` object is **not used** by any component. |
+| `src/lib/site.ts` | Contact details, socials, `launchOffer` flag, `whatsappUrl(message)`. Prices live only in the messages. |
 | Hardcoded in `IntroPage.tsx` | Intro brand text, the bilingual question, "Skip / تخطّي" (intentionally outside next-intl). |
 | Hardcoded in the locale layout | JSON-LD description (one string per locale). |
 
@@ -441,12 +441,9 @@ Brand media is generated with the Higgsfield skills (GPT Image 2.5 for stills, S
 
 | Area | Issue | Suggested fix |
 | --- | --- | --- |
-| Lint | 0 errors (noscript links carry a justified eslint-disable). Warnings: `<img>` ×2, `window.location`, unused var in `Footer`. | — |
-| Performance | Hero `<video>` is the LCP element and fades in slowly (Lighthouse mobile 77); the intro canvas draws ~4,000 sprites per frame (untested on low-end Android). | Poster image or shorter fade for the hero; lower the particle cap if low-end devices stutter. |
-| Brand | OG images show the old logo. | Regenerate OG cards on the crimson palette. |
-| Content | `docs/website-copy.md` drifted from the messages; Arabic custom-tier price uses Arabic-Indic digits while the others use Western; "November offer" is time-bound; Work has only placeholders; LinkedIn URL unverified. | Re-sync the doc from the messages; normalise price digits; turn off `launchOffer` after November 2026; add real projects. |
-| Config | `site.prices` duplicates the message strings but is unused; `whatsappUrl` ignores its `locale` parameter; stale TODO next to the WhatsApp number. | Either render prices from `site.prices` (single source) or delete it; remove the unused parameter and the stale TODO. |
-| Code duplication | Font definitions repeated in both root layouts; WhatsApp SVG path duplicated in `Hero` and `WhatsAppButton`. | Extract `src/lib/fonts.ts` and a shared `WhatsAppIcon`. |
+| Lint | 0 errors (noscript links carry a justified eslint-disable). Warnings: `<img>` ×3, `window.location`. | — |
+| Performance | Hero `<video>` is the LCP element (Lighthouse mobile 77 in Oct; a poster and a 1.5 s fade were added in Nov, not re-measured); the intro canvas draws ~4,000 sprites per frame (untested on low-end Android). | Poster image or shorter fade for the hero; lower the particle cap if low-end devices stutter. |
+| Content | `docs/website-copy.md` drifted from the messages; Arabic prices mix "300 USD" and «1500 دولار», and the Arabic meta description uses «٣٠٠»; "November offer" is time-bound; Work has only placeholders; LinkedIn URL unverified. | Re-sync the doc from the messages; settle one Arabic price format; turn off `launchOffer` after November 2026; add real projects. |
 | Repo hygiene | `.gitignore` lacks `.open-next/`, `.wrangler/`, `.claude/settings.local.json`; `assets/`, `.agents/`, `.claude/`, `skills-lock.json` are untracked; `CLAUDE.md` was deleted from the working tree. | Decide what to track, commit `CLAUDE.md` and `ARCHITECTURE.md`. |
 
 ## 18. Extension guide

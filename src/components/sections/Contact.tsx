@@ -34,6 +34,10 @@ export default function Contact() {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: data,
+        // Give up after 20s so a hung request shows the error message
+        // (with the WhatsApp/email fallback) instead of "sending" forever.
+        // AbortSignal.timeout is missing on older Safari, so only use it if present.
+        signal: typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(20_000) : undefined,
       });
       // Web3Forms can answer 200 with { success: false } (e.g. a rejected
       // key), so check the body too, not just the HTTP status.

@@ -19,8 +19,10 @@ export default function Logo({ sizeClass = "h-8" }: Props) {
       <img
         src="/brand/yy-logo-new.png"
         alt={alt}
-        width={138}
-        height={32}
+        /* Must match the file's real pixel size (228×128): the browser uses
+           this ratio to reserve the logo's width before the image loads. */
+        width={228}
+        height={128}
         className={`block w-auto logo-reveal ${sizeClass}`}
       />
       {/* Gleam sweep element — clipped to logo bounds */}

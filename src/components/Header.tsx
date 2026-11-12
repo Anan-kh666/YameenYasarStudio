@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Menu, X } from "lucide-react";
 import Logo from "@/components/ui/Logo";
@@ -14,6 +14,7 @@ export default function Header() {
   const locale = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -25,7 +26,11 @@ export default function Header() {
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
+      if (e.key !== "Escape") return;
+      setMenuOpen(false);
+      // The menu's links unmount with it, so put focus back on the toggle
+      // instead of letting it fall to <body>.
+      menuButtonRef.current?.focus();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -67,6 +72,7 @@ export default function Header() {
           <LanguageSwitch sizeClass="text-[0.9375rem]" />
           <WhatsAppButton compact />
           <button
+            ref={menuButtonRef}
             onClick={() => setMenuOpen(!menuOpen)}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"

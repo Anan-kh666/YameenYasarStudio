@@ -116,6 +116,14 @@ const lines = [
   "/*",
   ...Object.entries(COMMON).map(([k, v]) => `  ${k}: ${v}`),
   "",
+  // JS, CSS and fonts under /_next/static/ have a content hash in their file
+  // name, so a changed file always gets a new URL: browsers can keep them for
+  // a year without asking again. (Cloudflare's default is max-age=0, which
+  // revalidates every file on every visit.) Unhashed files (/images, /brand)
+  // keep the default so a replaced image shows up right away.
+  "/_next/static/*",
+  "  Cache-Control: public, max-age=31536000, immutable",
+  "",
 ];
 
 let pages = 0;

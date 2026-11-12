@@ -43,7 +43,7 @@ export default function Header() {
 
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <a href={`/${locale}/`} className="shrink-0">
-          <Logo />
+          <Logo sizeClass="h-9" />
         </a>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
@@ -51,7 +51,7 @@ export default function Header() {
             <a
               key={item}
               href={`#${item}`}
-              className="text-small font-medium text-text-muted transition-colors hover:text-crimson-bright"
+              className="text-[0.9375rem] font-medium text-text-muted transition-colors hover:text-crimson-bright"
             >
               {t(`nav.${item}`)}
             </a>
@@ -59,12 +59,12 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-4 md:flex">
-          <LanguageSwitch />
+          <LanguageSwitch sizeClass="text-[0.9375rem]" />
           <WhatsAppButton />
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
-          <LanguageSwitch />
+          <LanguageSwitch sizeClass="text-[0.9375rem]" />
           <WhatsAppButton compact />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -72,7 +72,7 @@ export default function Header() {
             aria-label={t("header.menu")}
             className="rounded-xl p-2 text-text transition-colors hover:bg-surface"
           >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>

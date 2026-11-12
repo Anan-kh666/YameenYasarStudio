@@ -260,6 +260,7 @@ export default function IntroPage() {
         <video
           className="intro-ambient"
           src="/images/ambient-silk.mp4"
+          poster="/images/ambient-silk-poster.jpg"
           muted loop playsInline autoPlay preload="auto" aria-hidden="true"
         />
       )}

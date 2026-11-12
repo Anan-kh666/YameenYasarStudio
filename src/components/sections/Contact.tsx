@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Mail } from "lucide-react";
 import { site, whatsappUrl } from "@/lib/site";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -14,7 +14,6 @@ const PACKAGE_OPTIONS = ["packageLaunch", "packageBusiness", "packageCustom", "p
 export default function Contact() {
   const t = useTranslations("contact");
   const tWa = useTranslations("whatsapp");
-  const locale = useLocale();
 
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
@@ -50,7 +49,7 @@ export default function Contact() {
     }
   }
 
-  const waHref = whatsappUrl(locale, tWa("prefilled"));
+  const waHref = whatsappUrl(tWa("prefilled"));
 
   /* The direct ways to reach us: shown beside the form, or on their own
      when there is no Web3Forms key at build time. */

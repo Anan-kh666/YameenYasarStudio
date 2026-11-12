@@ -27,7 +27,7 @@ export default function Hero() {
   const tWa = useTranslations("whatsapp");
   const locale = useLocale();
   const otherLocale = locale === "ar" ? "en" : "ar";
-  const waHref = whatsappUrl(locale, tWa("prefilled"));
+  const waHref = whatsappUrl(tWa("prefilled"));
 
   return (
     <section
@@ -40,6 +40,7 @@ export default function Hero() {
         <video
           className="hero-silk"
           src="/images/ambient-silk.mp4"
+          poster="/images/ambient-silk-poster.jpg"
           muted loop playsInline autoPlay preload="auto"
         />
         <div className="hero-shade" />

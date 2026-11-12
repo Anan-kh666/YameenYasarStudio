@@ -1,4 +1,4 @@
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { whatsappUrl } from "@/lib/site";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
@@ -22,8 +22,7 @@ type Props = {
 
 export default function WhatsAppButton({ compact, className }: Props) {
   const t = useTranslations();
-  const locale = useLocale();
-  const href = whatsappUrl(locale, t("whatsapp.prefilled"));
+  const href = whatsappUrl(t("whatsapp.prefilled"));
 
   if (compact) {
     return (
@@ -32,9 +31,9 @@ export default function WhatsAppButton({ compact, className }: Props) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={t("header.whatsapp")}
-        className={`inline-flex items-center justify-center rounded-xl bg-crimson p-2 text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
+        className={`inline-flex items-center justify-center rounded-xl bg-crimson p-2.5 text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
       >
-        <WhatsAppIcon className="size-5" />
+        <WhatsAppIcon className="size-[22px]" />
       </a>
     );
   }
@@ -44,9 +43,9 @@ export default function WhatsAppButton({ compact, className }: Props) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-2 rounded-xl bg-crimson px-4 py-2 text-small font-medium text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
+      className={`inline-flex items-center gap-2 rounded-xl bg-crimson px-5 py-2.5 text-[0.9375rem] font-medium text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
     >
-      <WhatsAppIcon className="size-4" />
+      <WhatsAppIcon className="size-[18px]" />
       {t("header.whatsapp")}
     </a>
   );

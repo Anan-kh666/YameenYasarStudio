@@ -1,37 +1,12 @@
-import { Readex_Pro, Cormorant_Garamond, Tajawal } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getTranslations, getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { site } from "@/lib/site";
+import { fontVariableClass } from "@/lib/fonts";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "@/app/globals.css";
 import type { Metadata } from "next";
-
-/* Body/UI font — arabic + latin subsets */
-const readexPro = Readex_Pro({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-  variable: "--font-readex-pro",
-});
-
-/* Headline fonts — Cormorant Garamond for Latin, Tajawal for Arabic.
-   Tajawal gives Arabic a modern, clean feel vs the traditional Amiri serif.
-   CSS switches between them via --font-heading-family in globals.css. */
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["600"],
-  display: "swap",
-  variable: "--font-cormorant",
-});
-
-const tajawal = Tajawal({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "700"],
-  display: "swap",
-  variable: "--font-tajawal",
-});
 
 type Props = {
   children: React.ReactNode;
@@ -117,7 +92,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={locale} dir={dir} className={`${readexPro.variable} ${cormorant.variable} ${tajawal.variable}`}>
+    <html lang={locale} dir={dir} className={fontVariableClass}>
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Header />

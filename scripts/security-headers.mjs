@@ -37,7 +37,9 @@ const COMMON = {
   "Cross-Origin-Opener-Policy": "same-origin",
   "Permissions-Policy":
     "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=(), " +
-    "magnetometer=(), gyroscope=(), accelerometer=(), browsing-topics=()",
+    "magnetometer=(), gyroscope=(), accelerometer=(), browsing-topics=(), " +
+    "interest-cohort=(), autoplay=(), fullscreen=(), picture-in-picture=(), " +
+    "display-capture=(), xr-spatial-tracking=()",
   // One year of HTTPS-only. No includeSubDomains/preload on purpose: that
   // would also force every other subdomain of the domain onto HTTPS forever.
   "Strict-Transport-Security": "max-age=31536000",

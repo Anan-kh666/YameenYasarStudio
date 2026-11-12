@@ -18,7 +18,7 @@ export default function About() {
             <div className="absolute -inset-8 -z-10 rounded-full bg-crimson/20 blur-3xl" aria-hidden="true" />
             <img
               src="/images/anan.jpg"
-              alt={t("headline")}
+              alt={t("photoAlt")}
               className="relative aspect-[4/5] w-full rounded-2xl object-cover"
             />
           </div>

@@ -5,7 +5,12 @@ import { useTranslations } from "next-intl";
  * Dark-only site — always shows the new Higgsfield-rendered logo on dark bg.
  * Wrapped in dir="ltr" so the logo never flips in RTL.
  */
-export default function Logo() {
+type Props = {
+  /** Height utility for the image (width follows the aspect ratio). */
+  sizeClass?: string;
+};
+
+export default function Logo({ sizeClass = "h-8" }: Props) {
   const t = useTranslations("header");
   const alt = t("logoAlt");
 
@@ -16,7 +21,7 @@ export default function Logo() {
         alt={alt}
         width={138}
         height={32}
-        className="block h-8 w-auto logo-reveal"
+        className={`block w-auto logo-reveal ${sizeClass}`}
       />
       {/* Gleam sweep element — clipped to logo bounds */}
       <span className="logo-gleam-bar" aria-hidden="true" />

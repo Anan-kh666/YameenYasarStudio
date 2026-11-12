@@ -207,7 +207,10 @@ body {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 35%);
   mask-image: linear-gradient(to bottom, transparent 0%, #000 35%);
   opacity: 0;
-  animation: hero-silk-in 2.4s ease-out 0.2s forwards;
+  animation: hero-silk-in 1.5s ease-out 0.2s forwards;
+  /* Own layer: the video decodes frames continuously, so keeping it on a
+     separate compositing layer stops the browser from repainting neighbours. */
+  will-change: opacity;
 }
 @keyframes hero-silk-in { to { opacity: 0.85; } }
 
@@ -238,6 +241,10 @@ body {
   height: 100%;
   opacity: 0;
   transition: opacity 1.6s ease;
+  /* Promote to its own compositing layer — the canvas redraws every frame
+     while the hero is visible, so a dedicated layer avoids repainting the
+     elements underneath it. */
+  will-change: transform;
 }
 .hero-fx.is-ready .hero-fx-canvas { opacity: 1; }
 
@@ -404,7 +411,19 @@ body {
 
   .hero-silk {
     opacity: 0.6;
+    will-change: auto;
   }
+
+  /* Canvas and spotlight entrance should be instant */
+  .hero-fx-canvas {
+    transition: none !important;
+    opacity: 1;
+    will-change: auto;
+  }
+  .hero-spotlight { transition: none !important; }
+
+  /* Hover sweep on CTA */
+  .hero-cta::after { transition: none !important; }
 
   .logo-reveal {
     animation: none;

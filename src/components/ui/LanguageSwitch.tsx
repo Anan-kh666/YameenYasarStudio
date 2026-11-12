@@ -7,7 +7,11 @@ import { useLocale, useTranslations } from "next-intl";
  * "English" on /ar, "عربي" on /en. Preserves the current section hash.
  * Saves the choice to localStorage so the / redirect remembers it.
  */
-export default function LanguageSwitch() {
+export default function LanguageSwitch({
+  sizeClass = "text-small",
+}: {
+  sizeClass?: string;
+}) {
   const locale = useLocale();
   const t = useTranslations("languageSwitch");
   const otherLocale = locale === "ar" ? "en" : "ar";
@@ -30,7 +34,7 @@ export default function LanguageSwitch() {
       onClick={handleClick}
       /* The label is already in the other language's script, so set its lang */
       lang={otherLocale}
-      className="text-small font-medium text-text-muted hover:text-text transition-colors"
+      className={`${sizeClass} font-medium text-text-muted hover:text-text transition-colors`}
     >
       {t("label")}
     </a>

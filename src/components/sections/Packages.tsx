@@ -1,4 +1,4 @@
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Check, Clock, Sparkles, Wrench, PenLine } from "lucide-react";
 import { site, whatsappUrl } from "@/lib/site";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -14,8 +14,7 @@ export default function Packages() {
   const t = useTranslations("packages");
   const tHero = useTranslations("hero");
   const tWa = useTranslations("whatsapp");
-  const locale = useLocale();
-  const waHref = whatsappUrl(locale, tWa("prefilled"));
+  const waHref = whatsappUrl(tWa("prefilled"));
 
   return (
     <section id="packages" className="section-glow py-20 md:py-28">

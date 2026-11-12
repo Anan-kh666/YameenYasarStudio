@@ -45,7 +45,7 @@ npx serve out          # preview the real static output (or: npx wrangler pages 
 | i18n | `next-intl` without middleware (static export can't run it) | 4.14.6 |
 | Styling | Tailwind CSS v4 via `@tailwindcss/postcss`, tokens in `globals.css` with `@theme inline` (there is no `tailwind.config`) | tailwindcss ^4 |
 | Icons | `lucide-react` only (Menu, X). WhatsApp icon is inline SVG (lucide has no brand icons) | 1.47.0 |
-| Fonts | `next/font/google`: Readex Pro (body/UI), Cormorant Garamond 600 (Latin headings), Tajawal 400/700 (Arabic headings) | — |
+| Fonts | `next/font/google`: Readex Pro (body/UI), Cormorant Garamond 600 (Latin headings), Tajawal 700 (Arabic headings; only the Arabic subset is preloaded) — all set up once in `src/lib/fonts.ts` | — |
 | Contact form | Web3Forms (client-side POST), key in `NEXT_PUBLIC_WEB3FORMS_KEY` | — |
 | Hosting | Cloudflare (Workers & Pages) serving `out/`. Domain already on Cloudflare. **Never Vercel Hobby** — it forbids commercial use. | — |
 
@@ -92,7 +92,7 @@ Do not edit or rely on: `out/`, `.next/`, `.open-next/` and `.wrangler/` (leftov
 - `<html lang dir>` is set server-side in the locale layout (`ar` → `rtl`, `en` → `ltr`). Never set direction with JS after load.
 - Locale choice on `/`: `localStorage["yy-locale"]` if set, else `navigator.language` starting with `ar` → `/ar/`, otherwise `/en/`.
 - `LanguageSwitch` shows the **other** language in its own script ("English" on /ar, "عربي" on /en), keeps the current `#hash`, and saves `yy-locale`.
-- hreflang alternates (`ar`, `en`, `x-default` → `/`) and canonical per locale come from `generateMetadata`.
+- hreflang alternates (`ar`, `en`, `x-default` → `/ar/`) and canonical per locale come from `generateMetadata`; `sitemap.ts` lists the same three. x-default is not `/` because the intro is `noindex`.
 
 ## RTL rules (non-negotiable)
 

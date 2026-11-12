@@ -395,7 +395,7 @@ sequenceDiagram
 | --- | --- | --- |
 | `<title>` and meta description | `meta.title` / `meta.description` per locale | Locale pages |
 | Canonical | `generateMetadata` | `https://yameenyasar.com/{locale}/` |
-| hreflang | `alternates.languages` | `ar`, `en`, `x-default` → `/` |
+| hreflang | `alternates.languages` | `ar`, `en`, `x-default` → `/ar/` (the intro `/` is noindex) |
 | Open Graph / Twitter | `generateMetadata` | `og-{locale}.png` 1200×630, `summary_large_image`, `ar_SA` / `en_US` |
 | Structured data | `JsonLd` component in the locale layout | `ProfessionalService` with name (locale-specific), url, email, `areaServed: Worldwide`, description |
 | Sitemap | `app/sitemap.ts` | `/ar/` and `/en/` with language alternates |
@@ -421,7 +421,7 @@ The Milestone 7 Lighthouse pass (2026-09-25, mobile emulation) scored Performanc
 | `brand/yy-logo-new.png` (1344×752) | 847 KB | Header logo |
 | `brand/favicon-512.png` (1024×1024) | 528 KB | Favicon / apple-touch icon (both layouts) |
 | `favicon.ico`, `favicon.png` | 1 KB / 528 KB | Root fallbacks for browsers requesting `/favicon.*` |
-| `images/anan.jpg` (666×1182) | 430 KB | About section |
+| `images/anan.jpg` (640×800, cropped to the 4:5 frame it's shown in) | 93 KB | About section (lazy-loaded) |
 | `images/ambient-silk.mp4` (1280×720, 9.3 s seamless loop) | 0.6 MB | Hero background; intro background |
 | `brand/yy-logo-intro.png` (1016×304, transparent, exact colours) | 0.17 MB | Intro finale (image + particle targets + light-sweep mask) |
 

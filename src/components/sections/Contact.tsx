@@ -88,7 +88,7 @@ export default function Contact() {
     );
   }
 
-  const fieldClass = "mt-2 block w-full rounded-xl border border-line bg-surface px-4 py-3 text-body text-text placeholder:text-text-muted/50 transition-colors focus:border-crimson-bright focus:outline-none focus:ring-1 focus:ring-crimson-bright";
+  const fieldClass = "mt-2 block w-full rounded-xl border border-line bg-surface px-4 py-3 text-body text-text placeholder:text-text-muted/50 transition-colors focus:border-crimson-bright";
   const labelClass = "block text-small font-medium text-text";
 
   return (
@@ -161,16 +161,21 @@ export default function Contact() {
             {t("send")}
           </button>
 
-          {status === "success" && (
-            <p role="status" className="mt-4 rounded-xl border border-crimson-bright/30 bg-crimson/15 px-4 py-3 text-small text-text">
-              {t("success")}
-            </p>
-          )}
-          {status === "error" && (
-            <p role="alert" className="mt-4 rounded-xl border border-crimson-bright/30 bg-crimson/15 px-4 py-3 text-small text-text">
-              {t("error")}
-            </p>
-          )}
+          {/* Always-present live region: screen readers announce text that
+              appears inside it (a region inserted together with its text is
+              often missed). */}
+          <div aria-live="polite" aria-atomic="true">
+            {status === "success" && (
+              <p className="mt-4 rounded-xl border border-crimson-bright/30 bg-crimson/15 px-4 py-3 text-small text-text">
+                {t("success")}
+              </p>
+            )}
+            {status === "error" && (
+              <p className="mt-4 rounded-xl border border-crimson-bright/30 bg-crimson/15 px-4 py-3 text-small text-text">
+                {t("error")}
+              </p>
+            )}
+          </div>
         </form>
       </div>
     </section>

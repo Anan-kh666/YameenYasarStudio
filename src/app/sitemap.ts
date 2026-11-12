@@ -9,13 +9,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${site.url}/ar/`,
       alternates: {
-        languages: { ar: `${site.url}/ar/`, en: `${site.url}/en/` },
+        languages: { ar: `${site.url}/ar/`, en: `${site.url}/en/`, "x-default": `${site.url}/ar/` },
       },
     },
     {
       url: `${site.url}/en/`,
       alternates: {
-        languages: { ar: `${site.url}/ar/`, en: `${site.url}/en/` },
+        languages: { ar: `${site.url}/ar/`, en: `${site.url}/en/`, "x-default": `${site.url}/ar/` },
       },
     },
   ];

@@ -8,6 +8,11 @@ import Footer from "@/components/Footer";
 import "@/app/globals.css";
 import type { Metadata } from "next";
 
+/* Only these namespaces are read by client components (Header, Logo and
+   WhatsAppButton inside it, LanguageSwitch, Contact). Server components get
+   every message on the server, so the rest never has to ship to the browser. */
+const CLIENT_NAMESPACES = ["nav", "header", "languageSwitch", "whatsapp", "contact"] as const;
+
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
@@ -37,7 +42,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       languages: {
         ar: `${site.url}/ar/`,
         en: `${site.url}/en/`,
-        "x-default": `${site.url}/`,
+        // x-default points at the default locale, not "/": the intro at "/" is
+        // noindex, and an hreflang target that can't be indexed is ignored.
+        "x-default": `${site.url}/ar/`,
       },
     },
     openGraph: {
@@ -54,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-      images: [ogImage],
+      images: [{ url: ogImage, alt: t("title") }],
     },
   };
 }
@@ -64,9 +71,17 @@ function JsonLd({ locale }: { locale: string }) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
+    "@id": `${site.url}/#studio`,
     name: locale === "ar" ? site.nameAr : site.name,
+    alternateName: locale === "ar" ? site.name : site.nameAr,
     url: `${site.url}/${locale}/`,
+    inLanguage: locale,
+    logo: `${site.url}/brand/favicon-512.png`,
+    image: `${site.url}/og-${locale}.png`,
     email: site.email,
+    // LinkedIn is left out until site.linkedin is verified (TODO in site.ts).
+    sameAs: [site.instagram],
+    knowsLanguage: ["ar", "en"],
     areaServed: "Worldwide",
     description:
       locale === "ar"
@@ -88,7 +103,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const messages = await getMessages();
+  const allMessages = await getMessages();
+  const messages = Object.fromEntries(CLIENT_NAMESPACES.map((ns) => [ns, allMessages[ns]]));
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (

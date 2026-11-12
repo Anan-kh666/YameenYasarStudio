@@ -18,9 +18,12 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
 });
 
+/* Only 700 is used (every heading is font-semibold, which resolves to 700, and
+   HeroFx/intro draw at 700). `subsets` only decides what gets <link rel=preload>:
+   the Latin @font-face stays in the CSS and loads on demand via unicode-range. */
 const tajawal = Tajawal({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "700"],
+  subsets: ["arabic"],
+  weight: ["700"],
   display: "swap",
   variable: "--font-tajawal",
 });

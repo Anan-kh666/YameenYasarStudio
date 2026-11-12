@@ -19,6 +19,12 @@ export default function About() {
             <img
               src="/images/anan.jpg"
               alt={t("photoAlt")}
+              width={640}
+              height={800}
+              // Below the fold: lazy, so React doesn't emit a <link rel=preload>
+              // for it in <head> and it doesn't compete with the hero.
+              loading="lazy"
+              decoding="async"
               className="relative aspect-[4/5] w-full rounded-2xl object-cover"
             />
           </div>

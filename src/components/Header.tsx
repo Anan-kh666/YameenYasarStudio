@@ -42,7 +42,7 @@ export default function Header() {
       </a>
 
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <a href={`/${locale}/`} className="shrink-0">
+        <a href={`/${locale}/`} className="inline-flex min-h-11 shrink-0 items-center">
           <Logo sizeClass="h-9" />
         </a>
 
@@ -69,8 +69,10 @@ export default function Header() {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
             aria-label={t("header.menu")}
-            className="rounded-xl p-2 text-text transition-colors hover:bg-surface"
+            /* p-2.5 + 24px icon = 44px tap target */
+            className="rounded-xl p-2.5 text-text transition-colors hover:bg-surface"
           >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -79,6 +81,7 @@ export default function Header() {
 
       {menuOpen && (
         <nav
+          id="mobile-menu"
           className="border-t border-line px-4 pb-4 pt-2 md:hidden sm:px-6"
           aria-label="Mobile"
         >

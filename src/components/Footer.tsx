@@ -9,7 +9,8 @@ const NAV_ITEMS = ["packages", "work", "about", "contact"] as const;
 export default function Footer() {
   const t = useTranslations();
 
-  const linkClass = "text-small text-text-muted transition-colors hover:text-crimson-bright";
+  // On phones each link is a 44px-tall row (tap target); desktop keeps the tighter list
+  const linkClass = "inline-flex min-h-11 items-center text-small text-text-muted transition-colors hover:text-crimson-bright md:min-h-0";
 
   return (
     <footer className="relative border-t border-line bg-bg">
@@ -22,14 +23,14 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-10 py-14 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
           <div>
-            <a href="#main" className="inline-block">
+            <a href="#main" className="inline-flex min-h-11 items-center">
               <Logo />
             </a>
             <p className="mt-5 max-w-xs text-small text-text-muted">{t("footer.tagline")}</p>
           </div>
 
           <nav aria-label="Footer">
-            <ul className="space-y-3">
+            <ul className="md:space-y-3">
               {NAV_ITEMS.map((item) => (
                 <li key={item}>
                   <a href={`#${item}`} className={linkClass}>
@@ -40,7 +41,7 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <ul className="space-y-3">
+          <ul className="md:space-y-3">
             <li>
               <a href={`mailto:${site.email}`} dir="ltr" className={linkClass}>
                 {site.email}
@@ -64,7 +65,9 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line py-6">
-          <p className="text-label text-text-muted">{t("footer.copyright")}</p>
+          {/* dir="auto": the Arabic copyright line is Latin text ("© 2026 Yameen Yasar
+              Studio"); without it RTL reordering shows "Yameen Yasar Studio 2026 ©" */}
+          <p dir="auto" className="text-label text-text-muted">{t("footer.copyright")}</p>
           <LanguageSwitch />
         </div>
       </div>

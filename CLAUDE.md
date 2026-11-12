@@ -35,7 +35,7 @@ npm audit --omit=dev   # production dependencies (0 vulnerabilities on Oct 16 20
 npx serve out          # preview the real static output (or: npx wrangler pages dev out)
 ```
 
-`npm run test:site` (`scripts/test-site.mjs`) serves `out/` the way Cloudflare does (applies `_headers`, trailing-slash redirects, 404) and checks both locales at 375px and 1280px (headers, CSP violations, JS errors, lang/dir, horizontal scroll, alt text, link `rel`, fonts, anchors, JSON-LD), that the CSP blocks injected scripts, the contact form with Web3Forms mocked (success, rejected, HTTP error, honeypot), the language switch, skip link, mobile menu, every intro path, and the static files. It uses the installed Google Chrome (`CHROME_PATH` to override). It doesn't replace the manual Quality floor (real iPhone, Lighthouse).
+`npm run test:site` (`scripts/test-site.mjs`) serves `out/` the way Cloudflare does (applies `_headers`, trailing-slash redirects, 404) and checks both locales at 375px and 1280px (headers, CSP violations, JS errors, lang/dir, horizontal scroll, alt text, link `rel`, fonts, anchors, JSON-LD), that the CSP blocks injected scripts, the contact form with Web3Forms mocked (success, rejected, HTTP error, honeypot), the language switch, skip link, mobile menu, every intro path, and the static files. It uses the installed Google Chrome (`CHROME_PATH` to override) and port 4173 (`TEST_PORT` to override). It doesn't replace the manual Quality floor (real iPhone, Lighthouse).
 
 ## Stack (decided — don't swap without asking Anan)
 

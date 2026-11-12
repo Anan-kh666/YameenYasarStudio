@@ -15,7 +15,8 @@ import path from "node:path";
 
 const CHROME = process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const OUT = path.resolve("out");
-const PORT = 4173;
+// TEST_PORT lets two checkouts run the suite at the same time.
+const PORT = Number(process.env.TEST_PORT) || 4173;
 
 /* Minimal stand-in for Cloudflare static hosting */
 function createServer(ROOT) {

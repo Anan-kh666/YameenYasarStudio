@@ -154,9 +154,9 @@ The brand idea is "right to left, left to right": two languages meeting.
 
 ## Config (`src/lib/site.ts`)
 
-Holds `url`, `name`, `nameAr`, `email` (hello@yameenyasar.com), `whatsappNumber` (international format, no `+`), `instagram`, `linkedin`, and `launchOffer` (shows/hides the November-offer banner). `whatsappUrl(locale, message)` builds `https://wa.me/<number>?text=<encoded>`; the prefilled text comes from `whatsapp.prefilled` in the messages.
+Holds `url`, `name`, `nameAr`, `email` (hello@yameenyasar.com), `whatsappNumber` (international format, no `+`), `instagram`, `linkedin`, and `launchOffer` (shows/hides the November-offer banner). `whatsappUrl(message)` builds `https://wa.me/<number>?text=<encoded>`; the prefilled text comes from `whatsapp.prefilled` in the messages.
 
-Heads-up: `site.prices` is **not rendered anywhere**. The visible prices are the strings in `messages/*.json` (`packages.*.price`). If prices change, edit both message files (and the AR/EN meta descriptions, which mention "from $300"); `site.prices` only matters if you wire it up.
+Prices live only in the messages: `packages.*.price` (and `site.prices` was removed in Nov 2026). If prices change, edit both message files and the AR/EN meta descriptions, which mention "from $300".
 
 ## Contact form (`sections/Contact.tsx`)
 
@@ -212,14 +212,13 @@ Static files only. Production = the contents of `out/` on Cloudflare at `yameeny
 
 ## Known issues / open items (verified Oct 2026)
 
-- **OG images are off-brand**: `og-ar.png` / `og-en.png` still show the old green/saffron logo on paper. Regenerate them for the crimson brand.
-- Performance (Lighthouse mobile, local, Oct 16): 77 on both locales (A11y/Best practices/SEO 100). The LCP element is the hero `<video>`, which fades in over 2.4s by design; a poster image or a shorter fade would be the next gain. Images were resized on Oct 16 (logo 827→29 KB, favicons 515→125 KB, photo 409→184 KB).
-- Arabic price strings are inconsistent: "300 USD" (Western) vs «يبدأ من ١٥٠٠ دولار» (Arabic-Indic). Rule 7 says Western digits for prices.
+- Performance (Lighthouse mobile, local, Oct 16): 77 on both locales (A11y/Best practices/SEO 100). The LCP element is the hero `<video>`; since then it got a poster (`ambient-silk-poster.jpg`) and a 1.5s fade (Nov 2026, not re-measured). Images were resized on Oct 16 (logo 827→29 KB, favicons 515→125 KB, photo 409→184 KB).
+- Arabic prices now all use Western digits, but the wording is mixed: "300 USD" vs «يبدأ من 1500 دولار», and `meta.description` still says «٣٠٠ دولار» (Arabic-Indic). Ask Anan which form to standardise on.
 - `launchOffer` says "November offer" — switch `site.launchOffer` to `false` after November 2026.
 - Work section: all three cards are "Coming soon" concept projects with abstract mood images (decorative `alt=""`); `work.viewSite` is unused until real projects exist.
 - The project sits in an iCloud-synced folder (`~/Documents`), and iCloud creates "`name 2.ext`" conflict copies of files that change quickly (`.next/`, `node_modules/`, even `public/`). They broke `next build` once. The postbuild script deletes any in `out/`; delete stray ones in the source with care (compare first). Moving the project out of iCloud (e.g. `~/Developer`) fixes it for good.
-- `site.linkedin` is still marked `TODO(anan): verify`. The `whatsappNumber` TODO comment is stale (a number is set).
-- Small cleanups: unused `locale` in `Footer.tsx`; unused `locale` parameter in `whatsappUrl`; the About photo's alt text is the section headline rather than Anan's name; font setup is duplicated in both root layouts (keep them in sync or extract to `src/lib/fonts.ts`).
+- `site.linkedin` is still marked `TODO(anan): verify`.
+- Fonts are defined once in `src/lib/fonts.ts` (`fontVariableClass`) and applied on `<html>` by both root layouts.
 
 ## Working rules
 

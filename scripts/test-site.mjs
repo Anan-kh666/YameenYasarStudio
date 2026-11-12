@@ -205,7 +205,21 @@ async function newPage(b, { w = 1280, h = 800, lang = "en-US", reduced = false, 
     const t = await (await fetch(BASE + u)).text(); ok(`${u} served`, re.test(t));
   }
   const nf = await fetch(BASE + "/does-not-exist/"); ok("unknown path → 404 page", nf.status === 404);
+  ok("404 page has the CSP", /script-src 'self' 'sha256-/.test(nf.headers.get("content-security-policy") || ""));
+  {
+    const p = await newPage(b);
+    // Chrome logs the document's own 404 status as a console error, so
+    // drop that one and check sub-resources (scripts, CSS, fonts) instead.
+    const bad = [];
+    p.on("response", (r) => { if (r.status() >= 400 && r.request().resourceType() !== "document") bad.push(r.status() + " " + r.url()); });
+    await p.goto(`${BASE}/does-not-exist/`, { waitUntil: "networkidle0" });
+    const v = await p.evaluate(() => window.__csp);
+    const errs = p._err.filter((e) => !/Failed to load resource: .*404/.test(e));
+    ok("404 page: no CSP violations, JS errors or broken assets", v.length === 0 && errs.length === 0 && bad.length === 0, [...v, ...errs, ...bad].join(" | "));
+    await p.close();
+  }
   const ds = await fetch(BASE + "/.DS_Store"); ok(".DS_Store not deployed", ds.status === 404);
+  const gk = await fetch(BASE + "/images/work/.gitkeep"); ok(".gitkeep not deployed", gk.status === 404);
 
   await b.close();
   server.close();

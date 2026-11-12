@@ -31,7 +31,8 @@ export default function WhatsAppButton({ compact, className }: Props) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={t("header.whatsapp")}
-        className={`inline-flex items-center justify-center rounded-xl bg-crimson p-2.5 text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
+        /* 11px padding + 22px icon = 44px tap target */
+        className={`inline-flex items-center justify-center rounded-xl bg-crimson p-[11px] text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
       >
         <WhatsAppIcon className="size-[22px]" />
       </a>

@@ -9,7 +9,8 @@ const NAV_ITEMS = ["packages", "work", "about", "contact"] as const;
 export default function Footer() {
   const t = useTranslations();
 
-  const linkClass = "text-small text-text-muted transition-colors hover:text-crimson-bright";
+  // On phones each link is a 44px-tall row (tap target); desktop keeps the tighter list
+  const linkClass = "inline-flex min-h-11 items-center text-small text-text-muted transition-colors hover:text-crimson-bright md:min-h-0";
 
   return (
     <footer className="relative border-t border-line bg-bg">
@@ -29,7 +30,7 @@ export default function Footer() {
           </div>
 
           <nav aria-label="Footer">
-            <ul className="space-y-3">
+            <ul className="md:space-y-3">
               {NAV_ITEMS.map((item) => (
                 <li key={item}>
                   <a href={`#${item}`} className={linkClass}>
@@ -40,7 +41,7 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <ul className="space-y-3">
+          <ul className="md:space-y-3">
             <li>
               <a href={`mailto:${site.email}`} dir="ltr" className={linkClass}>
                 {site.email}
@@ -64,7 +65,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line py-6">
-          <p className="text-label text-text-muted">{t("footer.copyright")}</p>
+<p className="text-label text-text-muted">{t("footer.copyright")}</p>
           <LanguageSwitch />
         </div>
       </div>

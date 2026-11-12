@@ -34,7 +34,8 @@ export default function LanguageSwitch({
       onClick={handleClick}
       /* The label is already in the other language's script, so set its lang */
       lang={otherLocale}
-      className={`${sizeClass} font-medium text-text-muted hover:text-text transition-colors`}
+      /* min-h-11/min-w-11: 44px tap target on phones */
+      className={`${sizeClass} inline-flex min-h-11 min-w-11 items-center justify-center font-medium text-text-muted hover:text-text transition-colors`}
     >
       {t("label")}
     </a>

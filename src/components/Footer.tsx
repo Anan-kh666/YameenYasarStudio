@@ -23,7 +23,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-10 py-14 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
           <div>
-            <a href="#main" className="inline-block">
+            <a href="#main" className="inline-flex min-h-11 items-center">
               <Logo />
             </a>
             <p className="mt-5 max-w-xs text-small text-text-muted">{t("footer.tagline")}</p>

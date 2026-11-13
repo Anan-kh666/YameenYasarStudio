@@ -9,8 +9,11 @@ import { useLocale, useTranslations } from "next-intl";
  */
 export default function LanguageSwitch({
   sizeClass = "text-small",
+  variant = "plain",
 }: {
   sizeClass?: string;
+  /** "pill" = hairline-outlined control (header, footer); "plain" = text link */
+  variant?: "plain" | "pill";
 }) {
   const locale = useLocale();
   const t = useTranslations("languageSwitch");
@@ -35,7 +38,11 @@ export default function LanguageSwitch({
       /* The label is already in the other language's script, so set its lang */
       lang={otherLocale}
       /* min-h-11/min-w-11: 44px tap target on phones */
-      className={`${sizeClass} inline-flex min-h-11 min-w-11 items-center justify-center font-medium text-text-muted hover:text-text transition-colors`}
+      className={`${sizeClass} inline-flex min-h-11 min-w-11 items-center justify-center font-medium text-text-muted transition-colors hover:text-text ${
+        variant === "pill"
+          ? "rounded-full border border-text/15 px-4 hover:border-text/40 md:min-h-10"
+          : ""
+      }`}
     >
       {t("label")}
     </a>

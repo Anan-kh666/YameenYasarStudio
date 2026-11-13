@@ -17,10 +17,16 @@ export function WhatsAppIcon({ className }: { className?: string }) {
 type Props = {
   /** Compact mode for header on mobile — icon only */
   compact?: boolean;
+  /** "primary" = crimson fill (default), "secondary" = hairline outline */
+  variant?: "primary" | "secondary";
+  /** "md" = 48px (default, for sections), "sm" = 40px (desktop header only) */
+  size?: "sm" | "md";
+  /** Visible text; defaults to header.whatsapp ("WhatsApp" / «واتساب») */
+  label?: string;
   className?: string;
 };
 
-export default function WhatsAppButton({ compact, className }: Props) {
+export default function WhatsAppButton({ compact, variant = "primary", size = "md", label, className }: Props) {
   const t = useTranslations();
   const href = whatsappUrl(t("whatsapp.prefilled"));
 
@@ -30,9 +36,9 @@ export default function WhatsAppButton({ compact, className }: Props) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={t("header.whatsapp")}
+        aria-label={label ?? t("header.whatsapp")}
         /* 11px padding + 22px icon = 44px tap target */
-        className={`inline-flex items-center justify-center rounded-xl bg-crimson p-[11px] text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
+        className={`btn-primary inline-flex items-center justify-center rounded-xl p-[11px] transition-[background-color,box-shadow] ${className ?? ""}`}
       >
         <WhatsAppIcon className="size-[22px]" />
       </a>
@@ -44,10 +50,10 @@ export default function WhatsAppButton({ compact, className }: Props) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-2 rounded-xl bg-crimson px-5 py-2.5 text-[0.9375rem] font-medium text-text transition-colors hover:bg-crimson/90 ${className ?? ""}`}
+      className={`btn btn-${variant} ${size === "sm" ? "btn-sm" : ""} ${className ?? ""}`}
     >
-      <WhatsAppIcon className="size-[18px]" />
-      {t("header.whatsapp")}
+      <WhatsAppIcon />
+      {label ?? t("header.whatsapp")}
     </a>
   );
 }

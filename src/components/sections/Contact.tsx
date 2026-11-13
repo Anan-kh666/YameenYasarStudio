@@ -99,15 +99,12 @@ export default function Contact() {
   return (
     <section id="contact" className="section-glow bg-surface py-20 md:py-28" style={{ "--glow-x": "10%", "--glow-y": "100%" } as React.CSSProperties}>
       <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16">
-        {/* On wide screens this column stretches to the form's height:
-            heading at the top, the direct buttons resting at the bottom,
-            level with the Send button, so there is no empty block. */}
-        <div className="flex flex-col gap-8 lg:col-span-5 lg:justify-between">
-          <div>
-            <SectionHeading>{t("headline")}</SectionHeading>
-            <p className="mt-6 max-w-sm text-body text-text-muted">{t("subline")}</p>
-          </div>
-          <div className="lg:max-w-xs lg:border-t lg:border-line lg:pt-8">{direct}</div>
+        {/* Heading, subline and the direct buttons stay together and in
+            view beside the taller form on wide screens (like the FAQ aside). */}
+        <div className="lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
+          <SectionHeading>{t("headline")}</SectionHeading>
+          <p className="mt-6 max-w-sm text-body text-text-muted">{t("subline")}</p>
+          <div className="mt-8 lg:max-w-xs">{direct}</div>
         </div>
 
         <form

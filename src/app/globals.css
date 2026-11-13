@@ -435,3 +435,147 @@ body {
     animation: none !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   UI refresh (Nov 2026) — shared building blocks
+   Everything here sits in @layer components, so any Tailwind utility on the
+   same element wins (e.g. `btn btn-primary w-full`, `card-surface p-8`).
+   Only colour/border/shadow transitions; no new motion.
+   ═══════════════════════════════════════════════════ */
+@layer components {
+  /* Section rhythm: same vertical padding as every section today (py-20 md:py-28) */
+  .section-pad {
+    padding-block: 5rem;
+  }
+  @media (min-width: 768px) {
+    .section-pad { padding-block: 7rem; }
+  }
+
+  /* Content column: max-w-6xl centred with the page gutters (px-4 sm:px-6) */
+  .section-container {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .section-container { padding-inline: 1.5rem; }
+  }
+
+  /* Buttons. `.btn` + one variant. 48px tall, 10px icon gap; an <svg> inside
+     is sized 18px automatically. Text stays on one line. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    min-height: 3rem;
+    padding: 0.625rem 1.5rem;
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25;
+    white-space: nowrap;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  }
+  .btn svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex-shrink: 0;
+  }
+  /* Compact size for the desktop header only (40px). Not for phones: keep 44px+ there. */
+  .btn-sm {
+    min-height: 2.5rem;
+    padding: 0.5rem 1.125rem;
+    font-size: 0.9375rem;
+  }
+
+  /* Primary: crimson fill, text in --text (8.67:1). A hairline of light on the
+     top edge makes it read as a solid object rather than a flat box. */
+  .btn-primary {
+    background-color: var(--crimson);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+  .btn-primary:hover {
+    background-color: color-mix(in srgb, var(--crimson) 88%, var(--crimson-bright));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 10px 28px -12px rgba(229, 72, 77, 0.6);
+  }
+
+  /* Secondary: hairline outline in the current text colour, so the same class
+     works on dark sections (text-text) and on paper (text-bg). */
+  .btn-secondary {
+    background-color: transparent;
+    color: inherit;
+    border-color: color-mix(in srgb, currentColor 24%, transparent);
+  }
+  .btn-secondary:hover {
+    border-color: color-mix(in srgb, currentColor 55%, transparent);
+    background-color: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
+  /* Card on a dark section: surface fill, 1px hairline, faint light along the
+     top edge. Use with p-6/p-8. Featured cards add .pkg-featured on top. */
+  .card-surface {
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(245, 242, 237, 0.035), rgba(245, 242, 237, 0) 45%),
+      var(--surface);
+    box-shadow: inset 0 1px 0 rgba(245, 242, 237, 0.06);
+  }
+  /* Card inside a bg-surface section (Work, About, Contact): a surface card
+     would vanish there, so this one is set into it on --bg with a lighter
+     hairline and a soft drop shadow. */
+  .card-on-surface {
+    border: 1px solid rgba(245, 242, 237, 0.08);
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(245, 242, 237, 0.05), rgba(245, 242, 237, 0.01) 50%),
+      var(--bg);
+    box-shadow: inset 0 1px 0 rgba(245, 242, 237, 0.07), 0 24px 48px -32px rgba(0, 0, 0, 0.8);
+  }
+  /* Card on a paper section: lighter than paper, hairline of --bg at 8% */
+  .card-paper {
+    border: 1px solid rgba(11, 11, 11, 0.08);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(11, 11, 11, 0.04);
+  }
+
+  /* Full-width brand hairline: crimson where reading starts, silver, then
+     nothing. Decorative separator (aria-hidden), e.g. top of the footer. */
+  .divider-brand {
+    display: block;
+    height: 1px;
+    background: linear-gradient(to right, rgba(229, 72, 77, 0.7), rgba(222, 218, 212, 0.25) 45%, transparent);
+  }
+  [dir="rtl"] .divider-brand {
+    background: linear-gradient(to left, rgba(229, 72, 77, 0.7), rgba(222, 218, 212, 0.25) 45%, transparent);
+  }
+
+  /* Header nav link: muted → text on hover; the link for the section on
+     screen (aria-current) gets text colour and a 1px crimson underline. */
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--text-muted);
+    transition: color 150ms ease;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0.5rem;
+    height: 1px;
+    background: var(--crimson-bright);
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+  .nav-link:hover { color: var(--text); }
+  .nav-link[aria-current]:not([aria-current="false"]) { color: var(--text); }
+  .nav-link[aria-current]:not([aria-current="false"])::after { opacity: 1; }
+}

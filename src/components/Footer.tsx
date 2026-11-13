@@ -24,7 +24,8 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-12 pb-12 pt-16 md:grid-cols-12 md:gap-8 md:pb-16 md:pt-20">
           <div className="md:col-span-6 lg:col-span-5">
-            <a href="#main" className="inline-flex min-h-11 items-center">
+            {/* Pull in by most of the logo file's transparent side space (see Logo.tsx), leaving a few px of the gutter so the focus ring stays on screen */}
+            <a href="#main" className="-ms-3 inline-flex min-h-11 items-center md:-ms-5">
               <Logo sizeClass="h-11 md:h-12" />
             </a>
             <p className="mt-6 max-w-sm text-body text-text-muted">{t("footer.tagline")}</p>

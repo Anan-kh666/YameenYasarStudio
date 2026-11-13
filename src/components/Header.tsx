@@ -87,7 +87,8 @@ export default function Header() {
       </a>
 
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6 md:h-[4.25rem]">
-        <a href={`/${locale}/`} className="inline-flex min-h-11 shrink-0 items-center">
+        {/* Pull in by most of the logo file's transparent side space (see Logo.tsx), leaving a few px of the gutter so the focus ring stays on screen */}
+        <a href={`/${locale}/`} className="-ms-3 inline-flex min-h-11 shrink-0 items-center md:-ms-5">
           <Logo sizeClass="h-8 md:h-9" />
         </a>
 

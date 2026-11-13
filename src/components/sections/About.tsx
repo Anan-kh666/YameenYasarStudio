@@ -7,35 +7,37 @@ export default function About() {
   return (
     <section id="about" className="overflow-hidden bg-surface py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid items-center gap-12 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
-          {/* Photo with an offset crimson frame behind it. The frame moves
-              toward the reading end (mirrored in RTL); the photo never flips. */}
+        <div className="grid gap-12 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-stretch md:gap-16 lg:gap-20">
+          {/* Photo in a hairline passe-partout with a faint crimson light
+              behind it. The photo itself is never cropped or flipped. */}
           <div className="relative isolate mx-auto w-full max-w-sm md:mx-0">
-            <div
-              className="absolute inset-0 translate-x-3 translate-y-3 rounded-2xl border border-crimson-bright/50 rtl:-translate-x-3"
-              aria-hidden="true"
-            />
-            <div className="absolute -inset-8 -z-10 rounded-full bg-crimson/20 blur-3xl" aria-hidden="true" />
-            <img
-              src="/images/anan.jpg"
-              alt={t("photoAlt")}
-              width={640}
-              height={800}
-              // Below the fold: lazy, so React doesn't emit a <link rel=preload>
-              // for it in <head> and it doesn't compete with the hero.
-              loading="lazy"
-              decoding="async"
-              className="relative aspect-[4/5] w-full rounded-2xl object-cover"
-            />
+            <div className="absolute -inset-10 -z-10 rounded-full bg-crimson/15 blur-3xl" aria-hidden="true" />
+            <div className="rounded-[1.375rem] border border-line bg-linear-to-b from-text/[0.06] to-bg/40 p-2 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.8)]">
+              <img
+                src="/images/anan.jpg"
+                alt={t("photoAlt")}
+                width={640}
+                height={800}
+                // Below the fold: lazy, so React doesn't emit a <link rel=preload>
+                // for it in <head> and it doesn't compete with the hero.
+                loading="lazy"
+                decoding="async"
+                className="aspect-[4/5] w-full rounded-2xl object-cover"
+              />
+            </div>
           </div>
 
-          <div>
+          {/* Text column spans the photo's height: heading and bio at the top,
+              the pull quote settles at the bottom, level with the photo. */}
+          <div className="flex flex-col md:py-6">
             <SectionHeading>{t("headline")}</SectionHeading>
-            <p className="mt-6 text-body text-text-muted">{t("bio")}</p>
+            <p className="mt-6 max-w-xl text-body text-text-muted">{t("bio")}</p>
             {/* The promise, set as a pull quote */}
-            <p className="mt-8 border-s-2 border-crimson-bright ps-5 font-heading text-h2 font-semibold text-text">
-              {t("closing")}
-            </p>
+            <div className="mt-10 border-t border-line pt-8 md:mt-auto">
+              <p className="max-w-xl border-s-2 border-crimson-bright ps-5 font-heading text-h2 font-semibold text-text md:text-[1.75rem] md:leading-[1.3]">
+                {t("closing")}
+              </p>
+            </div>
           </div>
         </div>
       </div>

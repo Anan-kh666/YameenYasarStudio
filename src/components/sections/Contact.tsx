@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { CircleAlert, CircleCheck, ChevronDown, Mail } from "lucide-react";
 import { site, whatsappUrl } from "@/lib/site";
 import SectionHeading from "@/components/ui/SectionHeading";
+import SectionMarker from "@/components/ui/SectionMarker";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppButton";
 
 const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
@@ -14,6 +15,7 @@ const PACKAGE_OPTIONS = ["packageLaunch", "packageBusiness", "packageCustom", "p
 export default function Contact() {
   const t = useTranslations("contact");
   const tWa = useTranslations("whatsapp");
+  const locale = useLocale();
 
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
@@ -84,6 +86,7 @@ export default function Contact() {
     return (
       <section id="contact" className="section-glow bg-surface py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <SectionMarker index={7} label={t("marker")} className="mb-6" />
           <SectionHeading>{t("headline")}</SectionHeading>
           <p className="mt-6 text-body text-text-muted">{t("subline")}</p>
           <div className="mt-8 max-w-md">{direct}</div>
@@ -94,7 +97,15 @@ export default function Contact() {
 
   // Inputs, select and textarea share one look: 48px+ tall, hairline border
   const fieldClass = "contact-field mt-2 block min-h-12 w-full rounded-xl border border-line bg-surface px-4 py-3 text-body text-text placeholder:text-text-muted/50 transition-[border-color,box-shadow] hover:border-text-muted/40 focus:border-crimson-bright";
-  const labelClass = "block text-small font-medium text-text/90";
+  // Spec-sheet labels: mono and tracked in English; under /ar the class
+  // switches to Readex Pro with no tracking or case change (globals.css)
+  const labelClass = "contact-label mono-label flex items-baseline gap-2.5 text-text/85";
+  // Field number before each label: decorative, so hidden from screen readers
+  const fieldNo = (n: number) => (
+    <span dir="ltr" aria-hidden="true" className="font-mono text-[0.75rem] font-medium text-crimson-bright">
+      {String(n).padStart(2, "0")}
+    </span>
+  );
 
   return (
     <section id="contact" className="section-glow bg-surface py-20 md:py-28" style={{ "--glow-x": "10%", "--glow-y": "100%" } as React.CSSProperties}>
@@ -102,15 +113,39 @@ export default function Contact() {
         {/* Heading, subline and the direct buttons stay together and in
             view beside the taller form on wide screens (like the FAQ aside). */}
         <div className="lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
+          <SectionMarker index={7} label={t("marker")} className="mb-6" />
           <SectionHeading>{t("headline")}</SectionHeading>
           <p className="mt-6 max-w-sm text-body text-text-muted">{t("subline")}</p>
           <div className="mt-8 lg:max-w-xs">{direct}</div>
         </div>
 
+        {/* The form as a spec sheet: corner brackets, a ruled header row
+            (title · locale · dir), numbered mono field labels */}
+        <div className="frame-corners text-text lg:col-span-7">
         <form
           onSubmit={handleSubmit}
-          className="card-on-surface p-5 sm:p-8 lg:col-span-7"
+          className="card-on-surface p-5 sm:p-8"
         >
+          {/* Header row, pulled out to the card's edges; decorative (the
+              section heading already names the form). The page's own lang/dir
+              attributes, printed as code: they are not copy, so they need no
+              message key (the "compile" namespace isn't sent to client components).
+              Cells are <div>s, not <p>s: test:site reads the status message
+              as the form's last <p>. */}
+          <div aria-hidden="true" className="meta-grid -mx-5 -mt-5 mb-7 grid-cols-[1fr_auto_auto] border-t-0 sm:-mx-8 sm:-mt-8 sm:mb-8">
+            <div className="mono-label mono-muted px-5 py-3.5 sm:px-8">{t("formTitle")}</div>
+            {[
+              ["lang", locale],
+              ["dir", locale === "ar" ? "rtl" : "ltr"],
+            ].map(([attr, value]) => (
+              <div key={attr} className="meta-value px-4 py-3.5 text-[0.75rem] sm:px-5">
+                <span dir="ltr" className="font-mono text-text-muted">
+                  {attr}=<span className="text-crimson-bright">&quot;{value}&quot;</span>
+                </span>
+              </div>
+            ))}
+          </div>
+
           <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
           {/* Honeypot, hidden from real users. "botcheck" is the name
               Web3Forms checks on its server, so it also stops bots that
@@ -126,19 +161,19 @@ export default function Contact() {
 
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
-              <label htmlFor="contact-name" className={labelClass}>{t("fieldName")}</label>
+              <label htmlFor="contact-name" className={labelClass}>{fieldNo(1)}{t("fieldName")}</label>
               <input id="contact-name" name="name" type="text" required maxLength={100} autoComplete="name" className={fieldClass} />
             </div>
             <div>
-              <label htmlFor="contact-email" className={labelClass}>{t("fieldEmail")}</label>
+              <label htmlFor="contact-email" className={labelClass}>{fieldNo(2)}{t("fieldEmail")}</label>
               <input id="contact-email" name="email" type="email" required maxLength={254} autoComplete="email" dir="ltr" className={fieldClass} />
             </div>
             <div>
-              <label htmlFor="contact-business" className={labelClass}>{t("fieldBusiness")}</label>
+              <label htmlFor="contact-business" className={labelClass}>{fieldNo(3)}{t("fieldBusiness")}</label>
               <input id="contact-business" name="business" type="text" maxLength={200} autoComplete="organization" className={fieldClass} />
             </div>
             <div>
-              <label htmlFor="contact-package" className={labelClass}>{t("fieldPackage")}</label>
+              <label htmlFor="contact-package" className={labelClass}>{fieldNo(4)}{t("fieldPackage")}</label>
               {/* Native arrow removed (it sits on the wrong edge in RTL and
                   looks different per browser); the chevron uses end-4, so it
                   is on the left in Arabic and the right in English. */}
@@ -158,7 +193,7 @@ export default function Contact() {
               </div>
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="contact-message" className={labelClass}>{t("fieldMessage")}</label>
+              <label htmlFor="contact-message" className={labelClass}>{fieldNo(5)}{t("fieldMessage")}</label>
               <textarea
                 id="contact-message"
                 name="message"
@@ -196,6 +231,7 @@ export default function Contact() {
             )}
           </div>
         </form>
+        </div>
       </div>
     </section>
   );

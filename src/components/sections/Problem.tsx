@@ -15,36 +15,40 @@ export default function Problem() {
   return (
     <section id="problem" className="bg-paper py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <SectionHeading tone="paper" className="max-w-3xl">
-          {t("headline")}
-        </SectionHeading>
+        {/* Editorial split on lg+: the heading holds the reading side, the
+            three problems run as ruled rows beside it. Grid columns follow
+            `dir`, so in RTL the heading sits on the right. */}
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <SectionHeading tone="paper" className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
+            {t("headline")}
+          </SectionHeading>
 
-        {/* The three problems as one sheet split by hairlines, not three
-            floating cards. divide-x is logical in Tailwind v4 (border-inline),
-            so the dividers sit correctly in RTL too. */}
-        <ul className="mt-12 grid divide-y divide-bg/10 overflow-hidden rounded-2xl border border-bg/12 bg-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] md:mt-14 md:grid-cols-3 md:divide-x md:divide-y-0">
-          {CARDS.map(({ key, Icon }) => (
-            <li key={key} className="px-6 py-7 md:px-8 md:py-9">
-              {/* crimson is allowed as a colour on paper (see brand tokens) */}
-              <span
-                className="grid size-11 place-items-center rounded-xl border border-crimson/20 bg-crimson/[0.06] text-crimson"
-                aria-hidden="true"
-              >
-                <Icon size={21} strokeWidth={1.6} />
-              </span>
-              <h3 className="mt-6 font-heading text-[1.375rem] font-semibold leading-[1.3] text-bg">
-                {t(`${key}Title`)}
-              </h3>
-              <p className="mt-2.5 text-body text-bg/70">
-                {t(`${key}Body`)}
-              </p>
-            </li>
-          ))}
-        </ul>
+          <ul className="problem-rows lg:col-span-7">
+            {CARDS.map(({ key, Icon }) => (
+              <li key={key} className="grid grid-cols-[auto_1fr] gap-x-5 py-8 first:pt-0 md:gap-x-7 md:py-10">
+                {/* crimson fill with paper-coloured icon: crimson is allowed on paper */}
+                <span
+                  className="grid size-12 place-items-center rounded-2xl bg-crimson text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_28px_-14px_rgba(139,13,26,0.8)] md:size-14"
+                  aria-hidden="true"
+                >
+                  <Icon size={24} strokeWidth={1.6} />
+                </span>
+                <div className="pt-1">
+                  <h3 className="font-heading text-[1.625rem] font-semibold leading-[1.2] text-bg md:text-[2rem] rtl:leading-[1.35]">
+                    {t(`${key}Title`)}
+                  </h3>
+                  <p className="mt-3 max-w-xl text-body text-bg/72">
+                    {t(`${key}Body`)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        {/* The consequence, set as a pull-statement: the largest line in the
-            section after the heading, with the crimson bar on the reading side */}
-        <p className="mt-14 max-w-4xl border-s-2 border-crimson ps-5 font-heading text-[1.625rem] font-semibold leading-[1.3] text-bg md:mt-20 md:text-balance md:ps-8 md:text-[2.25rem] md:leading-[1.25] rtl:leading-[1.5] md:rtl:leading-[1.45]">
+        {/* The consequence: a dark statement band, the loudest line in the
+            section, with the crimson bar on the reading side (border-s). */}
+        <p className="problem-closing mt-14 rounded-2xl border-s-4 border-crimson-bright bg-bg px-6 py-9 font-heading text-[1.75rem] font-semibold leading-[1.25] text-text text-balance md:mt-20 md:px-12 md:py-14 md:text-[2.75rem] md:leading-[1.15] rtl:leading-[1.45] md:rtl:leading-[1.4]">
           {t("closing")}
         </p>
       </div>

@@ -28,6 +28,8 @@
 @theme inline {
   --font-sans: var(--font-readex-pro);
   --font-heading: var(--font-heading-family);
+  /* JetBrains Mono has no Arabic: Arabic glyphs fall through to Readex Pro */
+  --font-mono: var(--font-jetbrains-mono), var(--font-readex-pro), ui-monospace, monospace;
 
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -672,57 +674,10 @@ body {
 }
 .btn-hero.btn-secondary:hover { background-color: rgba(245, 242, 237, 0.06); }
 
-/* Scroll cue: a hairline with a light that slides down it, bottom centre */
-.hero-cue {
-  position: absolute;
-  bottom: 1.75rem;
-  inset-inline: 0;
-  margin-inline: auto;
-  width: 1px;
-  height: 3rem;
-  overflow: hidden;
-  background: linear-gradient(to bottom, rgba(222, 218, 212, 0), rgba(222, 218, 212, 0.35));
-  opacity: 0;
-  animation: hero-rise-in 0.9s ease-out 1.4s forwards;
-}
-.hero-cue::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: 40%;
-  background: linear-gradient(to bottom, transparent, var(--crimson-bright));
-  animation: hero-cue-drop 2.4s cubic-bezier(0.65, 0, 0.35, 1) 2s infinite;
-  transform: translateY(-100%);
-}
-@keyframes hero-cue-drop {
-  0%   { transform: translateY(-100%); }
-  70%, 100% { transform: translateY(260%); }
-}
-/* Short landscape screens: the cue would sit on the buttons */
-@media (max-height: 640px) { .hero-cue { display: none; } }
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-cue { animation: none; opacity: 1; }
-  .hero-cue::after { animation: none; transform: none; }
-}
-
-/* Header once scrolled: translucent glass (classes in Header.tsx), a soft
-   shadow and a brand hairline under it, crimson from the reading side. */
+/* Header once scrolled: translucent glass (classes in Header.tsx) and a soft
+   shadow. The line under it is the scroll ruler (see "Compile system"). */
 .header-raised {
   box-shadow: 0 16px 40px -28px rgba(0, 0, 0, 0.95);
-}
-.header-raised::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  bottom: -1px;
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(to right, rgba(229, 72, 77, 0.45), rgba(222, 218, 212, 0.12) 40%, transparent 85%);
-}
-[dir="rtl"] .header-raised::after {
-  background: linear-gradient(to left, rgba(229, 72, 77, 0.45), rgba(222, 218, 212, 0.12) 40%, transparent 85%);
 }
 
 /* ===== Polish pass: work + about + faq + contact + footer ===== */
@@ -747,4 +702,243 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .work-tile, .faq-row { transition: none; }
+}
+
+/* ===== Compile system (Nov 22) =====
+   The site's one concept: "bilingual source, compiled" (the intro's compile
+   sequence carried through the page). Shared primitives, all in
+   @layer components so Tailwind utilities on the same element still win:
+   - .mono-label            tracked mono label (Latin uppercase; Arabic reset below)
+   - .meta-grid/-label/-value   ruled label/value cells (spec card, footer)
+   - .frame-corners         four L-shaped corner marks (uses ::before)
+   - .bg-grid / .bg-grid-paper  faint code grid with a radial fade (uses ::after)
+   - .section-marker        styles for <SectionMarker> (‹02› ── LABEL  ar ⇄ en)
+   Colours come from currentColor, so each works on dark and paper sections:
+   set text-text / text-bg on the section and they follow.
+   Arabic is never mono, letter-spaced or uppercase: the mono stack has no
+   Arabic glyphs (falls back to Readex Pro) and [dir=rtl] resets the rest. */
+@layer components {
+  .mono-label,
+  .meta-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  /* Muted, still ≥ 5:1 on bg, surface and paper (62% of the text colour) */
+  .meta-label,
+  .mono-muted {
+    color: color-mix(in srgb, currentColor 62%, transparent);
+  }
+  .meta-value {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.375rem;
+  }
+  /* Arabic labels: Readex Pro (the mono face's wide spaces break Arabic
+     word shapes), same size as Latin or larger, no tracking, no case change.
+     Latin tokens inside /ar (locale, rtl, 2026…) are marked dir="ltr" and
+     keep the mono face. */
+  [dir="rtl"] .mono-label:not([dir="ltr"]),
+  [dir="rtl"] .meta-label:not([dir="ltr"]),
+  [dir="rtl"] .meta-value:not([dir="ltr"]) {
+    font-family: var(--font-readex-pro), sans-serif;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  [dir="rtl"] .mono-label:not([dir="ltr"]),
+  [dir="rtl"] .meta-label:not([dir="ltr"]) { font-size: 0.8125rem; }
+
+  /* Ruled cells. Every cell draws a hairline on its start and top edge and is
+     pulled 1px back, so the grid clips the outer ones: dividers only between
+     cells, for any column count (set columns with grid-cols-* utilities). */
+  .meta-grid {
+    --meta-line: color-mix(in srgb, currentColor 14%, transparent);
+    display: grid;
+    overflow: hidden;
+    border-block: 1px solid var(--meta-line);
+  }
+  .meta-grid > * {
+    min-width: 0;
+    padding: 0.875rem 1.25rem;
+    margin-block-start: -1px;
+    margin-inline-start: -1px;
+    border-block-start: 1px solid var(--meta-line);
+    border-inline-start: 1px solid var(--meta-line);
+  }
+
+  /* Corner brackets just outside the element (--corner-gap). Put it on a
+     wrapper without overflow:hidden or the marks get clipped. Symmetric, so
+     nothing to mirror in RTL. */
+  .frame-corners {
+    --corner: 0.875rem;
+    --corner-gap: 0.625rem;
+    --corner-color: color-mix(in srgb, currentColor 45%, transparent);
+    position: relative;
+  }
+  .frame-corners::before {
+    --g: linear-gradient(var(--corner-color), var(--corner-color));
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--corner-gap));
+    pointer-events: none;
+    background:
+      var(--g) top left / var(--corner) 1px no-repeat,
+      var(--g) top left / 1px var(--corner) no-repeat,
+      var(--g) top right / var(--corner) 1px no-repeat,
+      var(--g) top right / 1px var(--corner) no-repeat,
+      var(--g) bottom left / var(--corner) 1px no-repeat,
+      var(--g) bottom left / 1px var(--corner) no-repeat,
+      var(--g) bottom right / var(--corner) 1px no-repeat,
+      var(--g) bottom right / 1px var(--corner) no-repeat;
+  }
+
+  /* Faint code grid behind a section's content, fading out from
+     --grid-x/--grid-y. Sits above the element's own background colour and
+     under .section-glow's light. */
+  .bg-grid,
+  .bg-grid-paper {
+    --grid-line: rgba(245, 242, 237, 0.05);
+    position: relative;
+    isolation: isolate;
+  }
+  .bg-grid-paper { --grid-line: rgba(11, 11, 11, 0.07); }
+  .bg-grid::after,
+  .bg-grid-paper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: var(--grid-size, 3rem) var(--grid-size, 3rem);
+    -webkit-mask-image: radial-gradient(ellipse 75% 70% at var(--grid-x, 50%) var(--grid-y, 30%), #000 15%, transparent 75%);
+    mask-image: radial-gradient(ellipse 75% 70% at var(--grid-x, 50%) var(--grid-y, 30%), #000 15%, transparent 75%);
+  }
+
+  /* <SectionMarker>: boxed code, hairline, label, "ar ⇄ en" tag */
+  .section-marker {
+    --marker-accent: var(--crimson-bright);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-marker-paper { --marker-accent: var(--crimson); }
+  .marker-code {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    font-weight: 500;
+    padding: 0.125rem 0.4375rem;
+    border: 1px solid color-mix(in srgb, var(--marker-accent) 65%, transparent);
+    color: var(--marker-accent);
+  }
+  .marker-rule {
+    width: 2.25rem;
+    height: 1px;
+    flex-shrink: 0;
+    background: color-mix(in srgb, currentColor 30%, transparent);
+  }
+  .marker-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    white-space: nowrap;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+  }
+}
+
+/* Scroll ruler hanging under the sticky header (Header.tsx sets --p 0–100
+   from its rAF scroll listener). Absolutely positioned, so it never shifts
+   layout. Ticks are symmetric decoration; the fill and the counter follow
+   the reading direction. */
+@counter-style ruler-latin { system: extends decimal; pad: 3 "0"; }
+@counter-style ruler-arabic { system: extends arabic-indic; pad: 3 "٠"; }
+
+.scroll-ruler {
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  height: 0.5rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  background:
+    repeating-linear-gradient(to right, rgba(245, 242, 237, 0.3) 0 1px, transparent 1px 5rem) top / 100% 0.5rem no-repeat,
+    repeating-linear-gradient(to right, rgba(245, 242, 237, 0.14) 0 1px, transparent 1px 1rem) top / 100% 0.3125rem no-repeat;
+  /* Dark band like the header glass, so the ticks still read over paper sections */
+  background-color: rgba(11, 11, 11, 0.72);
+  border-top: 1px solid rgba(245, 242, 237, 0.1);
+}
+.scroll-ruler.is-on { opacity: 1; }
+.scroll-ruler-fill {
+  position: absolute;
+  inset-inline: 0;
+  top: -1px;
+  height: 2px;
+  background: linear-gradient(to right, var(--crimson), var(--crimson-bright));
+  transform: scaleX(calc(var(--p, 0) / 100));
+  transform-origin: left;
+}
+[dir="rtl"] .scroll-ruler-fill {
+  background: linear-gradient(to left, var(--crimson), var(--crimson-bright));
+  transform-origin: right;
+}
+.scroll-ruler-count {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  /* Lines up with the content edge of the max-w-6xl container */
+  inset-inline-end: max(1rem, calc((100% - 72rem) / 2 + 1.5rem));
+  counter-reset: ruler var(--p, 0);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  letter-spacing: 0.08em;
+  color: var(--crimson-bright);
+  padding: 0.0625rem 0.375rem;
+  background: rgba(11, 11, 11, 0.85);
+}
+.scroll-ruler-count::after { content: counter(ruler, ruler-latin) "%"; }
+[dir="rtl"] .scroll-ruler-count { font-size: 0.75rem; letter-spacing: 0; }
+[dir="rtl"] .scroll-ruler-count::after { content: counter(ruler, ruler-arabic) "٪"; }
+
+/* Hero spec card: build bar filled from both ends, Latin (silver) from the
+   left and Arabic (crimson) from the right, meeting in the middle, as in the
+   intro's progress bar. Physical sides on purpose: the row is dir="ltr". */
+.build-half {
+  height: 2px;
+  flex: 1;
+  animation: build-fill 1.4s cubic-bezier(0.65, 0, 0.35, 1) 1.1s both;
+}
+.build-half-latin { background: linear-gradient(to right, rgba(222, 218, 212, 0.35), rgba(222, 218, 212, 0.9)); transform-origin: left; }
+.build-half-arabic { background: linear-gradient(to left, var(--crimson), var(--crimson-bright)); transform-origin: right; }
+@keyframes build-fill { from { transform: scaleX(0); } }
+
+/* Hero entrance for the spec card and stats strip (same easing as .hero-rise) */
+.hero-spec { animation: hero-rise-in 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both; }
+
+/* The English headline snippet inside /ar must use the Latin heading font */
+.hero-spec [dir="ltr"] { --font-heading-family: var(--font-cormorant), serif; }
+
+@media (prefers-reduced-motion: reduce) {
+  .build-half, .hero-spec { animation: none; }
+  .scroll-ruler { transition: none; }
+}
+
+/* Hero beside the spec card (lg+): a narrower column, so a smaller cap */
+@media (min-width: 1024px) {
+  .hero-title { font-size: clamp(2.625rem, 1.2rem + 4.6vw, 4.75rem); }
+}
+
+/* Hero stats strip: first cell of each row starts at the content edge */
+.hero-stats > * { padding-block: 1.25rem 1.5rem; }
+.hero-stats > :nth-child(odd) { padding-inline-start: 0; }
+@media (min-width: 768px) {
+  .hero-stats > * { padding-block: 1.25rem 1.5rem; }
+  .hero-stats > :nth-child(odd) { padding-inline-start: 1.5rem; }
+  .hero-stats > :first-child { padding-inline-start: 0; }
 }

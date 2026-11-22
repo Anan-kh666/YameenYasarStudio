@@ -942,3 +942,33 @@ body {
   .hero-stats > :nth-child(odd) { padding-inline-start: 1.5rem; }
   .hero-stats > :first-child { padding-inline-start: 0; }
 }
+
+/* ===== Compile: problem + packages + process ===== */
+
+/* Problem: the error log is closed top and bottom (rows between are ruled
+   by .problem-rows above); on hover the row's icon cell warms to crimson. */
+.problem-rows { border-block: 1px solid rgba(11, 11, 11, 0.12); }
+.problem-icon { transition: border-color 200ms ease, background-color 200ms ease; }
+.problem-row:hover .problem-icon {
+  border-color: color-mix(in srgb, var(--crimson) 45%, transparent);
+  background-color: rgba(139, 13, 26, 0.05);
+}
+
+/* Packages add-ons: a faint wash on the hovered spec row (md+ rows have
+   inner padding, so the wash has room around the text). */
+@media (min-width: 768px) {
+  .spec-row { transition: background-color 200ms ease; }
+  .spec-row:hover { background-color: rgba(245, 242, 237, 0.025); }
+}
+
+/* Process pipeline: stage code reuses the section marker's boxed code;
+   the pipe runs crimson → silver towards the next stage in reading order.
+   The last stage is "built": a solid line ending in a crimson square. */
+.process-code { --marker-accent: var(--crimson-bright); }
+.process-pipe { background: linear-gradient(to right, rgba(229, 72, 77, 0.85), rgba(222, 218, 212, 0.3)); }
+[dir="rtl"] .process-pipe { background: linear-gradient(to left, rgba(229, 72, 77, 0.85), rgba(222, 218, 212, 0.3)); }
+.process-pipe.process-pipe-end { background: rgba(229, 72, 77, 0.6); }
+
+@media (prefers-reduced-motion: reduce) {
+  .problem-icon, .spec-row { transition: none; }
+}

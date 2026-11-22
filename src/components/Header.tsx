@@ -78,7 +78,7 @@ export default function Header() {
     <header
       className={`sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-300 ${
         raised
-          ? "border-line/80 bg-bg/95 shadow-[0_12px_32px_-24px_rgba(0,0,0,0.9)] backdrop-blur-md backdrop-saturate-150"
+          ? `header-raised border-transparent backdrop-blur-xl backdrop-saturate-150 ${menuOpen ? "bg-bg/95" : "bg-bg/70"}`
           : "border-transparent bg-bg"
       }`}
     >

@@ -26,7 +26,27 @@
     "subline": "نصمم ونبني مواقع وتطبيقات ويب بالعربية والإنجليزية، بتصميم أصيل من اليمين لليسار وخط عربي واضح — وليس مجرد ترجمة آلية.",
     "ctaWhatsapp": "تواصل عبر واتساب",
     "ctaPackages": "استعرض الباقات",
-    "otherHeadline": "Bilingual websites, built right."
+    "otherHeadline": "Bilingual websites, built right.",
+    "marker": "استوديو مواقع ثنائية اللغة",
+    "specTitle": "مصدر واحد، ولغتان",
+    "stats": {
+      "languages": {
+        "value": "٢",
+        "label": "لغتان في موقع واحد"
+      },
+      "days": {
+        "value": "٧",
+        "label": "أيام لتسليم الموقع الأساسي"
+      },
+      "price": {
+        "value": "300 USD",
+        "label": "سعر البداية"
+      },
+      "reply": {
+        "value": "٢٤",
+        "label": "ساعة للرد على رسالتك"
+      }
+    }
   },
   "problem": {
     "headline": "معظم المواقع العربية صُمّمت بالإنجليزية أولاً، ثم عُكست.",
@@ -166,6 +186,15 @@
   "footer": {
     "tagline": "يمين يسار — مواقع ثنائية اللغة، مبنية باحتراف.",
     "copyright": "© 2026 Yameen Yasar Studio",
-    "logoAlt": "يمين يسار"
+    "logoAlt": "يمين يسار",
+    "studio": "الاستوديو",
+    "index": "الفهرس",
+    "builtBy": "من تنفيذ",
+    "year": "السنة"
+  },
+  "compile": {
+    "locale": "locale",
+    "dir": "dir",
+    "build": "البناء"
   }
 }

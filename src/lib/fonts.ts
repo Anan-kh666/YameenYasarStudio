@@ -1,4 +1,4 @@
-import { Readex_Pro, Cormorant_Garamond, Tajawal } from "next/font/google";
+import { Readex_Pro, Cormorant_Garamond, Tajawal, JetBrains_Mono } from "next/font/google";
 
 /* Body/UI font — arabic + latin subsets */
 const readexPro = Readex_Pro({
@@ -28,5 +28,15 @@ const tajawal = Tajawal({
   variable: "--font-tajawal",
 });
 
-/** CSS variable class string to apply on <html> for all three font families. */
-export const fontVariableClass = `${readexPro.variable} ${cormorant.variable} ${tajawal.variable}`;
+/* Mono for the compile-system labels (codes, meta rows, ruler counter).
+   Latin only: it has no Arabic glyphs, so the font-mono stack in globals.css
+   falls back to Readex Pro and Arabic is never drawn in a monospace face. */
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+  variable: "--font-jetbrains-mono",
+});
+
+/** CSS variable class string to apply on <html> for all four font families. */
+export const fontVariableClass = `${readexPro.variable} ${cormorant.variable} ${tajawal.variable} ${jetbrainsMono.variable}`;

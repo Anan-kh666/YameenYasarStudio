@@ -35,6 +35,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<NavItem | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const rulerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let frame = 0;
@@ -42,6 +43,11 @@ export default function Header() {
       frame = 0;
       setScrolled(window.scrollY > 8);
       setActive(findActive());
+      // Scroll ruler: written straight to a CSS variable (no re-render); the
+      // fill width and the 000% counter are drawn from it in globals.css.
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? Math.round(Math.min(1, Math.max(0, window.scrollY / max)) * 100) : 0;
+      rulerRef.current?.style.setProperty("--p", String(pct));
     };
     // One measurement per frame at most, however fast the scroll events come
     const onScroll = () => {
@@ -127,6 +133,13 @@ export default function Header() {
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
+      </div>
+
+      {/* Compile-system scroll ruler under the header: ticks, a crimson fill
+          from the reading-start side and a 000% / ٠٠٠٪ counter. Decorative. */}
+      <div ref={rulerRef} className={`scroll-ruler ${scrolled && !menuOpen ? "is-on" : ""}`} aria-hidden="true">
+        <span className="scroll-ruler-fill" />
+        <span className="scroll-ruler-count" />
       </div>
 
       {menuOpen && (

@@ -579,3 +579,48 @@ body {
   .nav-link[aria-current]:not([aria-current="false"]) { color: var(--text); }
   .nav-link[aria-current]:not([aria-current="false"])::after { opacity: 1; }
 }
+
+/* ===== Polish pass: problem + packages + process ===== */
+
+/* Problem: the three problems as ruled rows on paper (hairline of --bg). */
+.problem-rows > li + li {
+  border-top: 1px solid rgba(11, 11, 11, 0.12);
+}
+
+/* Problem closing statement: faint crimson light from the reading side. */
+.problem-closing {
+  background:
+    radial-gradient(36rem 16rem at 0% 0%, rgba(139, 13, 26, 0.35), transparent 70%),
+    var(--bg);
+}
+[dir="rtl"] .problem-closing {
+  background:
+    radial-gradient(36rem 16rem at 100% 0%, rgba(139, 13, 26, 0.35), transparent 70%),
+    var(--bg);
+}
+
+/* Process timeline marker: dark disc, crimson ring and soft halo. */
+.process-marker {
+  border: 1.5px solid rgba(229, 72, 77, 0.65);
+  background: linear-gradient(180deg, var(--surface), var(--bg));
+  box-shadow:
+    inset 0 1px 0 rgba(245, 242, 237, 0.08),
+    0 0 0 6px var(--bg),
+    0 0 36px -6px rgba(229, 72, 77, 0.55);
+}
+
+/* Connector between markers: crimson where it leaves a step, silver as it
+   reaches the next. Vertical on phones, horizontal in reading order on md+. */
+.process-connector {
+  pointer-events: none;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, rgba(229, 72, 77, 0.85), rgba(222, 218, 212, 0.3));
+}
+@media (min-width: 768px) {
+  .process-connector {
+    background: linear-gradient(to right, rgba(229, 72, 77, 0.85), rgba(222, 218, 212, 0.3));
+  }
+  [dir="rtl"] .process-connector {
+    background: linear-gradient(to left, rgba(229, 72, 77, 0.85), rgba(222, 218, 212, 0.3));
+  }
+}

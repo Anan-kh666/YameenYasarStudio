@@ -24,7 +24,7 @@ export default function Work() {
             return (
               <article
                 key={key}
-                className={`group relative isolate flex flex-col justify-end overflow-hidden rounded-2xl border border-line bg-bg ${
+                className={`work-tile group relative isolate flex flex-col justify-end overflow-hidden rounded-2xl border border-line bg-bg ${
                   large ? "min-h-[26rem] md:col-span-2 lg:row-span-2 lg:min-h-[36rem]" : "min-h-[21rem]"
                 }`}
               >
@@ -36,10 +36,10 @@ export default function Work() {
                   decoding="async"
                   className="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none"
                 />
-                {/* Two fades keep text readable: a soft one at the top for the
-                    status pill, a deeper one at the bottom for the caption. */}
+                {/* Soft fade at the top for the status pill; the caption below
+                    carries its own scrim (.work-caption) so it reads cleanly
+                    whatever part of the image sits behind it. */}
                 <div className="absolute inset-x-0 top-0 -z-10 h-28 bg-linear-to-b from-bg/70 to-transparent" aria-hidden="true" />
-                <div className="absolute inset-x-0 bottom-0 -z-10 h-4/5 bg-linear-to-t from-bg from-15% via-bg/70 to-transparent" aria-hidden="true" />
                 {/* Hairline inner frame with a faint top highlight, drawn above the image */}
                 <div
                   className="pointer-events-none absolute inset-0 rounded-2xl shadow-[inset_0_1px_0_rgba(245,242,237,0.08)] ring-1 ring-inset ring-text/5"
@@ -52,7 +52,7 @@ export default function Work() {
                   {t("comingSoon")}
                 </span>
 
-                <div className={`p-6 ${large ? "md:p-9" : ""}`}>
+                <div className={`work-caption p-6 pt-20 ${large ? "md:p-9 md:pt-28" : ""}`}>
                   <p className="text-label text-text-muted">{t(`${key}.tag`)}</p>
                   <h3 className={`mt-2 font-heading font-semibold text-text ${large ? "text-h2 md:text-h1" : "text-h2"}`}>
                     {t(`${key}.name`)}

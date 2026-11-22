@@ -47,12 +47,12 @@ export default function Faq() {
         {/* Native <details>: keyboard and screen-reader friendly, no JS */}
         <div className="border-t border-bg/15 lg:col-span-7">
           {QUESTIONS.map((n) => (
-            <details key={n} className="group border-b border-bg/15">
+            <details key={n} className="faq-row group border-b border-bg/15">
               <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-5 text-[1.0625rem] font-medium leading-snug text-bg transition-colors hover:text-crimson group-open:text-crimson md:text-[1.125rem] [&::-webkit-details-marker]:hidden">
                 {t(`q${n}`)}
                 {/* Plus turns into a close mark when open */}
                 <span
-                  className="grid size-8 shrink-0 place-items-center rounded-full border border-bg/15 transition-[transform,background-color,color] duration-300 group-open:rotate-45 group-open:border-crimson group-open:bg-crimson group-open:text-text motion-reduce:transition-none"
+                  className="grid size-8 shrink-0 place-items-center rounded-full border border-bg/15 transition-[transform,background-color,border-color,color] duration-300 group-hover:border-crimson/50 group-open:rotate-45 group-open:border-crimson group-open:bg-crimson group-open:text-text motion-reduce:transition-none"
                   aria-hidden="true"
                 >
                   <Plus size={16} strokeWidth={2} />

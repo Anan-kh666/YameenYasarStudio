@@ -93,7 +93,7 @@ export default function Contact() {
   }
 
   // Inputs, select and textarea share one look: 48px+ tall, hairline border
-  const fieldClass = "mt-2 block min-h-12 w-full rounded-xl border border-line bg-surface px-4 py-3 text-body text-text placeholder:text-text-muted/50 transition-colors hover:border-text-muted/40 focus:border-crimson-bright";
+  const fieldClass = "contact-field mt-2 block min-h-12 w-full rounded-xl border border-line bg-surface px-4 py-3 text-body text-text placeholder:text-text-muted/50 transition-[border-color,box-shadow] hover:border-text-muted/40 focus:border-crimson-bright";
   const labelClass = "block text-small font-medium text-text/90";
 
   return (
@@ -109,7 +109,7 @@ export default function Contact() {
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-line bg-[linear-gradient(to_bottom,rgba(255,255,255,0.025),transparent_8rem)] bg-bg p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_80px_-40px_rgba(0,0,0,0.8)] sm:p-8 lg:col-span-7"
+          className="card-on-surface p-5 sm:p-8 lg:col-span-7"
         >
           <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
           {/* Honeypot, hidden from real users. "botcheck" is the name
@@ -173,7 +173,7 @@ export default function Contact() {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-crimson px-6 py-3 text-body font-medium text-text transition-colors hover:bg-crimson/90 disabled:cursor-wait disabled:opacity-60"
+            className="btn btn-primary mt-7 w-full text-body disabled:cursor-wait disabled:opacity-60"
           >
             {t("send")}
           </button>

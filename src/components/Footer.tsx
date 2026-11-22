@@ -22,8 +22,9 @@ export default function Footer() {
       <span className="divider-brand" aria-hidden="true" />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid gap-12 pb-12 pt-16 md:grid-cols-12 md:gap-8 md:pb-16 md:pt-20">
-          <div className="md:col-span-6 lg:col-span-5">
+        {/* Phones: brand block on top, then the two link lists side by side */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 pb-12 pt-16 md:grid-cols-12 md:gap-8 md:pb-16 md:pt-20">
+          <div className="col-span-2 md:col-span-6 lg:col-span-5">
             {/* Pull in by most of the logo file's transparent side space (see Logo.tsx), leaving a few px of the gutter so the focus ring stays on screen */}
             <a href="#main" className="-ms-3 inline-flex min-h-11 items-center md:-ms-5">
               <Logo sizeClass="h-11 md:h-12" />
@@ -32,7 +33,7 @@ export default function Footer() {
             <WhatsAppButton className="mt-8" />
           </div>
 
-          <nav aria-label="Footer" className="md:col-span-3 lg:col-start-8 lg:col-span-2">
+          <nav aria-label="Footer" className="min-w-0 md:col-span-3 lg:col-start-8 lg:col-span-2">
             <p className={titleClass}>{t("header.menu")}</p>
             <ul className="mt-3 md:mt-5 md:space-y-3">
               {NAV_ITEMS.map((item) => (
@@ -45,7 +46,7 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <div className="md:col-span-3">
+          <div className="min-w-0 md:col-span-3">
             <p className={titleClass}>{t("nav.contact")}</p>
             <ul className="mt-3 md:mt-5 md:space-y-3">
               <li>

@@ -7,7 +7,7 @@ export default function About() {
   return (
     <section id="about" className="overflow-hidden bg-surface py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid gap-12 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-stretch md:gap-16 lg:gap-20">
+        <div className="grid gap-12 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-center md:gap-16 lg:gap-20">
           {/* Photo in a hairline passe-partout with a faint crimson light
               behind it. The photo itself is never cropped or flipped. */}
           <div className="relative isolate mx-auto w-full max-w-sm md:mx-0">
@@ -27,13 +27,13 @@ export default function About() {
             </div>
           </div>
 
-          {/* Text column spans the photo's height: heading and bio at the top,
-              the pull quote settles at the bottom, level with the photo. */}
-          <div className="flex flex-col md:py-6">
+          {/* Text column is centred on the photo and kept together (heading,
+              bio, quote), so no empty band opens between bio and quote. */}
+          <div className="flex flex-col">
             <SectionHeading>{t("headline")}</SectionHeading>
             <p className="mt-6 max-w-xl text-body text-text-muted">{t("bio")}</p>
             {/* The promise, set as a pull quote */}
-            <div className="mt-10 border-t border-line pt-8 md:mt-auto">
+            <div className="mt-10 border-t border-line pt-8 md:mt-12 md:pt-10">
               <p className="max-w-xl border-s-2 border-crimson-bright ps-5 font-heading text-h2 font-semibold text-text md:text-[1.75rem] md:leading-[1.3]">
                 {t("closing")}
               </p>

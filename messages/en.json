@@ -56,7 +56,8 @@
     "card2Body": "Tiny or distorted Arabic, because the site was designed around a Latin font.",
     "card3Title": "Machine translation",
     "card3Body": "Sentences no Arabic speaker checked before they went live.",
-    "closing": "Arabic-speaking customers notice in seconds, and they leave."
+    "closing": "Arabic-speaking customers notice in seconds, and they leave.",
+    "marker": "Common errors"
   },
   "packages": {
     "headline": "Clear prices, no surprises.",
@@ -73,7 +74,8 @@
         "Mobile-ready",
         "Basic SEO in both languages",
         "2 revision rounds"
-      ]
+      ],
+      "pages": "1"
     },
     "business": {
       "name": "Professional Website",
@@ -86,7 +88,8 @@
         "Google Business setup",
         "Domain and email connected",
         "3 revision rounds"
-      ]
+      ],
+      "pages": "up to 5"
     },
     "custom": {
       "name": "Specialized Website Development",
@@ -97,7 +100,8 @@
         "Dashboards",
         "Web apps",
         "AI assistants"
-      ]
+      ],
+      "pages": "by scope"
     },
     "addons": {
       "title": "Add-ons",
@@ -111,6 +115,11 @@
         "price": "30 USD per page",
         "description": "Written in Arabic from scratch, not translated."
       }
+    },
+    "marker": "Packages and pricing",
+    "meta": {
+      "duration": "Delivery",
+      "pages": "Pages"
     }
   },
   "work": {
@@ -143,7 +152,8 @@
     "step3Body": "We build it, you test it on a private link and ask for changes.",
     "step4Title": "Launch",
     "step4Body": "We connect your domain, go live, and stay on if you want ongoing care.",
-    "payment": "Payment: 40% to start, 40% when finished, and 20% after 5 days of live testing."
+    "payment": "Payment: 40% to start, 40% when finished, and 20% after 5 days of live testing.",
+    "marker": "Build pipeline"
   },
   "about": {
     "headline": "Behind every site, someone who speaks your language.",

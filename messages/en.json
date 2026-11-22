@@ -114,6 +114,7 @@
     }
   },
   "work": {
+    "marker": "Selected work",
     "headline": "Work that speaks for itself.",
     "viewSite": "View site",
     "comingSoon": "Coming soon",
@@ -131,7 +132,9 @@
       "name": "SaaS product",
       "tag": "concept project",
       "description": "An English product page with a complete Arabic version."
-    }
+    },
+    "metaType": "Type",
+    "metaStatus": "Status"
   },
   "process": {
     "headline": "From first message to live site, in 4 steps.",
@@ -146,12 +149,23 @@
     "payment": "Payment: 40% to start, 40% when finished, and 20% after 5 days of live testing."
   },
   "about": {
+    "marker": "The studio",
     "headline": "Behind every site, someone who speaks your language.",
     "photoAlt": "Anan Kherbek",
     "bio": "I'm Anan Kherbek, founder of Yameen Yasar Studio. Based in Malaysia, studying Computer Science with a focus on AI. I live in Arabic and English every day, and I know how much it shows when a website respects both.",
-    "closing": "When you work with us, you talk to the person building your site, not a sales team."
+    "closing": "When you work with us, you talk to the person building your site, not a sales team.",
+    "id": {
+      "name": "Name",
+      "role": "Role",
+      "roleValue": "Founder",
+      "based": "Based in",
+      "basedValue": "Malaysia",
+      "languages": "Languages",
+      "languagesValue": "Arabic · English"
+    }
   },
   "faq": {
+    "marker": "Questions",
     "headline": "Frequently asked questions",
     "q1": "How do I pay?",
     "a1": "Bank transfer, PayPal or Wise. 40% to start, 40% when finished, and 20% after 5 days of live testing.",
@@ -167,6 +181,7 @@
     "a6": "Yes, we work online with clients anywhere."
   },
   "contact": {
+    "marker": "Contact",
     "headline": "Let's talk about your website.",
     "subline": "Send us a message and we'll reply within 24 hours.",
     "fieldName": "Name",
@@ -181,7 +196,8 @@
     "send": "Send",
     "whatsapp": "WhatsApp",
     "success": "Message sent. We'll reply within 24 hours.",
-    "error": "Your message didn't send. Try again, or reach us on WhatsApp."
+    "error": "Your message didn't send. Try again, or reach us on WhatsApp.",
+    "formTitle": "New message"
   },
   "footer": {
     "tagline": "Yameen Yasar Studio — Bilingual websites, built right.",

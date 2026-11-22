@@ -942,3 +942,34 @@ body {
   .hero-stats > :nth-child(odd) { padding-inline-start: 1.5rem; }
   .hero-stats > :first-child { padding-inline-start: 0; }
 }
+
+/* ===== Compile: work + about + faq + contact =====
+   Section-level pieces built on the compile primitives above. */
+
+/* Work: project code (W-01) boxed on the image, like the section marker */
+.work-code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.5rem;
+  color: var(--text);
+  border: 1px solid rgba(245, 242, 237, 0.22);
+  background: rgba(11, 11, 11, 0.62);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+/* Work meta row: tighter cells than the default, the first one starts at the
+   caption's text edge */
+.work-meta > * { padding: 0.75rem 0.875rem 0.25rem; }
+.work-meta > :first-child { padding-inline-start: 0; }
+/* Values one step smaller than the default so three cells fit a small tile */
+.work-meta .meta-value { font-size: 0.8125rem; }
+
+/* FAQ: fixed code column; the answer starts under the question text */
+.faq-code { inline-size: 2.75rem; }
+.faq-answer { padding-inline-start: calc(2.75rem + 1rem); }
+@media (min-width: 640px) {
+  .faq-answer { padding-inline-start: calc(2.75rem + 1.5rem); }
+}

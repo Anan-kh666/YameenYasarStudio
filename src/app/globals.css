@@ -623,6 +623,7 @@ body {
   [dir="rtl"] .process-connector {
     background: linear-gradient(to left, rgba(229, 72, 77, 0.85), rgba(222, 218, 212, 0.3));
   }
+}
 
 /* ===== Polish pass: hero + header ===== */
 
@@ -722,6 +723,7 @@ body {
 }
 [dir="rtl"] .header-raised::after {
   background: linear-gradient(to left, rgba(229, 72, 77, 0.45), rgba(222, 218, 212, 0.12) 40%, transparent 85%);
+}
 
 /* ===== Polish pass: work + about + faq + contact + footer ===== */
 

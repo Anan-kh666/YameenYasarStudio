@@ -92,7 +92,7 @@ export default function Packages() {
                 )}
 
                 <div>
-                  <h3 className="font-heading text-h2 font-semibold text-text">
+                  <h3 className="font-heading text-[1.625rem] font-semibold leading-[1.2] text-text text-balance rtl:leading-[1.35]">
                     {t(`${tier}.name`)}
                   </h3>
                   <p className="mt-2 inline-flex items-center gap-1.5 text-small text-text-muted">
@@ -108,16 +108,16 @@ export default function Packages() {
                 >
                   <Price
                     value={t(`${tier}.price`)}
-                    amountClass="text-[2.75rem] font-semibold lining-nums tabular-nums"
+                    amountClass="text-[3.25rem] font-semibold tracking-[-0.01em] lining-nums tabular-nums md:text-[3.75rem]"
                     partClass="font-sans text-small font-medium text-text-muted"
                   />
                 </p>
 
-                <ul className="mt-7 space-y-3.5">
+                <ul className="mt-6 divide-y divide-line/70">
                   {(t.raw(`${tier}.features`) as string[]).map((feature, i) => (
                     <li
                       key={i}
-                      className={`flex items-start gap-3 text-small ${isBusiness ? "text-text/90" : "text-text-muted"}`}
+                      className={`flex items-start gap-3 py-3 text-small ${isBusiness ? "text-text" : "text-text-muted"}`}
                     >
                       <span
                         className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${
@@ -155,10 +155,10 @@ export default function Packages() {
         {/* Add-ons as a short price list: title on the reading side, each
             add-on a row with its price at the end (like a menu). */}
         <div className="mt-20 grid gap-6 md:mt-24 md:grid-cols-12 md:gap-8">
-          <h3 className="font-heading text-h2 font-semibold text-text md:col-span-3 md:pt-6">
+          <h3 className="font-heading text-[1.875rem] font-semibold leading-[1.2] text-text md:col-span-3 md:pt-6 rtl:leading-[1.35]">
             {t("addons.title")}
           </h3>
-          <ul className="divide-y divide-line rounded-2xl border border-line bg-surface/70 md:col-span-9">
+          <ul className="divide-y divide-line rounded-2xl border border-line bg-linear-to-b from-surface to-surface/50 shadow-[inset_0_1px_0_rgba(245,242,237,0.05)] md:col-span-9">
             {ADDONS.map(({ key, Icon }) => (
               <li key={key} className="flex items-start gap-4 px-5 py-6 md:items-center md:gap-5 md:px-7">
                 <span
@@ -169,13 +169,13 @@ export default function Packages() {
                 </span>
                 <div className="min-w-0 flex-1 md:flex md:items-center md:justify-between md:gap-8">
                   <div className="min-w-0">
-                    <p className="text-body font-medium text-text">{t(`addons.${key}.name`)}</p>
-                    <p className="mt-0.5 text-small text-text-muted">{t(`addons.${key}.description`)}</p>
+                    <p className="font-heading text-[1.375rem] font-semibold leading-[1.25] text-text rtl:leading-[1.35]">{t(`addons.${key}.name`)}</p>
+                    <p className="mt-1 text-small text-text-muted">{t(`addons.${key}.description`)}</p>
                   </div>
                   <p className="mt-2 shrink-0 text-small md:mt-0">
                     <Price
                       value={t(`addons.${key}.price`)}
-                      amountClass="font-heading text-[1.5rem] font-semibold leading-none lining-nums text-text"
+                      amountClass="font-heading text-[2rem] font-semibold leading-none lining-nums text-text"
                       partClass="text-text-muted"
                     />
                   </p>

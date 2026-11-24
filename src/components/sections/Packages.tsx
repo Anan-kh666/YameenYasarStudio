@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { AppWindow, Bot, CalendarCheck, Check, Clock, Files, LayoutDashboard, PenLine, ShieldCheck, Sparkles } from "lucide-react";
-import { site, whatsappUrl } from "@/lib/site";
+import { site } from "@/lib/site";
 import SectionHeading from "@/components/ui/SectionHeading";
 import SectionMarker from "@/components/ui/SectionMarker";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
@@ -110,10 +110,13 @@ export default function Packages() {
                     <span className="sr-only">{t("meta.duration")}: </span>
                     {t(`${tier}.duration`)}
                   </span>
-                  <span className="chip">
-                    <Files size={13} aria-hidden="true" />
-                    {t("meta.pages")}: {t(`${tier}.pages`)}
-                  </span>
+                  {/* Custom says "by scope" for both; don't print it twice */}
+                  {t(`${tier}.pages`) !== t(`${tier}.duration`) && (
+                    <span className="chip">
+                      <Files size={13} aria-hidden="true" />
+                      {t("meta.pages")}: {t(`${tier}.pages`)}
+                    </span>
+                  )}
                 </div>
 
                 {tier === "custom" ? (

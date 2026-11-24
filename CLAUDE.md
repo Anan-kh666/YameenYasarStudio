@@ -41,7 +41,7 @@ npx serve out          # preview the real static output (or: npx wrangler pages 
 
 | Layer | Choice | Version |
 | --- | --- | --- |
-| Framework | Next.js App Router, TypeScript, `src/` dir, **static export** (`output: "export"`, `images.unoptimized`, `trailingSlash: true`) | next 16.4.1, react 19.2.8 |
+| Framework | Next.js App Router, TypeScript, `src/` dir, **static export** (`output: "export"`, `images.unoptimized`, `trailingSlash: true`) | next 16.4.6, react 19.2.8 |
 | i18n | `next-intl` without middleware (static export can't run it) | 4.14.6 |
 | Styling | Tailwind CSS v4 via `@tailwindcss/postcss`, tokens in `globals.css` with `@theme inline` (there is no `tailwind.config`) | tailwindcss ^4 |
 | Icons | `lucide-react` only (Menu, X). WhatsApp icon is inline SVG (lucide has no brand icons) | 1.47.0 |
@@ -214,7 +214,7 @@ Static files only. Production = the contents of `out/` on Cloudflare at `yameeny
 ## Known issues / open items (verified Oct 2026)
 
 - Performance (Lighthouse mobile, local, Oct 16): 77 on both locales (A11y/Best practices/SEO 100). The LCP element was the hero `<video>`; since the Nov 24 redesign the hero has no video (headline + CSS mockup), so the LCP element and score need re-measuring. Images were resized on Oct 16 (logo 827→29 KB, favicons 515→125 KB, photo 409→184 KB).
-- Arabic prices now all use Western digits, but the wording is mixed: "300 USD" vs «يبدأ من 1500 دولار», and `meta.description` still says «٣٠٠ دولار» (Arabic-Indic). Ask Anan which form to standardise on.
+- Arabic prices all use Western digits, including `meta.description` («300 دولار», Nov 24). The wording still mixes "300 USD" and «يبدأ من 1500 دولار».
 - `launchOffer` says "November offer" — switch `site.launchOffer` to `false` after November 2026.
 - Work section: all three cards are "Coming soon" concept projects with abstract mood images (decorative `alt=""`); `work.viewSite` is unused until real projects exist.
 - The project sits in an iCloud-synced folder (`~/Documents`), and iCloud creates "`name 2.ext`" conflict copies of files that change quickly (`.next/`, `node_modules/`, even `public/`). They broke `next build` once. The postbuild script deletes any in `out/`; delete stray ones in the source with care (compare first). Moving the project out of iCloud (e.g. `~/Developer`) fixes it for good.

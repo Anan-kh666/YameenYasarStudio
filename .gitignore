@@ -11,3 +11,6 @@ tsconfig.tsbuildinfo
 
 # Personal Claude Code settings
 .claude/settings.local.json
+
+# Claude MPM local tool state
+.claude-mpm/

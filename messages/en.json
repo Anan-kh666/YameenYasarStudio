@@ -141,9 +141,7 @@
       "name": "SaaS product",
       "tag": "concept project",
       "description": "An English product page with a complete Arabic version."
-    },
-    "metaType": "Type",
-    "metaStatus": "Status"
+    }
   },
   "process": {
     "headline": "From first message to live site, in 4 steps.",

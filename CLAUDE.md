@@ -45,7 +45,7 @@ npx serve out          # preview the real static output (or: npx wrangler pages 
 | i18n | `next-intl` without middleware (static export can't run it) | 4.14.6 |
 | Styling | Tailwind CSS v4 via `@tailwindcss/postcss`, tokens in `globals.css` with `@theme inline` (there is no `tailwind.config`) | tailwindcss ^4 |
 | Icons | `lucide-react` only (Menu, X). WhatsApp icon is inline SVG (lucide has no brand icons) | 1.47.0 |
-| Fonts | `next/font/google`: Readex Pro (body/UI), Cormorant Garamond 600 (Latin headings), Tajawal 700 (Arabic headings; only the Arabic subset is preloaded), JetBrains Mono 400/500 (Latin only, compile-system labels as `font-mono`; Arabic glyphs fall back to Readex Pro) — all set up once in `src/lib/fonts.ts` | — |
+| Fonts | `next/font/google`: Readex Pro (body/UI and Latin headings), Tajawal 700 (Arabic headings; only the Arabic subset is preloaded), Cormorant Garamond 600 (intro only), JetBrains Mono 400/500 (Latin only: `.window-url` and Process step numbers via `--font-mono`; Arabic glyphs fall back to Readex Pro) — all set up once in `src/lib/fonts.ts` | — |
 | Contact form | Web3Forms (client-side POST), key in `NEXT_PUBLIC_WEB3FORMS_KEY` | — |
 | Hosting | Cloudflare (Workers & Pages) serving `out/`. Domain already on Cloudflare. **Never Vercel Hobby** — it forbids commercial use. | — |
 
@@ -60,23 +60,23 @@ src/
     (redirect)/page.tsx     # "/" → <IntroPage/> + <noscript> fallback (meta refresh to /ar/)
     (redirect)/intro.css    # all intro styles (layers, lock, reveal video, fade)
     (site)/[locale]/layout.tsx  # root layout #2: <html lang dir>, fonts, metadata, JSON-LD, Header/Footer
-    (site)/[locale]/page.tsx    # the one-page site: 8 sections in order
-    globals.css             # brand tokens, type scale, RTL base rules, logo + hero animations
+    (site)/[locale]/page.tsx    # the one-page site: 9 sections in order
+    globals.css             # brand tokens, type scale, RTL base rules, logo animation, .btn/.section-pad/.brand-rule/.divider-brand; @imports src/styles/*
     sitemap.ts, robots.ts   # force-static metadata routes
   components/
     IntroPage.tsx           # client: intro state machine (particle words, enter button, question, reveal video)
-    HeroFx.tsx              # client: hero floating-letter canvas + mouse spotlight
     Header.tsx              # client: sticky header, anchor nav, mobile disclosure menu
     Footer.tsx
-    sections/               # Hero, Problem, Packages, Work, Process, About, Faq, Contact
-    ui/                     # Logo, LanguageSwitch (client), WhatsAppButton (+ shared WhatsAppIcon), SectionHeading
+    sections/               # Hero, Services, Problem, Packages, Work, Process, About, Faq, Contact
+    ui/                     # Logo, LanguageSwitch (client), WhatsAppButton (+ shared WhatsAppIcon), SectionHeading, SectionMarker (eyebrow pill)
+  styles/                   # system.css (shared primitives) + one CSS file per area (see Design direction)
   i18n/routing.ts           # locales ["ar","en"], defaultLocale "ar"
   i18n/request.ts           # loads messages/<locale>.json
   lib/site.ts               # ONE place for email, WhatsApp number, socials, launchOffer flag
 messages/ar.json, en.json   # every visible string on /ar and /en (same key tree in both)
 docs/website-copy.md        # original copy brief — partly OUT OF DATE, see "Copy"
 public/brand/               # yy-logo-header.webp (header/footer), yy-logo-new.png (source), yy-logo-intro.png (intro finale), favicon-512.png
-public/images/              # anan.jpg (About), ambient-silk.mp4 (hero + intro background), work/*.jpg (concept mood images)
+public/images/              # anan.jpg (About), ambient-silk.mp4 + poster (intro background), work/*.jpg (concept mood images)
 public/og-ar.png, og-en.png # Open Graph images 1200×630
 assets/                     # Anan's raw source files (logo jpeg, photo, social handles) — not served
 .agents/skills/, .claude/skills/  # Higgsfield AI asset-generation skills (symlinked) — not app code
@@ -122,7 +122,7 @@ Defined as CSS variables in `src/app/globals.css` and mapped into Tailwind with 
 
 Never put `#8B0D1A` text on black (fails contrast). Keep every text pair at WCAG AA.
 
-Type scale (Tailwind classes `text-display/h1/h2/body/small/label`): display 56/60 (hero, `md:` and up), h1 36/44, h2 24/32, body 17/28, small 14/22, label 13/18. Use `font-heading` on every heading: it resolves to Cormorant Garamond in LTR and **Tajawal** in RTL through `--font-heading-family` (Amiri was replaced by Tajawal on Oct 4). Body is `font-sans` = Readex Pro.
+Type scale (Tailwind classes `text-display/h1/h2/body/small/label`): display 56/60 (hero, `md:` and up), h1 36/44, h2 24/32, body 17/28, small 14/22, label 13/18. Use `font-heading` on every heading: it resolves to Readex Pro in LTR and **Tajawal** in RTL through `--font-heading-family` (Amiri was replaced by Tajawal on Oct 4). Body is `font-sans` = Readex Pro.
 
 Radius: `rounded-xl` buttons/inputs, `rounded-2xl` cards/images, `rounded-full` pills. Section padding `py-16 md:py-24`, content width `max-w-6xl` (`max-w-3xl` for FAQ and Contact).
 
@@ -133,16 +133,17 @@ Logo: the header and footer use `public/brand/yy-logo-header.webp` (since Nov 20
 The brand idea is "right to left, left to right": two languages meeting.
 
 - **Intro (`/`)** is the one cinematic exception: crimson particles stream in from the right and build «يمين» (right) on the right half, silver particles stream in from the left and build "Yasar" (left) on the left half (engine: `src/lib/brandField.ts`, letter shapes sampled from the real fonts); the pointer pushes them around. Then an enter button (lock icon), then a "compile" transition: scan beams turn the words into digits, the digits type themselves out as bilingual code (LTR code left, RTL Arabic-Indic number rows right; Arabic side uses digits only so no letter is ever shown un-joined), a progress bar fills from both ends (`0%→100%` / `٠٪→١٠٠٪`) while the question «هل موقعك يتحدث العربية فعلاً، أم يكتفي بالترجمة؟» appears, the code collapses into one horizontal line of light, then a finale where that line's digits render the real logo (crimson/silver digits on its exact pixels), a scan opens the actual logo image with a glow and one light sweep, then a fade into the site. Background: `ambient-silk.mp4`. The mixed-script brand text (Arabic «يمين» + Latin "Yasar") is intentional — don't "fix" it.
-- **Compile system (Nov 22 2026)**: the one concept carried through the page, like AnanENG's drawing sheet: "bilingual source, compiled" (the intro's compile sequence). Primitives live in the "Compile system (Nov 22)" block at the end of `globals.css` (in `@layer components`, so utilities still win) and colour themselves from `currentColor`, so they work on dark and paper: `SectionMarker` (`ui/SectionMarker.tsx`: boxed `‹02›` + hairline + label + "ar ⇄ en" tag, above every `SectionHeading`; section codes hero 00, problem 01, packages 02, work 03, process 04, about 05, faq 06, contact 07, reused by the footer index), `.mono-label` (tracked mono label, Latin uppercase), `.meta-grid` / `.meta-label` / `.meta-value` (hairline-ruled label/value cells), `.frame-corners` (corner brackets, `::before`), `.bg-grid` / `.bg-grid-paper` (faint code grid, `::after`), the header scroll ruler (`.scroll-ruler`, 000% / ٠٠٠٪ counter), the hero spec card and stats strip, and the footer title block. Arabic is still never mono, letter-spaced or uppercase: under `[dir=rtl]` the label classes switch to Readex Pro and drop tracking/case; Latin tokens inside /ar (`locale`, `rtl`, `2026`) carry `dir="ltr"` and keep the mono face. Codes use Western digits; the ruler counter uses Arabic-Indic digits in RTL, like the intro.
-- **Hero**: both headlines on both locales. Current language large on its reading side, the other language small on the opposite side; headline words rise out of a blur in reading order, the other language arrives from the opposite side. Background: `ambient-silk.mp4` (crimson + silver silk ribbons, seamless loop, shared with the intro so it's cached), `HeroFx` floating Arabic/Latin letters with pointer parallax, and a mouse spotlight. Hero text lifts/fades on scroll via CSS scroll-driven animation. Compile pieces: a `‹00›` marker above the headline, a spec card on the opposite side from `lg` (both headlines as `locale ar · dir rtl` / `locale en · dir ltr` rows, then a build bar filled from both ends, 100% / ١٠٠٪), and a stats strip at the bottom with facts already in the copy only (2 languages, 7 days, 300 USD, 24 hours).
+- **Product-studio system (Nov 24 2026)**: the site should look like the products the studio ships (Linear / Vercel / Stripe quality): dark, crisp sans headings, lit panels with hairline gradient borders, browser-window mockups, icon tiles, chips, dot grid, soft crimson aurora, bento grids. It replaced the Nov 22 "compile system" (codes, corner brackets, meta grids, scroll ruler), whose CSS is gone. Primitives live in `src/styles/system.css` (`@layer components`): `.eyebrow` / `.eyebrow-paper` (pill with a crimson dot, rendered by `SectionMarker` above every `SectionHeading`), `.panel` (surface card), `.panel-bg` (same on `bg`), `.panel-paper` (white card on paper), `.window` + `.window-bar` + `.window-url` (browser chrome, URL text `dir="ltr"`; use as `panel window`), `.icon-tile` (+ `-paper`, 44px tile for a lucide icon), `.chip` (+ `.chip-live`), `.bg-dots` (dot grid on `::after`, content needs `relative`), `.aurora` (crimson radial light, absolute, `aria-hidden`), `.lift` (hover raise, clickable cards only). Each area keeps its own CSS file, imported at the top of `globals.css`, with prefixed class names: `hero-header-footer.css` (`hx-*`), `services-problem.css` (`svc-*`, `prob-*`), `packages-process.css` (`pp-*`), `work-about-faq-contact.css` (`wk-*`, `ab-*`, `fq-*`, `ct-*`). Latin headings may get slight negative tracking (LTR only); Arabic never.
+- **Hero**: dot grid + aurora, text column (eyebrow, current-language headline with a per-word entrance, the other language's headline small with its own `lang`/`dir`, subline, two CTAs) and, opposite it, a decorative (`aria-hidden`) browser mockup of a bilingual EN | AR site with floating booking/chart cards (hidden below `sm`). Stats strip below (2 languages, 7 days, 300 USD, 24 hours). No video and no canvas in the hero any more (`HeroFx` was deleted; `ambient-silk.mp4` is intro-only).
+- **Services (`#services`)**: bento grid of six services (`services.items.*`); websites and web apps are wide cards with CSS-only mini UIs.
 - Everything after the hero stays quiet, disciplined and fast. No fade-in on every section, no hover animation on every card. Respect `prefers-reduced-motion` everywhere.
-- **Below the hero (Oct 16 refresh, polished Nov 2026 — shared `.btn`, `.card-*`, `.section-pad`, `.divider-brand`, `.nav-link` classes in the "UI refresh" block of `globals.css`; header highlights the current section with `aria-current`)**: every section title is `SectionHeading` (heading + short crimson→silver `.brand-rule`). Dark sections may use `.section-glow` (faint crimson corner light; move it with `--glow-x/--glow-y`). Problem: icon cards + the closing line as a statement with a `border-s` bar. Packages: large lining-numeral prices, check icons, a WhatsApp button on every card, featured card taller with `.pkg-featured`. Work: editorial grid (large first tile + two small), Higgsfield mood images with no text. Process: markers joined by per-step connectors (`.steps-line` is no longer used). About: framed photo + pull quote. FAQ: two columns, plus→close icon. Contact: two columns, form in a card. Footer: a build-log title block (framed `.meta-grid` with corner brackets: 01 studio, 02 contact, 03 index with section codes; bottom row built by · locale · dir · year), then the bilingual wordmark, copyright and language switch. Motion stays minimal (image zoom on hover, FAQ icon); no scroll animations — Anan rolled those back.
+- **Below the hero**: every section title is `SectionMarker` + `SectionHeading` (heading + short crimson→silver `.brand-rule`); buttons are `.btn .btn-primary/.btn-secondary` (globals.css), sections use `.section-pad`. Problem: `panel-paper` cards with icon tiles and a broken-vs-correct RTL demo, then a dark band for the closing line. Packages: three cards on a subgrid, featured card with a crimson gradient border, chips for duration/pages, add-ons panel. Work: bento of `panel window` cards with mood images and "Coming soon" chips. Process: timeline of panels joined by connectors that follow reading order. About: founder panel with icon rows + quote. FAQ: two columns of `panel-paper` details. Contact: channel rows + the form in a `panel window`. Header: pill nav (`aria-current` lights the current section), glass once scrolled. Footer: three columns (brand + WhatsApp, nav, contact), then copyright + language switch. Motion stays minimal; no scroll animations — Anan rolled those back.
 - Packages have real hierarchy: Professional (`business` key) gets a `crimson-bright` border and a "Most popular" badge on a `crimson` fill.
-- Avoid generic tells: `→` on buttons, one coloured/italic word in a headline, identical grey-shadow cards, emoji in headings, stock photos. Labels, codes and numbering come only from the compile-system primitives above, never ad-hoc.
+- Avoid generic tells: `→` on buttons, one coloured/italic word in a headline, identical grey-shadow cards, emoji in headings, stock photos. Labels and tags come from the primitives above (`.eyebrow`, `.chip`), never ad-hoc.
 
 ## Section order and anchors
 
-`#hero` → `#problem` (paper) → `#packages` → `#work` (surface) → `#process` → `#about` (surface) → `#faq` (paper) → `#contact` (surface) → footer. Header nav links to `#packages #work #about #contact`. Under the header hangs the scroll ruler (decorative, `aria-hidden`; `Header.tsx` sets `--p` from its rAF scroll listener). Changing an `id` breaks the nav and the language switch's hash preservation.
+`#hero` → `#services` → `#problem` (paper) → `#packages` → `#work` (surface) → `#process` → `#about` (surface) → `#faq` (paper) → `#contact` (surface) → footer. Header (and footer) nav links to `#services #packages #work #about #contact` (`NAV_ITEMS`); `Header.tsx` `SECTION_IDS` lists every section for the `aria-current` highlight. There is no scroll ruler any more. Changing an `id` breaks the nav and the language switch's hash preservation.
 
 ## Copy and messages
 
@@ -212,7 +213,7 @@ Static files only. Production = the contents of `out/` on Cloudflare at `yameeny
 
 ## Known issues / open items (verified Oct 2026)
 
-- Performance (Lighthouse mobile, local, Oct 16): 77 on both locales (A11y/Best practices/SEO 100). The LCP element is the hero `<video>`; since then it got a poster (`ambient-silk-poster.jpg`) and a 1.5s fade (Nov 2026, not re-measured). Images were resized on Oct 16 (logo 827→29 KB, favicons 515→125 KB, photo 409→184 KB).
+- Performance (Lighthouse mobile, local, Oct 16): 77 on both locales (A11y/Best practices/SEO 100). The LCP element was the hero `<video>`; since the Nov 24 redesign the hero has no video (headline + CSS mockup), so the LCP element and score need re-measuring. Images were resized on Oct 16 (logo 827→29 KB, favicons 515→125 KB, photo 409→184 KB).
 - Arabic prices now all use Western digits, but the wording is mixed: "300 USD" vs «يبدأ من 1500 دولار», and `meta.description` still says «٣٠٠ دولار» (Arabic-Indic). Ask Anan which form to standardise on.
 - `launchOffer` says "November offer" — switch `site.launchOffer` to `false` after November 2026.
 - Work section: all three cards are "Coming soon" concept projects with abstract mood images (decorative `alt=""`); `work.viewSite` is unused until real projects exist.

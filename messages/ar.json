@@ -223,13 +223,7 @@
   "footer": {
     "tagline": "استوديو يمين يسار — حلول رقمية بلغتين.",
     "copyright": "© 2026 Yameen Yasar Studio",
-    "logoAlt": "يمين يسار",
     "navTitle": "استكشف"
-  },
-  "compile": {
-    "locale": "locale",
-    "dir": "dir",
-    "build": "البناء"
   },
   "services": {
     "marker": "ماذا نبني",

@@ -1,64 +1,63 @@
 import { useTranslations } from "next-intl";
+import { BadgeCheck, Languages, MapPin, User, type LucideIcon } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import SectionMarker from "@/components/ui/SectionMarker";
 
-/* ID-card rows under the photo: facts already in the bio, nothing new */
-const ID_ROWS = ["role", "based", "languages"] as const;
+/* Founder card rows: facts already in the bio, nothing new.
+   The name row reuses photoAlt (the founder's name in each locale). */
+const ROWS: { key: "name" | "role" | "based" | "languages"; icon: LucideIcon }[] = [
+  { key: "name", icon: User },
+  { key: "role", icon: BadgeCheck },
+  { key: "based", icon: MapPin },
+  { key: "languages", icon: Languages },
+];
 
 export default function About() {
   const t = useTranslations("about");
 
   return (
-    <section id="about" className="bg-grid overflow-hidden bg-surface py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid gap-12 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-center md:gap-16 lg:gap-20">
-          {/* ID card: the photo in a hairline passe-partout, then ruled
-              label/value rows, all inside corner brackets, with a faint
-              crimson light behind it. The photo is never cropped or flipped. */}
-          <div className="frame-corners relative isolate mx-auto w-full max-w-sm text-text md:mx-0">
-            <div className="absolute -inset-10 -z-10 rounded-full bg-crimson/15 blur-3xl" aria-hidden="true" />
-            <div className="overflow-hidden rounded-[1.375rem] border border-line bg-linear-to-b from-text/[0.06] to-bg/40 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.8)]">
-              <div className="p-2">
-                <img
-                  src="/images/anan.jpg"
-                  alt={t("photoAlt")}
-                  width={640}
-                  height={800}
-                  // Below the fold: lazy, so React doesn't emit a <link rel=preload>
-                  // for it in <head> and it doesn't compete with the hero.
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-[4/5] w-full rounded-2xl object-cover"
-                />
-              </div>
-              <dl className="meta-grid mt-1 grid-cols-2 border-b-0 bg-bg/40 [--meta-line:var(--line)]">
-                <div className="col-span-2">
-                  <dt className="meta-label">{t("id.name")}</dt>
-                  <dd className="meta-value mt-1 text-text">{t("photoAlt")}</dd>
+    <section id="about" className="overflow-hidden bg-surface py-20 text-text md:py-28">
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-center md:gap-16 lg:gap-20">
+        {/* Founder card: photo framed in a panel, then icon rows.
+            The photo is never cropped differently or flipped. */}
+        <div className="relative isolate mx-auto w-full max-w-sm md:mx-0">
+          <div className="aurora absolute -inset-12 -z-10 opacity-70" aria-hidden="true" />
+          <div className="panel panel-bg p-2">
+            <img
+              src="/images/anan.jpg"
+              alt={t("photoAlt")}
+              width={640}
+              height={800}
+              // Below the fold: lazy, so React doesn't emit a <link rel=preload>
+              // for it in <head> and it doesn't compete with the hero.
+              loading="lazy"
+              decoding="async"
+              className="aspect-[4/5] w-full rounded-xl object-cover"
+            />
+            <dl className="ab-rows mt-2 px-3 pb-1">
+              {ROWS.map(({ key, icon: Icon }) => (
+                <div key={key} className="flex items-center gap-3 py-3">
+                  <Icon size={18} strokeWidth={1.75} aria-hidden="true" className="shrink-0 text-crimson-bright" />
+                  <dt className="text-small text-text-muted">{t(`id.${key}`)}</dt>
+                  <dd className="ms-auto text-end text-small font-medium text-text">
+                    {key === "name" ? t("photoAlt") : t(`id.${key}Value`)}
+                  </dd>
                 </div>
-                {ID_ROWS.map((row) => (
-                  <div key={row} className={row === "languages" ? "col-span-2" : ""}>
-                    <dt className="meta-label">{t(`id.${row}`)}</dt>
-                    <dd className="meta-value mt-1 text-text">{t(`id.${row}Value`)}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
+              ))}
+            </dl>
           </div>
+        </div>
 
-          {/* Text column is centred on the photo and kept together (heading,
-              bio, quote), so no empty band opens between bio and quote. */}
-          <div className="flex flex-col">
-            <SectionMarker index={5} label={t("marker")} className="mb-6" />
-            <SectionHeading>{t("headline")}</SectionHeading>
-            <p className="mt-6 max-w-xl text-body text-text-muted">{t("bio")}</p>
-            {/* The promise, set as a pull quote */}
-            <div className="mt-10 border-t border-line pt-8 md:mt-12 md:pt-10">
-              <p className="max-w-xl border-s-2 border-crimson-bright ps-5 font-heading text-h2 font-semibold text-text md:text-[1.75rem] md:leading-[1.3]">
-                {t("closing")}
-              </p>
-            </div>
-          </div>
+        <div className="flex flex-col">
+          <SectionMarker label={t("marker")} className="mb-6 self-start" />
+          <SectionHeading>{t("headline")}</SectionHeading>
+          <p className="mt-6 max-w-xl text-body text-text-muted">{t("bio")}</p>
+          {/* The promise, set as a pull quote */}
+          <figure className="panel mt-10 max-w-xl p-6 md:mt-12 md:p-8">
+            <blockquote className="border-s-2 border-crimson-bright ps-5 font-heading text-h2 font-semibold text-text md:text-[1.625rem] md:leading-[1.35]">
+              {t("closing")}
+            </blockquote>
+          </figure>
         </div>
       </div>
     </section>

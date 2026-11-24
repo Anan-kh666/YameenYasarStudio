@@ -1,1 +1,202 @@
 /* Owned by one redesign area. Put rules in @layer components. */
+@layer components {
+  /* ── Services (#services): decorative mini-UIs in the two wide bento cards.
+     Skeleton shapes only: no words, no numbers. ─────────────────────────── */
+  .svc-mock {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    background: var(--bg);
+  }
+  .svc-url {
+    display: block;
+    width: 40%;
+    height: 0.875rem;
+    border-radius: 0.375rem;
+    background: rgb(255 255 255 / 0.05);
+  }
+  .svc-line {
+    display: block;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.1);
+  }
+  .svc-line-head {
+    height: 0.625rem;
+    background: rgb(245 242 237 / 0.32);
+  }
+
+  /* Site mock: one page, two directions side by side. */
+  .svc-panes {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .svc-pane {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* = inline start, so it follows each pane's dir */
+    gap: 0.6rem;
+    padding: 1.25rem;
+  }
+  .svc-pane + .svc-pane { border-inline-start: 1px dashed var(--line); }
+  .svc-pane > .svc-line-head { margin-bottom: 0.2rem; }
+  .svc-pill {
+    width: 3.5rem;
+    height: 1.25rem;
+    margin-top: 0.4rem;
+    border-radius: 0.5rem;
+    background: var(--crimson);
+  }
+  /* The ⇄ badge sits on the seam between the two panes. */
+  .svc-swap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    transform: translate(-50%, -50%);
+    border: 1px solid color-mix(in srgb, var(--crimson-bright) 35%, transparent);
+    border-radius: 9999px;
+    background: var(--surface);
+    color: var(--crimson-bright);
+  }
+
+  /* App mock: sidebar + stat tiles + bar chart. */
+  .svc-app {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+  }
+  .svc-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 0;
+    border-inline-end: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.02);
+  }
+  .svc-nav {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.375rem;
+    background: rgb(255 255 255 / 0.07);
+  }
+  .svc-nav-on { background: color-mix(in srgb, var(--crimson) 75%, transparent); }
+  .svc-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1rem;
+    min-width: 0;
+  }
+  .svc-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  .svc-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+  }
+  .svc-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.4rem;
+    height: 4.5rem;
+    padding-top: 0.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .svc-bar {
+    flex: 1;
+    border-radius: 0.25rem 0.25rem 0 0;
+    background: rgb(255 255 255 / 0.1);
+  }
+  .svc-bar-on { background: linear-gradient(180deg, var(--crimson-bright), var(--crimson)); }
+
+  /* ── Problem (#problem, paper): "broken vs correct" demo strip ──────────── */
+  .prob-demo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .prob-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 5rem;
+    padding: 0.875rem 0.75rem;
+    border-radius: 0.75rem;
+  }
+  .prob-bad {
+    border: 1px dashed rgb(139 13 26 / 0.35);
+    background: rgb(139 13 26 / 0.04);
+    color: var(--crimson);
+  }
+  .prob-good {
+    border: 1px solid rgb(11 11 11 / 0.1);
+    background: var(--paper);
+    color: var(--bg);
+  }
+  /* ✕ / ✓ in the cell's top start corner */
+  .prob-badge {
+    position: absolute;
+    top: 0.4rem;
+    inset-inline-start: 0.4rem;
+    display: grid;
+    place-items: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+  }
+  .prob-bad .prob-badge { background: var(--crimson); color: var(--paper); }
+  .prob-good .prob-badge { background: var(--bg); color: var(--paper); }
+
+  .prob-line {
+    display: block;
+    height: 0.3125rem;
+    border-radius: 9999px;
+    background: currentColor;
+    opacity: 0.28;
+  }
+  /* Mirroring: a "next" button (line + arrow), arrow at the inline end. */
+  .prob-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid currentColor;
+    border-radius: 0.5rem;
+  }
+  .prob-next > .prob-line { opacity: 0.45; }
+  /* Type: lines that read well vs cramped, thin, slanted ones. */
+  .prob-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 72%;
+  }
+  .prob-text > .prob-line { height: 0.375rem; }
+  .prob-text-bad { gap: 0.15rem; width: 48%; }
+  .prob-text-bad > .prob-line { height: 0.125rem; transform: skewX(-18deg); }
+  /* Translation: clean phrases vs broken ones underlined like spellcheck. */
+  .prob-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.3rem;
+    width: 80%;
+  }
+  .prob-words > .prob-line { height: 0.375rem; }
+  .prob-line-err {
+    opacity: 0.5;
+    box-shadow: 0 0.25rem 0 -0.0625rem var(--crimson);
+  }
+}

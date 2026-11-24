@@ -1,4 +1,11 @@
 @import "tailwindcss";
+/* Nov 24 redesign: "digital solutions studio". Shared primitives first, then
+   one file per area so parallel work never edits the same file. */
+@import "../styles/system.css";
+@import "../styles/hero-header-footer.css";
+@import "../styles/services-problem.css";
+@import "../styles/packages-process.css";
+@import "../styles/work-about-faq-contact.css";
 
 /* ── Brand palette ── dark-only site, no light/dark toggle ──
    See CLAUDE.md "Brand tokens" for usage rules.
@@ -15,8 +22,9 @@
   --crimson-bright: #E5484D;
   --paper: #F5F2ED;
 
-  /* Heading font: Cormorant Garamond for Latin, Tajawal for Arabic */
-  --font-heading-family: var(--font-cormorant), serif;
+  /* Heading font: Readex Pro for Latin (product/tech feel), Tajawal for Arabic.
+     Cormorant is still loaded for the intro's "Yasar" particle letters. */
+  --font-heading-family: var(--font-readex-pro), sans-serif;
 }
 
 /* Arabic headlines use Tajawal — modern sans-serif */

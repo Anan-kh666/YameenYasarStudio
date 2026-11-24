@@ -82,7 +82,7 @@ async function newPage(b, { w = 1280, h = 800, lang = "en-US", reduced = false, 
       blankNoRel: [...document.querySelectorAll('a[target="_blank"]')].filter(a => !/noopener/.test(a.rel) || !/noreferrer/.test(a.rel)).map(a => a.href),
       httpLinks: [...document.querySelectorAll("a[href^='http:'], img[src^='http:'], script[src^='http:']")].length,
       headingFont: getComputedStyle(document.querySelector("h2")).fontFamily,
-      ids: ["hero","problem","packages","work","process","about","faq","contact"].filter(id => !document.getElementById(id)),
+      ids: ["hero","services","problem","packages","work","process","about","faq","contact"].filter(id => !document.getElementById(id)),
       form: !!document.querySelector("#contact form"), botcheck: !!document.querySelector('input[name="botcheck"]'),
       ldjson: (() => { try { return JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent)["@type"]; } catch (e) { return "BAD " + e.message; } })(),
       external: [...document.querySelectorAll("script[src], link[rel~=stylesheet], link[rel~=preload], link[rel~=modulepreload], link[rel~=icon], img, video, source")].map(e => e.src || e.href || e.currentSrc).filter(u => u && !u.startsWith(location.origin)),
@@ -98,7 +98,7 @@ async function newPage(b, { w = 1280, h = 800, lang = "en-US", reduced = false, 
     ok(`${tag}: no insecure http: resources`, r.httpLinks === 0);
     ok(`${tag}: no third-party scripts/styles loaded`, r.external.length === 0, r.external.join(","));
     ok(`${tag}: all section anchors exist`, r.ids.length === 0, r.ids.join(","));
-    ok(`${tag}: heading font`, loc === "ar" ? /tajawal/i.test(r.headingFont) : /cormorant/i.test(r.headingFont), r.headingFont.slice(0, 50));
+    ok(`${tag}: heading font`, loc === "ar" ? /tajawal/i.test(r.headingFont) : /readex/i.test(r.headingFont), r.headingFont.slice(0, 50));
     ok(`${tag}: contact form + botcheck honeypot`, r.form && r.botcheck);
     ok(`${tag}: JSON-LD parses`, r.ldjson === "ProfessionalService", r.ldjson);
     await p.close();

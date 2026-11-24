@@ -1,0 +1,166 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Product system (Nov 24 2026): "digital solutions studio".
+   The site should look like the products we ship: clean panels, browser
+   windows, icon tiles, chips. Everything colours itself from the brand
+   tokens; no new colours. Utilities still win (we're in @layer components).
+   ═══════════════════════════════════════════════════════════════════════ */
+@layer components {
+  /* Eyebrow: small pill above a section heading. Arabic stays plain text:
+     no tracking, no uppercase (nothing here sets them). */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    border-radius: 9999px;
+    background: color-mix(in srgb, currentColor 5%, transparent);
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+    font-weight: 500;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: var(--crimson-bright);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--crimson-bright) 22%, transparent);
+  }
+  .eyebrow-paper::before { background: var(--crimson); box-shadow: 0 0 0 3px color-mix(in srgb, var(--crimson) 18%, transparent); }
+
+  /* Panel: the base card. Hairline gradient border (lighter at the top), like
+     a lit product surface. */
+  .panel {
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: 1rem;
+    background:
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      linear-gradient(180deg, rgb(255 255 255 / 0.13), rgb(255 255 255 / 0.04) 45%, var(--line)) border-box;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 20px 40px -24px rgb(0 0 0 / 0.7);
+  }
+  /* Panel on the page background instead of surface */
+  .panel-bg {
+    background:
+      linear-gradient(var(--bg), var(--bg)) padding-box,
+      linear-gradient(180deg, rgb(255 255 255 / 0.13), rgb(255 255 255 / 0.04) 45%, var(--line)) border-box;
+  }
+  /* Panel on paper sections */
+  .panel-paper {
+    border: 1px solid rgb(11 11 11 / 0.1);
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(11 11 11 / 0.04), 0 16px 32px -24px rgb(11 11 11 / 0.25);
+  }
+
+  /* Browser window chrome: <div class="panel window"><div class="window-bar">
+     <span class="window-url" dir="ltr">…</span></div>…</div>.
+     The three dots are drawn by ::before and always sit on the physical left
+     (a window control, not reading-order content). */
+  .window { overflow: hidden; }
+  .window-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.25rem;
+    padding-inline: 4.5rem;
+    border-bottom: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.02);
+  }
+  .window-bar::before {
+    content: "";
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: -0.25rem;
+    border-radius: 9999px;
+    background: #3a3434;
+    box-shadow: 0.85rem 0 0 #3a3434, 1.7rem 0 0 #3a3434;
+  }
+  .window-url {
+    max-width: 100%;
+    overflow: hidden;
+    padding: 0.15rem 0.75rem;
+    border-radius: 0.5rem;
+    background: rgb(255 255 255 / 0.04);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Icon tile: square with a crimson tint, for lucide icons (size 20) */
+  .icon-tile {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: none;
+    border: 1px solid color-mix(in srgb, var(--crimson-bright) 30%, transparent);
+    border-radius: 0.75rem;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--crimson) 45%, transparent), color-mix(in srgb, var(--crimson) 12%, transparent));
+    color: var(--text);
+  }
+  .icon-tile-paper {
+    border-color: rgb(139 13 26 / 0.2);
+    background: rgb(139 13 26 / 0.07);
+    color: var(--crimson);
+  }
+
+  /* Chip: small tag (tech, type, status). */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .chip-live::before {
+    content: "";
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: #3fb950;
+  }
+
+  /* Faint dot grid behind a section, faded at the edges. Content inside
+     needs position: relative to sit above it. */
+  .bg-dots { position: relative; isolation: isolate; }
+  .bg-dots::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(color-mix(in srgb, currentColor 16%, transparent) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+  }
+
+  /* Soft crimson aurora light. Put on an absolutely positioned, aria-hidden div. */
+  .aurora {
+    pointer-events: none;
+    background:
+      radial-gradient(40% 50% at 70% 20%, color-mix(in srgb, var(--crimson) 55%, transparent), transparent 70%),
+      radial-gradient(35% 45% at 20% 70%, color-mix(in srgb, var(--crimson) 25%, transparent), transparent 70%);
+    filter: blur(20px);
+  }
+
+  /* Hover lift, for clickable cards only (not every card). */
+  .lift { transition: transform 0.25s ease; }
+  .lift:hover { transform: translateY(-3px); }
+  @media (prefers-reduced-motion: reduce) {
+    .lift, .lift:hover { transition: none; transform: none; }
+  }
+}

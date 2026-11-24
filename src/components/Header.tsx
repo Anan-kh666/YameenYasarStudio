@@ -8,13 +8,13 @@ import Logo from "@/components/ui/Logo";
 import LanguageSwitch from "@/components/ui/LanguageSwitch";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 
-const NAV_ITEMS = ["packages", "work", "about", "contact"] as const;
+const NAV_ITEMS = ["services", "packages", "work", "about", "contact"] as const;
 type NavItem = (typeof NAV_ITEMS)[number];
 
 /* Every section id in page order. The active nav link is the last section
    whose top has passed under the header, but only if it is in the nav: while
    reading Process or FAQ nothing is highlighted rather than the wrong link. */
-const SECTION_IDS = ["hero", "problem", "packages", "work", "process", "about", "faq", "contact"];
+const SECTION_IDS = ["hero", "services", "problem", "packages", "work", "process", "about", "faq", "contact"];
 
 function findActive(): NavItem | null {
   // At the very bottom the short Contact section may never reach the line
@@ -35,7 +35,6 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<NavItem | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const rulerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let frame = 0;
@@ -43,11 +42,6 @@ export default function Header() {
       frame = 0;
       setScrolled(window.scrollY > 8);
       setActive(findActive());
-      // Scroll ruler: written straight to a CSS variable (no re-render); the
-      // fill width and the 000% counter are drawn from it in globals.css.
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = max > 0 ? Math.round(Math.min(1, Math.max(0, window.scrollY / max)) * 100) : 0;
-      rulerRef.current?.style.setProperty("--p", String(pct));
     };
     // One measurement per frame at most, however fast the scroll events come
     const onScroll = () => {
@@ -77,14 +71,14 @@ export default function Header() {
   }, [menuOpen]);
 
   // Solid at the top (it sits on the hero's black edge); once the page moves,
-  // or the menu is open, it turns translucent with blur and a hairline below.
+  // or the menu is open, it turns to glass: translucent, blurred, hairline below.
   const raised = scrolled || menuOpen;
 
   return (
     <header
       className={`sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-300 ${
         raised
-          ? `header-raised border-transparent backdrop-blur-xl backdrop-saturate-150 ${menuOpen ? "bg-bg/95" : "bg-bg/70"}`
+          ? `hx-header-raised border-line/70 backdrop-blur-xl backdrop-saturate-150 ${menuOpen ? "bg-bg/95" : "bg-bg/70"}`
           : "border-transparent bg-bg"
       }`}
     >
@@ -98,25 +92,27 @@ export default function Header() {
           <Logo sizeClass="h-8 md:h-9" />
         </a>
 
-        <nav className="hidden items-center gap-9 md:flex" aria-label="Main">
+        {/* Five links need more room than md gives next to the logo and
+            buttons, so the desktop nav starts at lg; below that it's the menu. */}
+        <nav className="hx-nav hidden items-center gap-0.5 lg:flex" aria-label="Main">
           {NAV_ITEMS.map((item) => (
             <a
               key={item}
               href={`#${item}`}
               aria-current={active === item ? "location" : undefined}
-              className="nav-link text-[0.9375rem] font-medium"
+              className="hx-nav-link text-[0.9375rem] font-medium"
             >
               {t(`nav.${item}`)}
             </a>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           <LanguageSwitch variant="pill" sizeClass="text-[0.875rem]" />
           <WhatsAppButton size="sm" />
         </div>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <LanguageSwitch variant="pill" sizeClass="text-[0.875rem]" />
           <WhatsAppButton compact />
           <button
@@ -135,17 +131,10 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Compile-system scroll ruler under the header: ticks, a crimson fill
-          from the reading-start side and a 000% / ٠٠٠٪ counter. Decorative. */}
-      <div ref={rulerRef} className={`scroll-ruler ${scrolled && !menuOpen ? "is-on" : ""}`} aria-hidden="true">
-        <span className="scroll-ruler-fill" />
-        <span className="scroll-ruler-count" />
-      </div>
-
       {menuOpen && (
         <nav
           id="mobile-menu"
-          className="border-t border-line px-4 pb-6 sm:px-6 md:hidden"
+          className="mx-auto max-w-6xl border-t border-line px-4 pb-6 sm:px-6 lg:hidden"
           aria-label="Mobile"
         >
           <ul>
@@ -155,7 +144,7 @@ export default function Header() {
                   href={`#${item}`}
                   onClick={() => setMenuOpen(false)}
                   aria-current={active === item ? "location" : undefined}
-                  className={`flex min-h-14 items-center justify-between font-heading text-[1.5rem] font-semibold transition-colors hover:text-crimson-bright ${
+                  className={`flex min-h-14 items-center justify-between font-heading text-[1.375rem] font-semibold transition-colors hover:text-crimson-bright ${
                     active === item ? "text-text" : "text-text/85"
                   }`}
                 >

@@ -1,9 +1,10 @@
 {
   "meta": {
-    "title": "Yameen Yasar Studio — Bilingual Arabic & English Websites",
-    "description": "Arabic and English websites with real right-to-left layouts and proper Arabic type. Packages from $300."
+    "title": "Yameen Yasar Studio — Bilingual Digital Solutions, Arabic & English",
+    "description": "Websites, online stores, booking systems and web apps in Arabic and English, with real right-to-left layouts. Packages from $300."
   },
   "nav": {
+    "services": "Services",
     "packages": "Packages",
     "work": "Work",
     "about": "About",
@@ -22,13 +23,12 @@
     "prefilled": "Hi, I'd like to know more about a bilingual website."
   },
   "hero": {
-    "headline": "Bilingual websites, built right.",
-    "subline": "We design and build Arabic and English websites and web apps with real right-to-left layouts and proper Arabic typography. No machine translation, no broken mirrors.",
+    "headline": "Digital products that speak Arabic and English.",
+    "subline": "We design and build websites, online stores, booking systems, dashboards and web apps, with real right-to-left layouts and proper Arabic typography.",
     "ctaWhatsapp": "Chat on WhatsApp",
     "ctaPackages": "See packages",
-    "otherHeadline": "مواقع بلغتين، معمولة صح.",
-    "marker": "Bilingual web studio",
-    "specTitle": "One source, two languages",
+    "otherHeadline": "منتجات رقمية تتحدث العربية والإنجليزية.",
+    "marker": "Digital solutions studio",
     "stats": {
       "languages": {
         "value": "2",
@@ -46,6 +46,19 @@
         "value": "24",
         "label": "Hours to reply to your message"
       }
+    },
+    "mock": {
+      "url": "yourbusiness.com",
+      "langAr": "عربي",
+      "langEn": "EN",
+      "sampleAr": "أهلاً وسهلاً",
+      "sampleEn": "Welcome",
+      "ctaAr": "احجز الآن",
+      "ctaEn": "Book now",
+      "booking": "New booking",
+      "bookingStatus": "Confirmed",
+      "chart": "Visitors",
+      "chartPeriod": "This week"
     }
   },
   "problem": {
@@ -208,13 +221,10 @@
     "formTitle": "New message"
   },
   "footer": {
-    "tagline": "Yameen Yasar Studio — Bilingual websites, built right.",
+    "tagline": "Yameen Yasar Studio — Bilingual digital solutions.",
     "copyright": "© 2026",
     "logoAlt": "Yameen Yasar Studio",
-    "studio": "Studio",
-    "index": "Index",
-    "builtBy": "Built by",
-    "year": "Year"
+    "navTitle": "Explore"
   },
   "compile": {
     "locale": "locale",

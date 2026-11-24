@@ -1,1 +1,102 @@
 /* Owned by one redesign area. Put rules in @layer components. */
+@layer components {
+  /* ── Packages ─────────────────────────────────────────────────────── */
+
+  /* Launch offer: a slim announcement bar under the heading. A pill on one
+     line from sm; on phones the text may wrap, so the corners soften. */
+  .pp-announce {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    max-width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--crimson-bright) 30%, transparent);
+    border-radius: 0.875rem;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--crimson) 38%, transparent), color-mix(in srgb, var(--crimson) 10%, transparent));
+    color: var(--text);
+    font-size: 0.875rem;
+    line-height: 1.375rem;
+    text-align: start;
+  }
+  @media (min-width: 640px) { .pp-announce { border-radius: 9999px; } }
+
+  /* Featured card frame: crimson-bright gradient hairline + soft halo.
+     Sits behind the card's content as an absolute span. */
+  .pp-featured {
+    border: 1px solid transparent;
+    border-radius: 1rem;
+    background:
+      radial-gradient(80% 50% at 50% 0%, color-mix(in srgb, var(--crimson) 30%, transparent), transparent 70%) padding-box,
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      linear-gradient(180deg, var(--crimson-bright), color-mix(in srgb, var(--crimson-bright) 35%, transparent) 45%, color-mix(in srgb, var(--crimson-bright) 18%, transparent)) border-box;
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--crimson-bright) 6%, transparent),
+      0 30px 80px -30px rgb(229 72 77 / 0.45),
+      0 24px 48px -24px rgb(0 0 0 / 0.8);
+  }
+
+  .pp-aurora { opacity: 0.55; }
+
+  /* Custom tier capability tile */
+  .pp-cap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 0.02);
+    color: var(--text);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  /* ── Process timeline ────────────────────────────────────────────── */
+  /* Phones: dots down the start edge, aligned with each panel's icon tile
+     (panel padding 1.5rem + half the 2.75rem tile = 2.875rem). Each step but
+     the last draws a connector from its dot to the next one. */
+  .pp-dot {
+    position: absolute;
+    z-index: 1;
+    inset-inline-start: 0;
+    top: 2.4375rem;
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 2px solid var(--crimson-bright);
+    border-radius: 9999px;
+    background: var(--bg);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--crimson-bright) 14%, transparent), 0 0 16px rgb(229 72 77 / 0.5);
+  }
+  .pp-step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: calc(0.4375rem - 0.5px);
+    top: 2.875rem;
+    width: 1px;
+    height: calc(100% + 1.25rem); /* step height + the ol's gap-5 */
+    background: linear-gradient(to bottom, var(--crimson-bright), rgb(245 242 237 / 0.22));
+  }
+  .pp-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--text-muted);
+  }
+
+  /* lg: the line runs across, dot above each icon tile. inset-inline-start
+     makes the connector grow towards the next step in reading order; the
+     gradient direction flips with dir. */
+  @media (min-width: 1024px) {
+    .pp-dot { top: 0; inset-inline-start: 2.4375rem; }
+    .pp-step:not(:last-child)::before {
+      top: calc(0.4375rem - 0.5px);
+      inset-inline-start: 2.875rem;
+      width: calc(100% + 1.5rem); /* column + the ol's gap-6 */
+      height: 1px;
+      background: linear-gradient(to right, var(--crimson-bright), rgb(245 242 237 / 0.22));
+    }
+    [dir="rtl"] .pp-step:not(:last-child)::before {
+      background: linear-gradient(to left, var(--crimson-bright), rgb(245 242 237 / 0.22));
+    }
+  }
+}

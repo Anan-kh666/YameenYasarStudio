@@ -223,13 +223,7 @@
   "footer": {
     "tagline": "Yameen Yasar Studio — Bilingual digital solutions.",
     "copyright": "© 2026",
-    "logoAlt": "Yameen Yasar Studio",
     "navTitle": "Explore"
-  },
-  "compile": {
-    "locale": "locale",
-    "dir": "dir",
-    "build": "Build"
   },
   "services": {
     "marker": "What we build",

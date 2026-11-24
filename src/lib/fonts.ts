@@ -8,9 +8,9 @@ const readexPro = Readex_Pro({
   variable: "--font-readex-pro",
 });
 
-/* Headline fonts — Cormorant Garamond for Latin, Tajawal for Arabic.
-   Tajawal gives Arabic a modern, clean feel vs the traditional Amiri serif.
-   CSS switches between them via --font-heading-family in globals.css. */
+/* Cormorant Garamond: used only by the intro (intro.css, IntroPage's canvas).
+   Site headings use Readex Pro in LTR and Tajawal in RTL, switched via
+   --font-heading-family in globals.css. */
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["600"],
@@ -19,7 +19,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 /* Only 700 is used (every heading is font-semibold, which resolves to 700, and
-   HeroFx/intro draw at 700). `subsets` only decides what gets <link rel=preload>:
+   the intro draws at 700). `subsets` only decides what gets <link rel=preload>:
    the Latin @font-face stays in the CSS and loads on demand via unicode-range. */
 const tajawal = Tajawal({
   subsets: ["arabic"],
@@ -28,7 +28,8 @@ const tajawal = Tajawal({
   variable: "--font-tajawal",
 });
 
-/* Mono for the compile-system labels (codes, meta rows, ruler counter).
+/* Mono for small Latin labels: the .window-url bar (system.css) and the
+   Process step numbers (.pp-num).
    Latin only: it has no Arabic glyphs, so the font-mono stack in globals.css
    falls back to Readex Pro and Arabic is never drawn in a monospace face. */
 const jetbrainsMono = JetBrains_Mono({

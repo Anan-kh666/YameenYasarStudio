@@ -222,5 +222,36 @@
     "locale": "locale",
     "dir": "dir",
     "build": "Build"
+  },
+  "services": {
+    "marker": "What we build",
+    "headline": "One studio for your whole digital presence.",
+    "lead": "Every project is built in Arabic and English from day one, not translated at the end.",
+    "items": {
+      "websites": {
+        "title": "Business websites",
+        "body": "Fast bilingual sites that bring customers to your WhatsApp and inbox."
+      },
+      "stores": {
+        "title": "Online stores",
+        "body": "Bilingual product pages, cart and checkout."
+      },
+      "booking": {
+        "title": "Booking systems",
+        "body": "Appointments and reservations your customers book in their own language."
+      },
+      "dashboards": {
+        "title": "Dashboards",
+        "body": "Admin panels and internal tools that read correctly in Arabic."
+      },
+      "webapps": {
+        "title": "Web apps",
+        "body": "Custom products built from scratch, with right-to-left support built in."
+      },
+      "ai": {
+        "title": "AI assistants",
+        "body": "Chat assistants that answer your customers in Arabic and English."
+      }
+    }
   }
 }

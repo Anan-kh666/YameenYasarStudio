@@ -6,6 +6,7 @@
 @import "../styles/services-problem.css";
 @import "../styles/packages-process.css";
 @import "../styles/work-about-faq-contact.css";
+@import "../styles/demos.css";
 
 /* ── Brand palette ── dark-only site, no light/dark toggle ──
    See CLAUDE.md "Brand tokens" for usage rules.

@@ -10,7 +10,7 @@
 
 import puppeteer from "puppeteer-core";
 import http from "node:http";
-import { readFileSync, existsSync, statSync, createReadStream } from "node:fs";
+import { readFileSync, existsSync, statSync, createReadStream, readdirSync } from "node:fs";
 import path from "node:path";
 
 const CHROME = process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -101,6 +101,29 @@ async function newPage(b, { w = 1280, h = 800, lang = "en-US", reduced = false, 
     ok(`${tag}: heading font`, loc === "ar" ? /tajawal/i.test(r.headingFont) : /readex/i.test(r.headingFont), r.headingFont.slice(0, 50));
     ok(`${tag}: contact form + botcheck honeypot`, r.form && r.botcheck);
     ok(`${tag}: JSON-LD parses`, r.ldjson === "ProfessionalService", r.ldjson);
+    await p.close();
+  }
+
+  // ── 1b. Concept demos (/demos/<locale>/<slug>/): whatever was built into out/demos
+  const demoDir = path.join(OUT, "demos", "ar");
+  const demos = existsSync(demoDir) ? readdirSync(demoDir, { withFileTypes: true }).filter(d => d.isDirectory() && !/ \d+$/.test(d.name)).map(d => d.name) : [];
+  for (const slug of demos) for (const loc of ["ar", "en"]) for (const w of [375, 1280]) {
+    const p = await newPage(b, { w, h: w < 500 ? 812 : 800 });
+    const resp = await p.goto(`${BASE}/demos/${loc}/${slug}/`, { waitUntil: "networkidle0" });
+    await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { scrollTo(0, y); await new Promise(r => setTimeout(r, 30)); } scrollTo(0, 0); });
+    await sleep(300);
+    const r = await p.evaluate(() => ({
+      csp: window.__csp, lang: document.documentElement.lang, dir: document.documentElement.dir,
+      hscroll: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      imgsNoAlt: [...document.images].filter(i => !i.hasAttribute("alt")).map(i => i.src),
+      h1: !!document.querySelector("h1"), bar: !!document.querySelector(".demo-bar"),
+      noindex: /noindex/.test(document.querySelector('meta[name="robots"]')?.content || ""),
+      external: [...document.querySelectorAll("script[src], link[rel~=stylesheet], img, video, source")].map(e => e.src || e.href || e.currentSrc).filter(u => u && !u.startsWith(location.origin)),
+    }));
+    const tag = `demo ${slug} ${loc} @${w}px`;
+    ok(`${tag}: 200, CSP clean, no JS errors`, resp.status() === 200 && r.csp.length === 0 && p._err.length === 0, [resp.status(), ...r.csp, ...p._err].join(" | "));
+    ok(`${tag}: lang/dir, h1, demo bar, noindex`, r.lang === loc && r.dir === (loc === "ar" ? "rtl" : "ltr") && r.h1 && r.bar && r.noindex, JSON.stringify(r).slice(0, 200));
+    ok(`${tag}: no horizontal scroll, images have alt, nothing third-party`, !r.hscroll && r.imgsNoAlt.length === 0 && r.external.length === 0, [r.hscroll, ...r.imgsNoAlt, ...r.external].join(","));
     await p.close();
   }
 

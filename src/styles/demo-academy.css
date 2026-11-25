@@ -1,0 +1,310 @@
+/* «أكاديمية قلم» / Qalam Academy — learning platform (concept demo). Own
+   palette: warm off-white paper, violet primary, amber accent. Logical
+   properties only, so the same rules lay out both directions. */
+
+.qalam {
+  --qalam-bg: #fbf8f3;
+  --qalam-paper: #ffffff;
+  --qalam-ink: #1e1a2b;
+  --qalam-muted: #5f5872;
+  --qalam-line: #e9e3d8;
+  --qalam-violet: #6d28d9;
+  --qalam-deep: #4c1d95;
+  --qalam-soft: #f1ebfe;
+  --qalam-amber: #f59e0b;
+  --qalam-amber-soft: #fef3c7;
+  --qalam-amber-ink: #92400e;
+  --qalam-shadow: 0 1px 2px rgb(30 26 43 / 0.05), 0 8px 24px -12px rgb(30 26 43 / 0.14);
+  min-height: 100vh;
+  background: var(--qalam-bg);
+  color: var(--qalam-ink);
+  font-size: 16px;
+  line-height: 1.6;
+}
+[dir="rtl"] .qalam { line-height: 1.75; }
+.qalam :focus-visible { outline: 2px solid var(--qalam-violet); outline-offset: 2px; border-radius: 8px; }
+.qalam h1, .qalam h2, .qalam h3, .qalam p, .qalam figure, .qalam blockquote, .qalam dl, .qalam dd { margin: 0; }
+.qalam ul, .qalam ol { margin: 0; padding: 0; list-style: none; }
+.qalam button { font: inherit; color: inherit; cursor: pointer; }
+.qalam a { color: inherit; }
+.qalam-num { font-family: var(--font-jetbrains-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.qalam-muted { color: var(--qalam-muted); }
+.qalam-small { font-size: 14px; }
+.qalam-strong { font-weight: 600; }
+.qalam-wrap { max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
+.qalam-section { padding-block: 4rem; }
+.qalam-h1 { font-size: 2.25rem; line-height: 1.2; font-weight: 700; }
+.qalam-h2 { font-size: 1.75rem; line-height: 1.3; font-weight: 700; }
+.qalam-h3 { font-size: 1.25rem; line-height: 1.4; font-weight: 700; }
+[dir="ltr"] .qalam-h1, [dir="ltr"] .qalam-h2 { letter-spacing: -0.02em; }
+[dir="rtl"] .qalam-h1, [dir="rtl"] .qalam-h2, [dir="rtl"] .qalam-h3 { line-height: 1.35; }
+.qalam-lead { color: var(--qalam-muted); font-size: 1.0625rem; margin-block-start: 0.875rem; max-width: 40rem; }
+.qalam-body { color: var(--qalam-muted); }
+.qalam-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.25rem 0.75rem; margin-block-end: 1rem;
+  border-radius: 999px; background: var(--qalam-soft); color: var(--qalam-deep);
+  font-size: 14px; font-weight: 600;
+}
+.qalam-head { margin-block-end: 1.75rem; }
+.qalam-head p { margin-block-start: 0.5rem; }
+
+/* ── Buttons, chips ── */
+.qalam-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 44px; padding: 0.5rem 1.125rem;
+  border: 1px solid transparent; border-radius: 12px;
+  font-weight: 600; text-decoration: none; white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.qalam-btn-primary { background: var(--qalam-violet); color: #fff !important; }
+.qalam-btn-primary:hover { background: var(--qalam-deep); }
+.qalam-btn-soft { background: var(--qalam-soft); color: var(--qalam-deep) !important; }
+.qalam-btn-soft:hover { background: #e6dbfd; }
+.qalam-btn-ghost { border-color: var(--qalam-line); background: var(--qalam-paper); }
+.qalam-btn-ghost:hover { border-color: var(--qalam-violet); }
+.qalam-btn-block { display: flex; width: 100%; }
+.qalam-chip {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  min-height: 36px; padding: 0.25rem 0.875rem;
+  border: 1px solid var(--qalam-line); border-radius: 999px;
+  background: var(--qalam-paper); font-size: 14px;
+}
+.qalam-chip:hover { border-color: var(--qalam-violet); }
+.qalam-chip[aria-pressed="true"] { background: var(--qalam-ink); border-color: var(--qalam-ink); color: #fff; }
+.qalam-chip-dark { min-height: 0; padding: 0.125rem 0.625rem; background: rgb(255 255 255 / 0.14); border-color: transparent; color: #fff; font-size: 13px; }
+.qalam-link { display: inline-flex; align-items: center; gap: 0.3rem; border: 0; background: none; color: var(--qalam-violet); font-weight: 600; font-size: 14px; padding: 0.25rem; }
+.qalam-link:hover { text-decoration: underline; }
+
+/* ── Header ── */
+.qalam-header { position: sticky; top: 0; z-index: 30; background: rgb(251 248 243 / 0.88); backdrop-filter: blur(10px); border-block-end: 1px solid var(--qalam-line); }
+.qalam-header-row { display: flex; align-items: center; gap: 1.5rem; min-height: 4rem; }
+.qalam-brand { display: inline-flex; align-items: center; gap: 0.625rem; font-size: 1.125rem; font-weight: 700; text-decoration: none; }
+.qalam-mark { width: 32px; height: 32px; flex: none; }
+.qalam-nav { display: none; gap: 0.25rem; margin-inline-start: auto; }
+.qalam-nav a { padding: 0.5rem 0.75rem; border-radius: 10px; text-decoration: none; color: var(--qalam-muted); font-weight: 500; }
+.qalam-nav a:hover { color: var(--qalam-ink); background: var(--qalam-soft); }
+.qalam-header-row > .qalam-btn { margin-inline-start: auto; }
+.qalam-nav + .qalam-btn { margin-inline-start: 0; }
+
+/* ── Hero ── */
+.qalam-hero { padding-block: 3rem 3.5rem; background: radial-gradient(60rem 30rem at 85% -10%, var(--qalam-soft), transparent 60%), var(--qalam-bg); }
+/* The glow sits at the inline-end side, so mirror it by hand for RTL. */
+[dir="rtl"] .qalam-hero { background: radial-gradient(60rem 30rem at 15% -10%, var(--qalam-soft), transparent 60%), var(--qalam-bg); }
+.qalam-hero-grid { display: grid; gap: 3rem; align-items: center; }
+.qalam-search {
+  position: relative; display: flex; gap: 0.5rem; margin-block-start: 1.75rem; max-width: 34rem;
+  padding: 0.375rem; border: 1px solid var(--qalam-line); border-radius: 16px; background: var(--qalam-paper); box-shadow: var(--qalam-shadow);
+}
+.qalam-search:focus-within { border-color: var(--qalam-violet); box-shadow: 0 0 0 3px var(--qalam-soft), var(--qalam-shadow); }
+.qalam-search-icon { position: absolute; inset-inline-start: 1rem; top: 50%; transform: translateY(-50%); color: var(--qalam-muted); pointer-events: none; }
+.qalam-search input { flex: 1; min-width: 0; min-height: 44px; padding-inline: 2.5rem 0.5rem; border: 0; background: none; font: inherit; color: inherit; }
+.qalam-search input:focus-visible { outline: none; }
+.qalam-search input::placeholder { color: #8a8399; }
+.qalam-popular { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-block-start: 1rem; font-size: 14px; color: var(--qalam-muted); }
+.qalam-stats { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin-block-start: 2.25rem; }
+.qalam-stats div { display: flex; flex-direction: column-reverse; }
+.qalam-stats dd { font-size: 1.5rem; font-weight: 500; }
+.qalam-stats dt { font-size: 14px; color: var(--qalam-muted); }
+
+.qalam-hero-art { position: relative; display: none; max-width: 26rem; justify-self: center; width: 100%; }
+.qalam-art-card { padding: 1rem; border: 1px solid var(--qalam-line); border-radius: 20px; background: var(--qalam-paper); box-shadow: 0 30px 60px -30px rgb(76 29 149 / 0.35); }
+.qalam-art-screen { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; background: linear-gradient(135deg, var(--qalam-deep), var(--qalam-violet) 60%, #a855f7); overflow: hidden; }
+.qalam-art-play { position: absolute; inset: 0; margin: auto; width: 54px; height: 54px; border-radius: 50%; background: rgb(255 255 255 / 0.92); }
+/* Play triangle: a media glyph, never mirrored, so physical border-left on purpose. */
+.qalam-art-play::after { content: ""; position: absolute; inset: 0; margin: auto; translate: 2px 0; width: 0; height: 0; border-block: 9px solid transparent; border-left: 15px solid var(--qalam-violet); }
+.qalam-art-bar { position: absolute; inset-inline: 0.875rem; bottom: 0.875rem; height: 4px; border-radius: 4px; background: rgb(255 255 255 / 0.3); direction: ltr; }
+.qalam-art-bar span { display: block; height: 100%; border-radius: inherit; background: var(--qalam-amber); }
+.qalam-art-title { margin-block: 1rem 0.75rem; font-weight: 700; font-size: 1.0625rem; }
+.qalam-art-row { display: flex; justify-content: space-between; margin-block-end: 0.375rem; }
+.qalam-art-next { display: flex; flex-direction: column; margin-block-start: 1rem; padding: 0.75rem; border-radius: 12px; background: var(--qalam-bg); font-weight: 500; }
+.qalam-art-badge {
+  position: absolute; inset-inline-end: -1rem; bottom: 2.5rem; display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 0.875rem; border-radius: 12px; background: var(--qalam-amber-soft); color: var(--qalam-amber-ink); font-weight: 600; font-size: 14px; box-shadow: var(--qalam-shadow);
+}
+.qalam-meter { display: block; height: 8px; border-radius: 8px; background: var(--qalam-soft); overflow: hidden; }
+.qalam-meter span { display: block; height: 100%; border-radius: inherit; background: var(--qalam-violet); }
+
+/* ── Catalog ── */
+.qalam-filters { display: flex; flex-direction: column; gap: 0.875rem; }
+.qalam-seg { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.25rem; align-self: flex-start; border: 1px solid var(--qalam-line); border-radius: 12px; background: var(--qalam-paper); }
+.qalam-seg button { min-height: 36px; padding: 0.25rem 0.875rem; border: 0; border-radius: 9px; background: none; color: var(--qalam-muted); font-weight: 500; font-size: 14px; }
+.qalam-seg button:hover { color: var(--qalam-ink); }
+.qalam-seg button[aria-pressed="true"] { background: var(--qalam-violet); color: #fff; }
+.qalam-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.qalam-count { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 2.5rem; margin-block: 1.25rem 0.75rem; color: var(--qalam-muted); font-size: 14px; }
+.qalam-empty { padding: 3rem 1.5rem; border: 1px dashed var(--qalam-line); border-radius: 20px; text-align: center; color: var(--qalam-muted); background: var(--qalam-paper); }
+.qalam-grid { display: grid; gap: 1.25rem; }
+.qalam-card { display: flex; flex-direction: column; height: 100%; border: 1px solid var(--qalam-line); border-radius: 18px; background: var(--qalam-paper); overflow: hidden; box-shadow: var(--qalam-shadow); }
+.qalam-card.is-featured { border-color: #c4b0f5; box-shadow: 0 0 0 3px var(--qalam-soft), var(--qalam-shadow); }
+.qalam-card-body { display: flex; flex-direction: column; gap: 0.375rem; flex: 1; padding: 1rem 1.125rem 1.125rem; }
+.qalam-card-title { font-size: 1.0625rem; line-height: 1.45; font-weight: 700; margin-block-start: 0.25rem; }
+.qalam-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.qalam-tag { padding: 0.0625rem 0.5rem; border-radius: 6px; background: var(--qalam-soft); color: var(--qalam-deep); font-size: 13px; font-weight: 600; }
+[dir="rtl"] .qalam-tag { font-size: 14px; }
+.qalam-tag-soft { background: var(--qalam-bg); color: var(--qalam-muted); }
+.qalam-tag-amber { background: var(--qalam-amber-soft); color: var(--qalam-amber-ink); }
+.qalam-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; color: var(--qalam-muted); }
+.qalam-meta span, .qalam-facts li { display: inline-flex; align-items: center; gap: 0.375rem; }
+.qalam-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-block-start: auto; padding-block-start: 0.75rem; border-block-start: 1px solid var(--qalam-line); }
+.qalam-card-cta { margin-block-start: 0.5rem; }
+.qalam-rating { display: inline-flex; align-items: center; gap: 0.375rem; font-size: 14px; }
+.qalam-stars { display: inline-flex; gap: 1px; color: #d9d3c7; }
+.qalam-stars .is-on { color: var(--qalam-amber); fill: var(--qalam-amber); }
+.qalam-price { font-weight: 700; font-size: 1.0625rem; }
+.qalam-price.is-free { color: #047857; }
+
+.qalam-cover { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: linear-gradient(135deg, hsl(var(--hue) 70% 94%), hsl(var(--hue) 65% 84%)); }
+.qalam-cover-ring { position: absolute; inset-inline-end: -12%; top: -30%; width: 62%; aspect-ratio: 1; border-radius: 50%; border: 18px solid hsl(var(--hue) 60% 74% / 0.55); }
+.qalam-cover-dot { position: absolute; inset-inline-start: 12%; bottom: -18%; width: 30%; aspect-ratio: 1; border-radius: 50%; background: hsl(var(--hue) 65% 70% / 0.45); }
+.qalam-cover-icon { position: absolute; inset-inline-start: 1.125rem; top: 1.125rem; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: #fff; color: hsl(var(--hue) 55% 38%); box-shadow: 0 10px 24px -12px hsl(var(--hue) 50% 30% / 0.6); }
+
+/* ── Featured course ── */
+.qalam-course { background: var(--qalam-paper); border-block: 1px solid var(--qalam-line); }
+/* Mobile order: intro, enroll card, then the long content. Desktop: card in its own sticky column. */
+.qalam-course-grid { display: grid; gap: 2rem; grid-template-areas: "intro" "aside" "body"; }
+.qalam-course-intro { grid-area: intro; }
+.qalam-course-body { grid-area: body; display: flex; flex-direction: column; gap: 2.5rem; min-width: 0; }
+.qalam-enroll { grid-area: aside; align-self: start; display: flex; flex-direction: column; gap: 0.75rem; padding: 1.5rem; border: 1px solid var(--qalam-line); border-radius: 20px; background: var(--qalam-paper); box-shadow: 0 24px 48px -28px rgb(76 29 149 / 0.35); scroll-margin-block-start: 5rem; }
+.qalam-facts { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-block: 1.25rem 0.75rem; }
+.qalam-price-row { display: flex; align-items: baseline; gap: 0.75rem; }
+.qalam-price-now { font-size: 2.25rem; font-weight: 600; line-height: 1.1; }
+.qalam-was { color: var(--qalam-muted); font-size: 1.0625rem; }
+.qalam-saving { align-self: flex-start; padding: 0.125rem 0.625rem; border-radius: 8px; background: var(--qalam-amber-soft); color: var(--qalam-amber-ink); font-size: 14px; font-weight: 600; }
+.qalam-enroll h3 { margin-block-start: 0.75rem; }
+.qalam-includes { display: flex; flex-direction: column; gap: 0.5rem; font-size: 14px; }
+.qalam-includes li, .qalam-guarantee { display: flex; align-items: flex-start; gap: 0.625rem; }
+.qalam-includes svg { flex: none; margin-block-start: 0.2rem; color: var(--qalam-violet); }
+.qalam-guarantee { padding-block-start: 0.875rem; border-block-start: 1px solid var(--qalam-line); color: var(--qalam-muted); font-size: 14px; }
+.qalam-guarantee svg { flex: none; margin-block-start: 0.2rem; color: #047857; }
+
+/* Player mockup */
+.qalam-player { border-radius: 20px; overflow: hidden; background: #17132a; color: #fff; box-shadow: 0 30px 60px -36px rgb(30 26 43 / 0.7); scroll-margin-block-start: 5rem; }
+/* Normal flow (info, play, caption) so nothing overlaps on narrow screens; 16:9 from tablet up. */
+.qalam-screen { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1rem; min-height: 240px; padding: 1rem; background: radial-gradient(circle at 30% 20%, #7c3aed, transparent 55%), radial-gradient(circle at 80% 90%, rgb(245 158 11 / 0.55), transparent 50%), linear-gradient(160deg, #2e1065, #17132a); }
+.qalam-screen-info { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; gap: 0.375rem; }
+.qalam-screen-title { font-size: 1.125rem; font-weight: 700; line-height: 1.4; }
+.qalam-screen-sub { color: rgb(255 255 255 / 0.78); font-size: 14px; }
+.qalam-bigplay { display: grid; place-items: center; width: 72px; height: 72px; border: 0; border-radius: 50%; background: #fff; color: var(--qalam-violet) !important; box-shadow: 0 0 0 10px rgb(255 255 255 / 0.15); transition: transform 0.15s; }
+.qalam-bigplay:hover { transform: scale(1.05); }
+.qalam-bigplay svg { fill: currentColor; }
+.qalam-player :focus-visible { outline-color: var(--qalam-amber); }
+.qalam-caption { max-width: 34rem; padding: 0.375rem 0.75rem; border-radius: 8px; background: rgb(0 0 0 / 0.65); text-align: center; font-size: 15px; }
+.qalam-controls { display: flex; align-items: center; gap: 0.25rem; padding: 0.5rem 0.75rem; background: #100d1e; }
+.qalam-controls button { display: grid; place-items: center; min-width: 40px; height: 40px; border: 0; border-radius: 10px; background: none; color: #fff; }
+.qalam-controls button:hover { background: rgb(255 255 255 / 0.1); }
+.qalam-controls button[aria-pressed="false"] { color: rgb(255 255 255 / 0.55); }
+.qalam-time { font-size: 13px; color: rgb(255 255 255 / 0.82); padding-inline: 0.25rem; }
+.qalam-speed { font-size: 13px; }
+/* The controls row is dir="ltr", so a physical left-to-right fill is correct here. */
+.qalam-controls input[type="range"] { flex: 1; min-width: 40px; height: 40px; margin: 0; background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none; }
+.qalam-controls input[type="range"]::-webkit-slider-runnable-track { height: 5px; border-radius: 5px; background: linear-gradient(to right, var(--qalam-amber) var(--fill), rgb(255 255 255 / 0.25) var(--fill)); }
+.qalam-controls input[type="range"]::-moz-range-track { height: 5px; border-radius: 5px; background: linear-gradient(to right, var(--qalam-amber) var(--fill), rgb(255 255 255 / 0.25) var(--fill)); }
+.qalam-controls input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -4.5px; border-radius: 50%; background: #fff; }
+.qalam-controls input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: #fff; }
+
+/* Curriculum */
+.qalam-block { scroll-margin-block-start: 5rem; }
+.qalam-curr-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-block-end: 1rem; }
+.qalam-ring-wrap { display: flex; align-items: center; gap: 0.75rem; }
+.qalam-ring { flex: none; }
+.qalam-ring-track { fill: none; stroke: var(--qalam-soft); stroke-width: 6; }
+.qalam-ring-fill { fill: none; stroke: var(--qalam-violet); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.4s ease; }
+.qalam-ring-text { font-family: var(--font-jetbrains-mono), ui-monospace, monospace; font-size: 14px; font-weight: 500; fill: var(--qalam-ink); }
+.qalam-modules { display: flex; flex-direction: column; border: 1px solid var(--qalam-line); border-radius: 16px; overflow: hidden; }
+.qalam-module + .qalam-module { border-block-start: 1px solid var(--qalam-line); }
+.qalam-module summary { display: flex; align-items: center; gap: 0.75rem; min-height: 56px; padding: 0.625rem 1rem; background: var(--qalam-bg); cursor: pointer; list-style: none; font-weight: 600; }
+.qalam-module summary::-webkit-details-marker { display: none; }
+.qalam-module summary:focus-visible { outline-offset: -2px; border-radius: 0; }
+.qalam-module-n { color: var(--qalam-violet); font-size: 14px; }
+.qalam-module-title { flex: 1; }
+.qalam-chev { flex: none; color: var(--qalam-muted); transition: transform 0.2s; }
+.qalam-module[open] .qalam-chev { transform: rotate(180deg); }
+.qalam-lesson { position: relative; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; border-block-start: 1px solid var(--qalam-line); }
+.qalam-lesson.is-current { background: var(--qalam-soft); }
+.qalam-lesson.is-current::before { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; background: var(--qalam-violet); }
+/* Real checkbox, visually replaced by .qalam-tick but still focusable and announced. */
+.qalam-check { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.qalam-lesson-title { display: flex; align-items: center; gap: 0.75rem; flex: 1; min-height: 40px; cursor: pointer; font-size: 15px; }
+.qalam-tick { display: grid; place-items: center; flex: none; width: 22px; height: 22px; border: 1.5px solid #c9c1d6; border-radius: 7px; background: #fff; color: transparent; transition: background-color 0.15s; }
+.qalam-check:checked + .qalam-lesson-title .qalam-tick { background: var(--qalam-violet); border-color: var(--qalam-violet); color: #fff; }
+.qalam-check:checked + .qalam-lesson-title { color: var(--qalam-muted); }
+.qalam-check:focus-visible + .qalam-lesson-title .qalam-tick { outline: 2px solid var(--qalam-violet); outline-offset: 2px; }
+.qalam-lesson-play { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border: 1px solid var(--qalam-line); border-radius: 50%; background: #fff; color: var(--qalam-violet) !important; }
+.qalam-lesson-play:hover { border-color: var(--qalam-violet); }
+.qalam-lesson-play svg { fill: currentColor; }
+
+/* Instructor + reviews */
+.qalam-instructor { display: flex; align-items: center; gap: 1rem; margin-block: 1rem; }
+.qalam-avatar { flex: none; width: 72px; height: 72px; border-radius: 50%; box-shadow: 0 0 0 4px var(--qalam-soft); }
+.qalam-name { font-size: 1.125rem; }
+.qalam-mini-stats { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-block-start: 1.25rem; }
+.qalam-mini-stats div { display: flex; flex-direction: column-reverse; flex: 1; min-width: 6rem; padding: 0.75rem 1rem; border-radius: 14px; background: var(--qalam-bg); }
+.qalam-mini-stats dd { font-size: 1.25rem; font-weight: 500; }
+.qalam-mini-stats dt { font-size: 14px; color: var(--qalam-muted); }
+.qalam-review-summary { display: grid; gap: 1.25rem; margin-block: 1rem 1.5rem; padding: 1.25rem; border-radius: 16px; background: var(--qalam-bg); }
+.qalam-average { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+.qalam-average b { font-size: 2.5rem; font-weight: 600; line-height: 1; }
+.qalam-dist { display: flex; flex-direction: column; gap: 0.375rem; }
+.qalam-dist li { display: grid; grid-template-columns: 5.5rem 1fr 2.75rem; align-items: center; gap: 0.75rem; }
+.qalam-dist .qalam-meter { background: #ebe5f7; }
+.qalam-dist .qalam-meter span { background: var(--qalam-amber); }
+.qalam-dist li > :last-child { text-align: end; }
+.qalam-reviews { display: grid; gap: 1rem; }
+.qalam-reviews figure { display: flex; flex-direction: column; gap: 0.75rem; height: 100%; padding: 1.25rem; border: 1px solid var(--qalam-line); border-radius: 16px; }
+.qalam-reviews blockquote { flex: 1; }
+.qalam-reviews figcaption { display: flex; align-items: center; gap: 0.75rem; }
+.qalam-reviews figcaption > span:last-child { display: flex; flex-direction: column; }
+.qalam-initial { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--qalam-soft); color: var(--qalam-deep); font-weight: 700; }
+
+/* Certificate */
+.qalam-cert-grid { display: grid; gap: 2.5rem; align-items: center; }
+.qalam-cert {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.375rem;
+  padding: 2rem 1.5rem; text-align: center; border-radius: 18px; background: var(--qalam-paper);
+  border: 1px solid var(--qalam-line); box-shadow: inset 0 0 0 8px var(--qalam-paper), inset 0 0 0 9px #e2d6fb, 0 30px 60px -30px rgb(76 29 149 / 0.35);
+}
+.qalam-cert-top { display: inline-flex; align-items: center; gap: 0.5rem; margin-block-end: 0.75rem; font-weight: 700; }
+.qalam-cert-heading { font-size: 1.5rem; font-weight: 700; color: var(--qalam-deep); margin-block-end: 0.5rem; }
+.qalam-cert-name { font-size: 1.5rem; font-weight: 700; padding-inline: 1.5rem; padding-block-end: 0.25rem; border-block-end: 2px solid var(--qalam-amber); margin-block-end: 0.5rem; }
+.qalam-cert-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 2rem; margin-block-start: 1.25rem; padding-block-start: 1rem; border-block-start: 1px solid var(--qalam-line); width: 100%; }
+.qalam-cert-meta div { display: flex; flex-direction: column; }
+.qalam-cert-meta dt { font-size: 13px; color: var(--qalam-muted); }
+[dir="rtl"] .qalam-cert-meta dt { font-size: 14px; }
+.qalam-cert-meta dd { font-weight: 600; font-size: 14px; }
+.qalam-sign { color: var(--qalam-deep); }
+.qalam-seal { position: absolute; inset-inline-end: 1.25rem; top: 1.25rem; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--qalam-amber-soft); color: var(--qalam-amber-ink); box-shadow: 0 0 0 4px #fff, 0 0 0 5px #f8dc9a; }
+
+/* Footer */
+.qalam-footer { padding-block: 2.5rem; background: var(--qalam-ink); color: #fff; }
+.qalam-footer .qalam-muted { color: #b9b2c8; }
+.qalam-footer-row { display: flex; flex-direction: column; gap: 0.75rem; }
+
+/* ── Breakpoints ── */
+@media (min-width: 640px) {
+  .qalam-grid, .qalam-reviews { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .qalam-review-summary { grid-template-columns: auto 1fr; align-items: center; gap: 2rem; }
+  .qalam-filters { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  .qalam-h1 { font-size: 2.75rem; }
+}
+@media (min-width: 768px) {
+  .qalam-nav { display: flex; }
+  .qalam-screen { aspect-ratio: 16 / 9; }
+  .qalam-section { padding-block: 5rem; }
+  .qalam-footer-row { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+@media (min-width: 1024px) {
+  .qalam-hero { padding-block: 4.5rem 5rem; }
+  .qalam-hero-grid { grid-template-columns: 1.15fr 0.85fr; }
+  .qalam-hero-art { display: block; }
+  .qalam-h1 { font-size: 3.25rem; }
+  .qalam-h2 { font-size: 2rem; }
+  .qalam-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .qalam-course-grid { grid-template-columns: minmax(0, 1fr) 22rem; grid-template-areas: "intro aside" "body aside"; column-gap: 3rem; }
+  .qalam-enroll { position: sticky; top: 5.5rem; }
+  .qalam-reviews { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .qalam-cert-grid { grid-template-columns: 1fr 1.1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qalam *, .qalam *::before, .qalam *::after { transition: none !important; scroll-behavior: auto !important; }
+}

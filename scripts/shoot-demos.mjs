@@ -60,6 +60,7 @@ try {
   }
 } finally {
   await browser.close();
+  server.closeAllConnections(); // keep-alive sockets would keep the process alive
   server.close();
 }
 console.log(`${slugs.length} demo(s): ${slugs.join(", ") || "none"}`);

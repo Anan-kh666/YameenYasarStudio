@@ -27,7 +27,7 @@ function createServer(ROOT) {
     else { const i = line.indexOf(":"); cur.h.push([line.slice(0, i).trim(), line.slice(i + 1).trim()]); }
   }
   const match = (pat, p) => pat.endsWith("*") ? p.startsWith(pat.slice(0, -1)) : pat === p;
-  const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".mp4": "video/mp4", ".woff2": "font/woff2", ".txt": "text/plain", ".xml": "application/xml", ".ico": "image/x-icon", ".svg": "image/svg+xml" };
+  const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".webp": "image/webp", ".jpg": "image/jpeg", ".mp4": "video/mp4", ".woff2": "font/woff2", ".txt": "text/plain", ".xml": "application/xml", ".ico": "image/x-icon", ".svg": "image/svg+xml" };
   return http.createServer((req, res) => {
     const url = decodeURIComponent(req.url.split("?")[0]);
     let file = path.join(ROOT, url);

@@ -1,0 +1,195 @@
+/* Copy for the «راصد» / "Rasid" concept demo: a retail analytics web app for a
+   fictional Saudi store, «متجر نخلة» / "Nakhla Store". Numbers (revenue, orders,
+   amounts) live in data.ts; this file holds only words. Both locales must keep
+   the same shape. */
+
+const ar = {
+  meta: {
+    title: "راصد · نظرة عامة على متجر نخلة",
+    description: "نموذج تجريبي للوحة تحليلات «راصد» للمتاجر: الإيرادات والطلبات والقنوات والمنتجات في شاشة واحدة.",
+  },
+  brand: "راصد",
+  workspace: { name: "متجر نخلة", plan: "الخطة الاحترافية" },
+  nav: {
+    label: "التنقل الرئيسي",
+    overview: "نظرة عامة",
+    orders: "الطلبات",
+    products: "المنتجات",
+    customers: "العملاء",
+    settings: "الإعدادات",
+    compact: "صفوف مضغوطة في الجداول",
+    showFeed: "إظهار النشاط المباشر",
+    open: "فتح القائمة",
+    close: "إغلاق القائمة",
+  },
+  search: { label: "ابحث في الطلبات", placeholder: "ابحث برقم الطلب أو اسم العميل" },
+  range: {
+    label: "الفترة الزمنية",
+    short: { "7d": "7 أيام", "30d": "30 يومًا", "90d": "90 يومًا" },
+    long: { "7d": "آخر 7 أيام", "30d": "آخر 30 يومًا", "90d": "آخر 90 يومًا" },
+  },
+  notifications: "الإشعارات: 3 غير مقروءة",
+  user: { name: "دانة المالكي", role: "مديرة المتجر", initials: "د" },
+  title: "نظرة عامة",
+  subtitle: "أداء متجر نخلة",
+  currency: "ر.س",
+  thousand: " ألف",
+  dayFirst: true,
+  months: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+  kpis: {
+    revenue: "الإيرادات",
+    orders: "الطلبات",
+    conversion: "معدل التحويل",
+    aov: "متوسط قيمة الطلب",
+    vsPrev: "مقارنة بالفترة السابقة",
+  },
+  revenueChart: {
+    title: "الإيرادات اليومية",
+    current: "الفترة الحالية",
+    previous: "الفترة السابقة",
+    hint: "مخطط الإيرادات اليومية. استخدم مفتاحي السهمين للتنقل بين الأيام.",
+  },
+  channelChart: {
+    title: "الإيرادات حسب القناة",
+    channels: ["المتجر", "التطبيق", "إنستغرام", "المنصات", "الفروع"],
+  },
+  orders: {
+    title: "أحدث الطلبات",
+    filterLabel: "تصفية حسب الحالة",
+    all: "الكل",
+    status: { paid: "مدفوع", shipped: "تم الشحن", refunded: "مسترد" },
+    cols: { id: "رقم الطلب", customer: "العميل", date: "التاريخ", channel: "القناة", status: "الحالة", amount: "المبلغ" },
+    showing: "المعروض:",
+    empty: "لا توجد طلبات تطابق البحث أو الحالة المختارة.",
+  },
+  customers: [
+    "نورة القحطاني", "فهد العتيبي", "ريم الشمري", "خالد الدوسري", "سارة الزهراني",
+    "عبدالله الحربي", "لمى الغامدي", "ماجد السبيعي", "هيا المطيري", "يوسف الشهري",
+  ],
+  products: {
+    title: "المنتجات الأكثر مبيعًا",
+    units: "وحدة",
+    items: [
+      { name: "علبة تمر خلاص فاخرة", category: "التمور" },
+      { name: "قهوة عربية بالهيل", category: "القهوة" },
+      { name: "بخور عود كمبودي", category: "البخور" },
+      { name: "طقم دلة خزفي", category: "الأواني" },
+      { name: "زعفران فاخر", category: "البهارات" },
+    ],
+  },
+  activity: {
+    title: "النشاط المباشر",
+    live: "مباشر",
+    pause: "إيقاف التحديث التلقائي",
+    resume: "استئناف التحديث التلقائي",
+    ago: ["الآن", "قبل دقيقة", "قبل 3 دقائق", "قبل 6 دقائق", "قبل 9 دقائق"],
+    events: [
+      "طلب جديد من الرياض",
+      "تقييم بخمس نجوم على علبة تمر خلاص",
+      "مخزون الزعفران الفاخر أقل من 20 وحدة",
+      "طلب جديد من جدة",
+      "استرداد مبلغ طلب",
+      "عميل جديد سجّل عبر التطبيق",
+      "تم شحن طلب إلى الدمام",
+      "طلب جديد من مكة المكرمة",
+    ],
+  },
+};
+
+type Copy = typeof ar;
+
+const en: Copy = {
+  meta: {
+    title: "Rasid · Nakhla Store overview",
+    description: "Concept demo of Rasid, a retail analytics app: revenue, orders, channels and products on one screen.",
+  },
+  brand: "Rasid",
+  workspace: { name: "Nakhla Store", plan: "Pro plan" },
+  nav: {
+    label: "Main navigation",
+    overview: "Overview",
+    orders: "Orders",
+    products: "Products",
+    customers: "Customers",
+    settings: "Settings",
+    compact: "Compact table rows",
+    showFeed: "Show live activity",
+    open: "Open menu",
+    close: "Close menu",
+  },
+  search: { label: "Search orders", placeholder: "Search by order number or customer" },
+  range: {
+    label: "Date range",
+    short: { "7d": "7d", "30d": "30d", "90d": "90d" },
+    long: { "7d": "Last 7 days", "30d": "Last 30 days", "90d": "Last 90 days" },
+  },
+  notifications: "Notifications: 3 unread",
+  user: { name: "Dana Al-Malki", role: "Store manager", initials: "D" },
+  title: "Overview",
+  subtitle: "Nakhla Store performance",
+  currency: "SAR",
+  thousand: "K",
+  dayFirst: false,
+  months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  kpis: {
+    revenue: "Revenue",
+    orders: "Orders",
+    conversion: "Conversion rate",
+    aov: "Average order value",
+    vsPrev: "vs previous period",
+  },
+  revenueChart: {
+    title: "Daily revenue",
+    current: "This period",
+    previous: "Previous period",
+    hint: "Daily revenue chart. Use the arrow keys to move between days.",
+  },
+  channelChart: {
+    title: "Revenue by channel",
+    channels: ["Web store", "App", "Instagram", "Marketplaces", "Branches"],
+  },
+  orders: {
+    title: "Recent orders",
+    filterLabel: "Filter by status",
+    all: "All",
+    status: { paid: "Paid", shipped: "Shipped", refunded: "Refunded" },
+    cols: { id: "Order", customer: "Customer", date: "Date", channel: "Channel", status: "Status", amount: "Amount" },
+    showing: "Showing",
+    empty: "No orders match this search or status.",
+  },
+  customers: [
+    "Noura Al-Qahtani", "Fahad Al-Otaibi", "Reem Al-Shammari", "Khalid Al-Dosari", "Sara Al-Zahrani",
+    "Abdullah Al-Harbi", "Lama Al-Ghamdi", "Majed Al-Subaie", "Haya Al-Mutairi", "Yousef Al-Shehri",
+  ],
+  products: {
+    title: "Top products",
+    units: "units",
+    items: [
+      { name: "Khalas Dates Gift Box", category: "Dates" },
+      { name: "Arabic Coffee with Cardamom", category: "Coffee" },
+      { name: "Cambodian Oud Incense", category: "Incense" },
+      { name: "Ceramic Dallah Set", category: "Serveware" },
+      { name: "Premium Saffron", category: "Spices" },
+    ],
+  },
+  activity: {
+    title: "Live activity",
+    live: "Live",
+    pause: "Pause auto-updates",
+    resume: "Resume auto-updates",
+    ago: ["Just now", "1 min ago", "3 min ago", "6 min ago", "9 min ago"],
+    events: [
+      "New order from Riyadh",
+      "5-star review on Khalas Dates Gift Box",
+      "Premium Saffron stock below 20 units",
+      "New order from Jeddah",
+      "Refund issued for order",
+      "New customer signed up in the app",
+      "Order shipped to Dammam",
+      "New order from Makkah",
+    ],
+  },
+};
+
+export const content = { ar, en };
+export type DashboardCopy = Copy;

@@ -72,18 +72,26 @@ WhatsApp link: `https://wa.me/[...]`
 ## 4. Work
 
 **AR**
-- Headline: شغل بيحكي عن حاله.
-- Zait & Za'atar: موقع مطعم شامي باللغتين، بقائمة طعام وتصميم يمين لليسار كامل. [شوف الموقع]
-- عيادة (مشروع تجريبي): موقع عيادة أسنان بحجز مواعيد وزر واتساب. [شوف الموقع]
-- منتج SaaS (مشروع تجريبي): صفحة منتج بالإنكليزي مع نسخة عربية كاملة. [شوف الموقع]
+- Headline: أعمال تتحدث عن نفسها.
+- Chip on every card: مشروع تجريبي · Link label: شاهد النموذج الحي
+- لمسة (متجر إلكتروني): متجر للأزياء المحتشمة والعبايات في دبي، بصفحات منتجات باللغتين وسلّة تسوّق تعمل فعلاً. [كتالوج المنتجات · سلّة التسوّق · متوافق مع الجوال]
+- سمّاق (موقع مطعم): مطعم شامي في عمّان، بقائمة طعام كاملة ونظام لحجز الطاولات. [قائمة طعام رقمية · حجز الطاولات · أقسام القائمة]
+- عيادة بسمة لطب الأسنان (موقع عيادة): عيادة أسنان في الرياض، يحجز فيها المريض موعده عبر الإنترنت في دقيقة واحدة. [حجز المواعيد · قائمة الخدمات · ملفات الأطباء]
+- منزل (منصة عقارات): عقارات للبيع والإيجار في مسقط، مع فلاتر للبحث وحاسبة للتمويل العقاري. [فلاتر البحث · قوائم العقارات · حاسبة التمويل]
+- راصد (تطبيق ويب): منصة تحليلات لتجّار التجزئة، بلوحة تحكم حيّة ورسوم بيانية ومتابعة للطلبات. [لوحة التحكم · رسوم بيانية · إدارة الطلبات]
+- أكاديمية قلم (منصة تعليمية): منصة للدورات عبر الإنترنت، بكتالوج للدورات ومشغّل دروس يحفظ تقدّم كل متعلّم. [كتالوج الدورات · مشغّل الدروس · متابعة التقدّم]
 
 **EN**
 - Headline: Work that speaks for itself.
-- Zait & Za'atar: a bilingual Levantine restaurant site with a full right-to-left menu. [View site]
-- Clinic (concept project): a dental clinic site with appointment booking and WhatsApp. [View site]
-- SaaS product (concept project): an English product page with a complete Arabic version. [View site]
+- Chip on every card: Concept project · Link label: View live demo
+- Lamsa (Online store): A modest fashion and abaya boutique in Dubai, with bilingual product pages and a working cart. [Product catalog · Shopping cart · Mobile-ready]
+- Sumac (Restaurant website): A Levantine restaurant in Amman, with a full menu and table reservations. [Digital menu · Table reservations · Menu sections]
+- Basma Dental Clinic (Clinic website): A dental clinic in Riyadh where patients book an appointment online in a minute. [Appointment booking · Services list · Doctor profiles]
+- Manzil (Property listings): Homes for sale and rent in Muscat, with search filters and a mortgage calculator. [Search filters · Property listings · Mortgage calculator]
+- Rasid (Web app): A retail analytics platform with a live dashboard, charts and order tracking. [Dashboard · Charts · Order management]
+- Qalam Academy (Online courses): An online learning platform with a course catalog and a lesson player that saves each learner's progress. [Course catalog · Lesson player · Progress tracking]
 
-Zait & Za'atar URL: `[...]` · Clinic and SaaS: not built yet — show as "Coming soon / قريباً" until they exist.
+Each card links to its live concept demo at `/demos/<locale>/<slug>/` (slugs: store, restaurant, clinic, realestate, dashboard, academy). Screenshots come from `npm run shoot:demos`.
 
 ---
 

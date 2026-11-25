@@ -138,22 +138,67 @@
   "work": {
     "marker": "Selected work",
     "headline": "Work that speaks for itself.",
-    "viewSite": "View site",
-    "comingSoon": "Coming soon",
-    "onlineStore": {
-      "name": "Online store",
-      "tag": "concept project",
-      "description": "A fashion store with bilingual product pages and shopping cart."
+    "viewDemo": "View live demo",
+    "conceptTag": "Concept project",
+    "store": {
+      "name": "Lamsa",
+      "type": "Online store",
+      "description": "A modest fashion and abaya boutique in Dubai, with bilingual product pages and a working cart.",
+      "features": [
+        "Product catalog",
+        "Shopping cart",
+        "Mobile-ready"
+      ]
+    },
+    "restaurant": {
+      "name": "Sumac",
+      "type": "Restaurant website",
+      "description": "A Levantine restaurant in Amman, with a full menu and table reservations.",
+      "features": [
+        "Digital menu",
+        "Table reservations",
+        "Menu sections"
+      ]
     },
     "clinic": {
-      "name": "Clinic",
-      "tag": "concept project",
-      "description": "A dental clinic site with appointment booking and WhatsApp."
+      "name": "Basma Dental Clinic",
+      "type": "Clinic website",
+      "description": "A dental clinic in Riyadh where patients book an appointment online in a minute.",
+      "features": [
+        "Appointment booking",
+        "Services list",
+        "Doctor profiles"
+      ]
     },
-    "saas": {
-      "name": "SaaS product",
-      "tag": "concept project",
-      "description": "An English product page with a complete Arabic version."
+    "realestate": {
+      "name": "Manzil",
+      "type": "Property listings",
+      "description": "Homes for sale and rent in Muscat, with search filters and a mortgage calculator.",
+      "features": [
+        "Search filters",
+        "Property listings",
+        "Mortgage calculator"
+      ]
+    },
+    "dashboard": {
+      "name": "Rasid",
+      "type": "Web app",
+      "description": "A retail analytics platform with a live dashboard, charts and order tracking.",
+      "features": [
+        "Dashboard",
+        "Charts",
+        "Order management"
+      ]
+    },
+    "academy": {
+      "name": "Qalam Academy",
+      "type": "Online courses",
+      "description": "An online learning platform with a course catalog and a lesson player that saves each learner's progress.",
+      "features": [
+        "Course catalog",
+        "Lesson player",
+        "Progress tracking"
+      ]
     }
   },
   "process": {

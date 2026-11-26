@@ -4,7 +4,7 @@ export const site = {
   url: "https://yameenyasar.com",
   name: "Yameen Yasar Studio",
   nameAr: "يمين يسار",
-  email: "hello@yameenyasar.com",
+  email: "anankherbek666@gmail.com",
   whatsappNumber: "60172051922",
 
   instagram: "https://www.instagram.com/yameenyasarstudio",

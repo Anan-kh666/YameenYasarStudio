@@ -225,7 +225,7 @@ async function newPage(b, { w = 1280, h = 800, lang = "en-US", reduced = false, 
   await intro("portrait phone → /en/", { w: 390, h: 844, expect: "/en/" }, clickEnter);
 
   // ── 6. Static files
-  for (const [u, re] of [["/robots.txt", /Sitemap: https:\/\/yameenyasar.com\/sitemap.xml/], ["/sitemap.xml", /yameenyasar.com\/ar\//], ["/.well-known/security.txt", /Contact: mailto:hello@yameenyasar.com/]]) {
+  for (const [u, re] of [["/robots.txt", /Sitemap: https:\/\/yameenyasar.com\/sitemap.xml/], ["/sitemap.xml", /yameenyasar.com\/ar\//], ["/.well-known/security.txt", /Contact: mailto:anankherbek666@gmail.com/]]) {
     const t = await (await fetch(BASE + u)).text(); ok(`${u} served`, re.test(t));
   }
   const nf = await fetch(BASE + "/does-not-exist/"); ok("unknown path → 404 page", nf.status === 404);

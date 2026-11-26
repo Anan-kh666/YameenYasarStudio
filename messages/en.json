@@ -217,13 +217,15 @@
   "about": {
     "marker": "The studio",
     "headline": "Behind every site, someone who speaks your language.",
-    "photoAlt": "Anan Kherbek",
-    "bio": "I'm Anan Kherbek, founder of Yameen Yasar Studio. Based in Malaysia, studying Computer Science with a focus on AI. I live in Arabic and English every day, and I know how much it shows when a website respects both.",
+    "bio": "I'm Anan Kherbek, founder and CEO of Yameen Yasar Studio and an Artificial Intelligence Engineer, based in Malaysia. I live in Arabic and English every day, and I know how much it shows when a website respects both.",
     "closing": "When you work with us, you talk to the person building your site, not a sales team.",
     "id": {
       "name": "Name",
+      "nameValue": "Anan Kherbek",
       "role": "Role",
-      "roleValue": "Founder",
+      "roleValue": "Founder & CEO",
+      "expertise": "Expertise",
+      "expertiseValue": "Artificial Intelligence Engineer",
       "based": "Based in",
       "basedValue": "Malaysia",
       "languages": "Languages",

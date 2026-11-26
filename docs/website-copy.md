@@ -119,15 +119,15 @@ Payment: 40% to start, 40% when finished, and 20% after 5 days of live testing.
 
 **AR**
 - Headline: وراء كل موقع، شخص بيحكي لغتك.
-- أنا عنان خربك، مؤسس Yameen Yasar Studio. سوري، مقيم بماليزيا، وبدرس علوم الحاسوب بتخصص الذكاء الاصطناعي. بكتب عربي وإنكليزي كل يوم، وبعرف قديش بيبيّن الفرق لما موقع بيحترم اللغتين.
+- أنا عنان خير بك، مؤسس Yameen Yasar Studio ورئيسه التنفيذي، ومهندس ذكاء اصطناعي مقيم في ماليزيا. أكتب بالعربية والإنجليزية يومياً، وأدرك تماماً الفرق الذي يصنعه موقع يحترم اللغتين.
 - لما تشتغل معنا، إنت بتحكي مع الشخص يلي عم يبني موقعك، مش مع موظف مبيعات.
 
 **EN**
 - Headline: Behind every site, someone who speaks your language.
-- I'm Anan Kherbek, founder of Yameen Yasar Studio. I'm Syrian, based in Malaysia, and studying Computer Science with a focus on AI. I live in Arabic and English every day, and I know how much it shows when a website respects both.
+- I'm Anan Kherbek, founder and CEO of Yameen Yasar Studio and an Artificial Intelligence Engineer, based in Malaysia. I live in Arabic and English every day, and I know how much it shows when a website respects both.
 - When you work with us, you talk to the person building your site, not a sales team.
 
-Photo: `public/images/anan.jpg` `[...]`
+No photo (removed Nov 26 2026). Founder card rows: name, Founder & CEO, Artificial Intelligence Engineer, Malaysia, Arabic · English.
 
 ---
 
@@ -157,7 +157,7 @@ Photo: `public/images/anan.jpg` `[...]`
 - AR: Headline: خلينا نحكي عن موقعك. · Subline: بعتلنا رسالة، ومنرد خلال ٢٤ ساعة.
 - EN: Headline: Let's talk about your website. · Subline: Send us a message and we'll reply within 24 hours.
 - Fields: الاسم / Name · الإيميل / Email · شو نوع شغلك؟ / What's your business? · شو الباقة يلي بتهمك؟ / Which package? (Basic Website, Professional Website, Specialized Website Development, Not sure / مش متأكد) · رسالتك / Your message
-- Buttons: [ابعت] / [Send] · [واتساب] / [WhatsApp] · hello@yameenyasar.com
+- Buttons: [ابعت] / [Send] · [واتساب] / [WhatsApp] · anankherbek666@gmail.com
 - Success: AR: وصلت رسالتك، منرد عليك خلال ٢٤ ساعة. · EN: Message sent. We'll reply within 24 hours.
 - Error: AR: ما قدرنا نبعت الرسالة. جرّب مرة تانية أو احكينا على واتساب. · EN: Your message didn't send. Try again, or reach us on WhatsApp.
 

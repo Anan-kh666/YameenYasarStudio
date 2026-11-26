@@ -25,7 +25,7 @@ The site has three pages:
 flowchart LR
   V[Visitor's browser] -->|HTTPS GET static files| CF[Cloudflare<br/>yameenyasar.com<br/>serves out/]
   V -->|POST FormData| W3F[Web3Forms API<br/>api.web3forms.com/submit]
-  W3F -->|email| INBOX[hello@yameenyasar.com]
+  W3F -->|email| INBOX[anankherbek666@gmail.com]
   V -->|opens link| WA[WhatsApp<br/>wa.me/&lt;number&gt;?text=…]
   V -->|outbound links| SOC[Instagram / LinkedIn]
 
@@ -87,7 +87,7 @@ website/
 │   └── en.json                      # English strings (same key tree)
 ├── public/                          # copied verbatim into out/
 │   ├── brand/                       # logos + favicon
-│   ├── images/                      # anan.jpg, intro/hero videos, unused leftovers
+│   ├── images/                      # intro/hero videos, unused leftovers
 │   ├── og-ar.png, og-en.png         # Open Graph cards
 │   └── favicon.ico, favicon.png     # root fallbacks for browsers that request /favicon.*
 ├── docs/website-copy.md             # original copy brief (partly stale, see §14)
@@ -295,7 +295,7 @@ flowchart TB
 | Packages | `bg` | `packages` | Launch-offer banner (if `site.launchOffer`), 3 tiers `launch` / `business` / `custom`, features via `t.raw()`, 2 add-ons |
 | Work | `surface` | `work` | 3 concept cards (`onlineStore`, `clinic`, `saas`), image area shows "Coming soon" |
 | Process | `bg` | `process` | Numbered `<ol>` of 4 steps and a payment-terms line |
-| About | `surface` | `about` | `/images/anan.jpg`, headline, bio, closing line |
+| About | `surface` | `about` | founder card rows (no photo), headline, bio, closing line |
 | FAQ | `paper` | `faq` | 6 native `<details>/<summary>` items, no JS |
 | Contact | `surface` | `contact`, `whatsapp` | Web3Forms form, or a WhatsApp/email fallback when there is no key |
 
@@ -369,7 +369,7 @@ sequenceDiagram
   actor U as Visitor
   participant C as Contact (client)
   participant W as Web3Forms
-  participant M as hello@yameenyasar.com
+  participant M as anankherbek666@gmail.com
   U->>C: fill name, email, business, package, message → Send
   C->>C: preventDefault, status = sending
   alt honeypot botcheck ticked
@@ -421,7 +421,6 @@ The Milestone 7 Lighthouse pass (2026-09-25, mobile emulation) scored Performanc
 | `brand/yy-logo-new.png` (1344×752) | 847 KB | Header logo |
 | `brand/favicon-512.png` (1024×1024) | 528 KB | Favicon / apple-touch icon (both layouts) |
 | `favicon.ico`, `favicon.png` | 1 KB / 528 KB | Root fallbacks for browsers requesting `/favicon.*` |
-| `images/anan.jpg` (640×800, cropped to the 4:5 frame it's shown in) | 93 KB | About section (lazy-loaded) |
 | `images/ambient-silk.mp4` (1280×720, 9.3 s seamless loop) | 0.6 MB | Hero background; intro background |
 | `brand/yy-logo-intro.png` (1016×304, transparent, exact colours) | 0.17 MB | Intro finale (image + particle targets + light-sweep mask) |
 

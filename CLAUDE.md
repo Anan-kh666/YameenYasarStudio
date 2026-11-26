@@ -76,7 +76,7 @@ src/
 messages/ar.json, en.json   # every visible string on /ar and /en (same key tree in both)
 docs/website-copy.md        # original copy brief — partly OUT OF DATE, see "Copy"
 public/brand/               # yy-logo-header.webp (header/footer), yy-logo-new.png (source), yy-logo-intro.png (intro finale), favicon-512.png
-public/images/              # anan.jpg (About), ambient-silk.mp4 + poster (intro background), work/*.jpg (concept mood images)
+public/images/              # ambient-silk.mp4 + poster (intro background), work/*.jpg (concept mood images)
 public/og-ar.png, og-en.png # Open Graph images 1200×630
 assets/                     # Anan's raw source files (logo jpeg, photo, social handles) — not served
 .agents/skills/, .claude/skills/  # Higgsfield AI asset-generation skills (symlinked) — not app code
@@ -155,7 +155,7 @@ The brand idea is "right to left, left to right": two languages meeting.
 
 ## Config (`src/lib/site.ts`)
 
-Holds `url`, `name`, `nameAr`, `email` (hello@yameenyasar.com), `whatsappNumber` (international format, no `+`), `instagram`, `linkedin`, and `launchOffer` (shows/hides the November-offer banner). `whatsappUrl(message)` builds `https://wa.me/<number>?text=<encoded>`; the prefilled text comes from `whatsapp.prefilled` in the messages.
+Holds `url`, `name`, `nameAr`, `email` (anankherbek666@gmail.com), `whatsappNumber` (international format, no `+`), `instagram`, `linkedin`, and `launchOffer` (shows/hides the November-offer banner). `whatsappUrl(message)` builds `https://wa.me/<number>?text=<encoded>`; the prefilled text comes from `whatsapp.prefilled` in the messages.
 
 Prices live only in the messages: `packages.*.price` (and `site.prices` was removed in Nov 2026). If prices change, edit both message files and the AR/EN meta descriptions, which mention "from $300".
 
@@ -206,7 +206,7 @@ Static files only. Production = the contents of `out/` on Cloudflare at `yameeny
 - **CSP**, one policy for every URL (`/*`): scripts only from `'self'` plus the SHA-256 hashes of the inline scripts Next.js emitted in all pages (no `'unsafe-inline'`, no `'unsafe-eval'`). Hashes change every build, which is why they're generated. It is site-wide on purpose: Cloudflare serves `404.html` under the requested URL, so per-page rules left the 404 page without a CSP, and Cloudflare joins duplicate headers with a comma (two policies, both enforced), so per-page rules can't be stacked on a `/*` one. Network: `connect-src`/`form-action` allow only `'self'` and `https://api.web3forms.com`; Cloudflare Web Analytics' beacon origins are pre-allowed in case it's switched on. Adding any third-party script, font, iframe or API **requires adding its origin in the script**, or the browser blocks it — `npm run test:site` fails on any CSP violation.
 - If a Cloudflare feature injects **inline** scripts (Rocket Loader, Zaraz, some "Scrape Shield" options), the CSP blocks them. Keep those off, or add the origin/hash in the script.
 - **JSON-LD** escapes `<` before `dangerouslySetInnerHTML`. Keep it that way if the schema ever includes editable text.
-- **Images**: strip EXIF/GPS from every photo before adding it to `public/` (iPhone photos carry location; the repo is public). `anan.jpg` and `assets/myphoto.jpeg` were cleaned on 2026-10-16.
+- **Images**: strip EXIF/GPS from every photo before adding it to `public/` (iPhone photos carry location; the repo is public). `assets/myphoto.jpeg` was cleaned on 2026-10-16 (the About photo was removed on 2026-11-26).
 - `public/.well-known/security.txt` (RFC 9116) — renew its `Expires` line before 2027-10-16.
 - `.DS_Store` and `.gitkeep` files are deleted from `out/` by the postbuild script.
 - Accepted dev-only advisory (Nov 13 2026): `minimatch` 10.x (GHSA-g3hv-75wg-m249, moderate) via eslint-config-next → typescript-eslint; the fix needs minimatch 11, outside typescript-eslint's range, so there is no in-range update yet. It only runs inside ESLint on trusted patterns and never ships to visitors. (The older `braces` advisory is gone.) Recheck with `npm audit` and update when a fix lands.
